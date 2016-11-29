@@ -40,14 +40,14 @@ webpackConfig.module.preLoaders.unshift({
 });
 
 // only apply babel for test files when using isparta
-webpackConfig.module.loaders.some(function (loader, i) {
+webpackConfig.module.loaders.some(function(loader, i) {
   if (loader.loader === 'babel') {
     loader.include = path.resolve(projectRoot, 'test/unit');
     return true;
   }
 });
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     // to run in additional browsers:
     // 1. install corresponding karma launcher
@@ -56,7 +56,7 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     frameworks: ['mocha', 'sinon-chai'],
     reporters: ['spec', 'coverage'],
-    files: ['./index.js'],
+    files: [path.resolve(projectRoot, 'node_modules/phantomjs-polyfill/bind-polyfill.js'), './index.js'],
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
