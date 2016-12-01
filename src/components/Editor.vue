@@ -1,6 +1,6 @@
 <template lang="pug">
 #editor
-  editor-window(title="Code Editor", width="300", height="600")
+  editor-window(title="Code Editor", width=300, height=600)
     pre#ace-editor {{ code }}
 </template>
 
@@ -18,7 +18,7 @@ export default {
     };
   },
   mounted() {
-    const editor = ace.edit('ace-editor');
+    const editor = ace.edit(this.$el.querySelector('#ace-editor'));
     editor.setTheme('ace/theme/tomorrow');
     editor.getSession().setMode('ace/mode/assembly_x86');
   },
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style src="vue-windows/dist/vue-windows.css"></style>
-<style scoped>
+<style lang="scss" scoped>
 #ace-editor {
   position: absolute;
   top: 0;
