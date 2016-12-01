@@ -1,16 +1,15 @@
 <template lang="pug">
-.editor
+#editor
   editor-window(title="Code Editor", width="300", height="600")
-    pre#editor {{ code }}
+    pre#ace-editor {{ code }}
 </template>
 
-<script src="/static/src-min-noconflict/ace.js"></script>
 <script>
 import { EditorWindow } from 'vue-windows';
 
-const ace = require('brace');
-require('brace/mode/assembly_x86');
-require('brace/theme/tomorrow');
+import * as ace from 'brace';
+import 'brace/mode/assembly_x86';
+import 'brace/theme/tomorrow';
 
 export default {
   data() {
@@ -19,7 +18,7 @@ export default {
     };
   },
   mounted() {
-    const editor = ace.edit('editor');
+    const editor = ace.edit('ace-editor');
     editor.setTheme('ace/theme/tomorrow');
     editor.getSession().setMode('ace/mode/assembly_x86');
   },
@@ -31,11 +30,7 @@ export default {
 
 <style src="vue-windows/dist/vue-windows.css"></style>
 <style scoped>
-.editor {
-  float: right;
-}
-
-#editor {
+#ace-editor {
   position: absolute;
   top: 0;
   bottom: 0.75em;

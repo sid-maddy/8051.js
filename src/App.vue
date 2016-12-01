@@ -1,7 +1,6 @@
-<template>
-  <div id="app">
-    <editor></editor>
-  </div>
+<template lang="pug">
+#app
+  editor
 </template>
 
 <script>
@@ -13,3 +12,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+#editor {
+  float: right;
+}
+</style>
