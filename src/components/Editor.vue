@@ -1,39 +1,51 @@
 <template lang="pug">
 #editor
-  editor-window(title="Code Editor", width=300, height=600)
-    pre#ace-editor {{ code }}
+  pre#ace-editor {{ code }}
 </template>
 
 <script>
-import { EditorWindow } from 'vue-windows';
+import { mapMutations, mapState } from 'vuex';
 
-import * as ace from 'brace';
-import 'brace/mode/assembly_x86';
+import ace from 'brace';
 import 'brace/theme/tomorrow';
+import 'brace/mode/assembly_x86';
 
 export default {
   data() {
     return {
-      code: 'mov A, #42H\n',
+      code: `MOV A, #42
+LCALL NEXT
+END
+NEXT: MOV B, #10
+RET`,
     };
   },
   mounted() {
     const editor = ace.edit(this.$el.querySelector('#ace-editor'));
-    editor.setTheme('ace/theme/tomorrow');
     editor.getSession().setMode('ace/mode/assembly_x86');
+    editor.setTheme('ace/theme/tomorrow');
+    editor.commands.addCommand({
+      name: 'compile',
+      bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
+      exec: e => this.compile(e.getValue()),
+      readOnly: true,
+    });
+    editor.focus();
   },
-  components: {
-    EditorWindow,
-  },
+  computed: mapState([
+    'memory',
+  ]),
+  methods: mapMutations([
+    'compile',
+  ]),
 };
 </script>
 
-<style src="vue-windows/dist/vue-windows.css"></style>
 <style lang="scss" scoped>
 #ace-editor {
   position: absolute;
   top: 0;
-  bottom: 0.75em;
+  bottom: 0;
   left: 0;
   right: 0;
 }
