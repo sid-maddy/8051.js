@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+import _ from 'lodash';
 import memory from './data';
 import utils from './utils';
 
@@ -6,29 +6,25 @@ function mov(addr1, addr2) {
   memory.ram[addr1] = memory.ram[addr2];
 }
 
-function add(addr) {
-  memory.ram[224] += memory.ram[addr];
+function add(addr1, addr2) {
+  memory.ram[addr1] += memory.ram[addr2];
 }
 
-function setb(bit) {
-  const [addrPart, bitPart] = utils.translateToBitAddressable(bit);
-  const decimal = bitPart;
-  let binary = (`000000000${memory.ram[addrPart].toString(2)}`).substr(-8);
-  binary = `${binary.substring(0, 7 - decimal)}1${binary.substring(8 - decimal)}`;
-  memory.ram[addrPart] = parseInt(binary, 2);
+function setb(bitAddr) {
+  const [addr, bit] = utils.translateToBitAddressable(bitAddr);
+  const binary = utils.changeBit(addr, bit, 1);
+  memory.ram[addr] = _.parseInt(binary, 2);
 }
 
-function clr(bit) {
-  const [addrPart, bitPart] = utils.translateToBitAddressable(bit);
-  if (bitPart === undefined) {
-    memory.ram[addrPart] = 0;
+function clr(bitAddr) {
+  const [addr, bit] = utils.translateToBitAddressable(bitAddr);
+  if (_.isUndefined(bit)) {
+    memory.ram[addr] = 0;
     return;
   }
 
-  const decimal = bitPart;
-  let binary = (`000000000${memory.ram[addrPart].toString(2)}`).substr(-8);
-  binary = `${binary.substring(0, 7 - decimal)}0${binary.substring(8 - decimal)}`;
-  memory.ram[addrPart] = parseInt(binary, 2);
+  const binary = utils.changeBit(addr, bit, 0);
+  memory.ram[addr] = _.parseInt(binary, 2);
 }
 
 function djnz(addr, label) {
@@ -46,11 +42,11 @@ function lcall(label) {
 }
 
 function updateParity() {
-  const acc = (`000000000${memory.ram[224].toString(2)}`).substr(-8);
-  if ((acc.match(/1/) || []).length % 2 === 0) {
-    clr('208.0');
+  const acc = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+  if (_.countBy(_.toArray(acc))['1'] || 0 % 2 === 0) {
+    clr(`${memory.sfrMap.get('PSW')}.0`);
   } else {
-    setb('208.0');
+    setb(`${memory.sfrMap.get('PSW')}.0`);
   }
 }
 
