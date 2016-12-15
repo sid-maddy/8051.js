@@ -22,7 +22,7 @@ const sfrMap = new Map([
   ['PSW', 0xD0],
 ]);
 
-const ram = new Uint8ClampedArray(257);
+const ram = new Uint8Array(257);
 ram[sfrMap.get('SP')] = 0x07;
 
 export default {

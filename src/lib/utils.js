@@ -11,11 +11,6 @@ function convertToBinary(number) {
 
 function changeBit(addr, bit, value) {
   const binary = convertToBinary(memory.ram[addr]);
-  /*
-    PSW.4 => '000<0>1000' => [0, 0, 0, <0>, 1, 0, 0, 0]
-    => [0, 0, 0, 1, <0>, 0, 0, 0] => [0, 0, 0, 1, <1>, 0, 0, 0]
-    => [0, 0, 0, <1>, 1, 0, 0, 0] => '000<1>1000'
-  */
   return _
     .chain(binary)
     .toArray()
@@ -23,6 +18,16 @@ function changeBit(addr, bit, value) {
     .tap(arr => _.set(arr, bit, value))
     .reverse()
     .join('')
+    .value();
+}
+
+function isBitSet(addr, bit) {
+  const binary = convertToBinary(memory.ram[addr]);
+  return _
+    .chain(binary)
+    .toArray()
+    .reverse()
+    .thru(arr => arr[bit] === '1')
     .value();
 }
 
@@ -46,7 +51,7 @@ function executeFunctionByName(funcName, context, args) {
 }
 
 function handleRegisters(reg) {
-  return reg.replace(/^C$/i, '208.7')
+  return reg.replace(/^C$/i, `${memory.sfrMap.get('PSW')}.7`)
     .replace(/^(@|#)?([a-z]{1,4})(\.\d)?$/i, (match, addrMode = '', sfr, bit = '') => {
       let sfrAddr = memory.sfrMap.get(_.toUpper(sfr));
       if (_.isUndefined(sfrAddr)) {
@@ -55,7 +60,7 @@ function handleRegisters(reg) {
       return `${addrMode}${sfrAddr}${bit}`;
     }).replace(/^(@)?R([0-7])$/i, (match, addrMode = '', number) => {
       const regBankMode = _.parseInt(
-        convertToBinary(memory.ram[208]).slice(3, 5), 2
+        convertToBinary(memory.ram[memory.sfrMap.get('PSW')]).slice(3, 5), 2
       );
       return `${addrMode}${_.parseInt(number) + (regBankMode * 8)}`;
     });
@@ -146,7 +151,6 @@ function initMemory() {
 function translateToBitAddressable(op) {
   const [addr, bit] = _.chain(op).split('.').map(_.parseInt).value();
   if (_.inRange(addr, 128) && _.isUndefined(bit)) {
-    // 10 => ... => [33, 2] => 33.2
     return [_.toInteger(addr / 8) + 32, addr % 8];
   }
   return [addr, bit];
@@ -154,6 +158,7 @@ function translateToBitAddressable(op) {
 
 export default {
   changeBit,
+  isBitSet,
   convertToBinary,
   displayRam,
   handleExecution,
