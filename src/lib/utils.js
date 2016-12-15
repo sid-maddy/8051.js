@@ -96,10 +96,10 @@ function parseLine(code) {
 
   _.forEach(operands, (operand, index) => {
     let op = operand;
-    if (op.match(/h$/i)) {
+    if (op.match(/[0-9a-f]+h$/i)) {
       // Convert all hex numbers to decimal
       op = convertToDec(op, /(@|#)?([0-9a-f]+)h/i, 16);
-    } else if (op.match(/b$/i)) {
+    } else if (op.match(/[01]+b$/i)) {
       // Convert all binary numbers to decimal
       op = convertToDec(op, /(@|#)?([01]+)b/i, 2);
     }

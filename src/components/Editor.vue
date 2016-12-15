@@ -13,9 +13,9 @@ import 'brace/mode/assembly_x86';
 export default {
   data() {
     return {
-      code: `SETB PSW.3
-SETB PSW.4
-MOV R0, #42`,
+      code: `MOV A, #50
+MOV B, #250
+ADD A, B`,
     };
   },
   mounted() {
