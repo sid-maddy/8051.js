@@ -95,4 +95,14 @@ if (config.build.productionGzip) {
   )
 }
 
+if (config.build.deploy) {
+  var GhPagesWebpackPlugin = require('gh-pages-webpack-plugin')
+
+  webpackConfig.plugins.push(
+    new GhPagesWebpackPlugin({
+      path: './dist',
+    })
+  )
+}
+
 module.exports = webpackConfig

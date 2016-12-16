@@ -29,25 +29,18 @@ function add(addr1, addr2) {
     _.parseInt(utils.convertToBinary(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
-  const isAuxCarry = nib1 + nib2 > 15;
-  const isCarry = num1 + num2 > 255;
-
-  if (isAuxCarry) {
+  if (nib1 + nib2 > 15) {
     setb(`${psw}.6`);
   } else {
     clr(`${psw}.6`);
   }
 
-  if (isCarry) {
+  if (num1 + num2 > 255) {
+    setb(`${psw}.2`);
     setb(`${psw}.7`);
   } else {
-    clr(`${psw}.7`);
-  }
-
-  if (!(isAuxCarry && isCarry)) {
-    setb(`${psw}.2`);
-  } else {
     clr(`${psw}.2`);
+    clr(`${psw}.7`);
   }
 
   memory.ram[addr1] = num1 + num2;
@@ -64,40 +57,34 @@ function subb(addr1, addr2) {
     _.parseInt(utils.convertToBinary(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
-  const needCarry = num1 < num2;
-  const needAuxCarry = nib1 < nib2;
   let minuend = num1;
-
-  if (needAuxCarry) {
+  if (nib1 < nib2) {
     setb(`${psw}.6`);
     minuend += 16;
   } else {
     clr(`${psw}.6`);
   }
 
-  if (needCarry) {
+  if (num1 < num2) {
+    setb(`${psw}.2`);
     setb(`${psw}.7`);
     minuend += 256;
   } else {
-    clr(`${psw}.7`);
-  }
-
-  if (!(needCarry && needAuxCarry)) {
-    setb(`${psw}.2`);
-  } else {
     clr(`${psw}.2`);
+    clr(`${psw}.7`);
   }
 
   memory.ram[addr1] = minuend - num2;
 }
 
-function mul(addr1, addr2) {
-  const a = memory.sfrMap.get('A');
-  const b = memory.sfrMap.get('B');
-  const psw = memory.sfrMap.get('PSW');
-  if (addr1 === a && addr2 === b) {
-    clr(`${psw}.7`);
+function mul(addr) {
+  if (/ab/i.test(addr)) {
+    const psw = memory.sfrMap.get('PSW');
+    const a = memory.sfrMap.get('A');
+    const b = memory.sfrMap.get('B');
     const product = memory.ram[a] * memory.ram[b];
+
+    clr(`${psw}.7`);
     if (product > 255) {
       setb(`${psw}.2`);
       memory.ram[b] = product - 255;
@@ -110,11 +97,12 @@ function mul(addr1, addr2) {
   }
 }
 
-function div(addr1, addr2) {
-  const a = memory.sfrMap.get('A');
-  const b = memory.sfrMap.get('B');
-  const psw = memory.sfrMap.get('PSW');
-  if (addr1 === a && addr2 === b) {
+function div(addr) {
+  if (/ab/i.test(addr)) {
+    const psw = memory.sfrMap.get('PSW');
+    const a = memory.sfrMap.get('A');
+    const b = memory.sfrMap.get('B');
+
     clr(`${psw}.7`);
     if (memory.ram[b] === 0) {
       setb(`${psw}.2`);
@@ -144,7 +132,7 @@ function lcall(label) {
 
 function updateParity() {
   const acc = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
-  if (_.countBy(_.toArray(acc))['1'] || 0 % 2 === 0) {
+  if ((_.countBy(_.toArray(acc))['1'] || 0) % 2 === 0) {
     clr(`${memory.sfrMap.get('PSW')}.0`);
   } else {
     setb(`${memory.sfrMap.get('PSW')}.0`);
