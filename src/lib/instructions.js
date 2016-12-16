@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import _ from 'lodash';
 import memory from './data';
 import utils from './utils';
@@ -128,18 +129,30 @@ function div(addr1, addr2) {
   }
 }
 
+function jump(label) {
+  memory.programCounter = memory.labels.get(label);
+}
+
 function djnz(addr, label) {
   memory.ram[addr] -= 1;
   if (memory.ram[addr] > 0) {
-    memory.programCounter = memory.labels.get(label);
+    jump(label);
   }
 }
 
-function lcall(label) {
+function call(label) {
   const tempProgramCounter = memory.programCounter;
   memory.programCounter = memory.labels.get(label);
   utils.handleExecution(memory.programCounter);
   memory.programCounter = tempProgramCounter;
+}
+
+function lcall(label) {
+  call(label);
+}
+
+function acall(label) {
+  call(label);
 }
 
 function updateParity() {
@@ -148,6 +161,100 @@ function updateParity() {
     clr(`${memory.sfrMap.get('PSW')}.0`);
   } else {
     setb(`${memory.sfrMap.get('PSW')}.0`);
+  }
+}
+
+function ajmp(label) {
+  jump(label);
+}
+
+function ljmp(label) {
+  jump(label);
+}
+
+function sjmp(label) {
+  jump(label);
+}
+
+function jumpBit(bitAddr, label, ifBit, clear) {
+  // ifBit is boolean which decides 'jump if bit' or 'jump if no bit'
+  // clear decides wether to clear the bit before jump or not
+  const [addr, bit] = utils.translateToBitAddressable(bitAddr);
+  if (!(utils.isBitSet(addr, bit) ^ ifBit)) {
+    if (clear) {
+      clr(bitAddr);
+    }
+    jump(label);
+  }
+}
+
+function jbc(bitAddr, label) {
+  jumpBit(bitAddr, label, true, true);
+}
+
+function jb(bitAddr, label) {
+  jumpBit(bitAddr, label, true, false);
+}
+
+function jnb(bitAddr, label) {
+  jumpBit(bitAddr, label, false, false);
+}
+
+function jc(label) {
+  jb(`${memory.sfrMap.get('PSW')}.7`, label);
+}
+
+function jnc(label) {
+  jnb(`${memory.sfrMap.get('PSW')}.7`, label);
+}
+
+function jz(label) {
+  jb(`${memory.sfrMap.get('PSW')}.1`, label);
+}
+
+function jnz(label) {
+  jnb(`${memory.sfrMap.get('PSW')}.1`, label);
+}
+
+function cjne(addr1, addr2, label) {
+  if (memory.ram[addr1] < memory.ram[addr2]) {
+    setb(`${memory.sfrMap.get('PSW')}.7`);
+  } else {
+    clr(`${memory.sfrMap.get('PSW')}.7`);
+  }
+  if (memory.ram[addr1] !== memory.ram[addr2]) {
+    jump(label);
+  }
+}
+
+function nop() {
+  // this instruction does nothing.Seriously!
+  // http://www.keil.com/support/man/docs/is51/is51_nop.htm
+}
+
+function inc(addr) {
+  // Don't call ADD function here instead. because INC does not affect any flags.
+  memory.ram[addr] = (memory.ram[addr] + 1) % 256; // incrementing after 255 overflows to 0.
+}
+
+function dec(addr) {
+  // no flags are affected. so don't call SUBB.
+  memory.ram[addr] -= 1;
+  if (memory.ram[addr] < 0) { // decrementing after 0 underflows to 255.
+    memory.ram[addr] = 255;
+  }
+}
+
+function cpl(bitAddr) {
+  const [addr, bit] = utils.translateToBitAddressable(bitAddr);
+  if (_.isUndefined(bit)) { // for CPL A (entire byte cpl)
+    memory.ram[addr] = ~memory.ram[addr];
+    return;
+  }
+  if (utils.isBitSet(addr, bit)) {
+    clr(bitAddr);
+  } else {
+    setb(bitAddr);
   }
 }
 
@@ -162,5 +269,21 @@ export default {
   div,
   djnz,
   lcall,
+  acall,
   updateParity,
+  ajmp,
+  ljmp,
+  sjmp,
+  jbc,
+  jb,
+  jnb,
+  jc,
+  jnc,
+  jz,
+  jnz,
+  cjne,
+  nop,
+  inc,
+  dec,
+  cpl,
 };
