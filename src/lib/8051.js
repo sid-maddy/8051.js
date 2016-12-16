@@ -5,14 +5,18 @@ import utils from './utils';
 function compile(input) {
   utils.initMemory();
   const code = _.split(input, '\n');
-  memory.code = code;
-  const pattern = /([a-z]+)\s*:/i;
+  const pattern = /(?:([a-z]+)\s*?:)?/i;
+
   _.forEach(code, (line, index) => {
-    const [, label] = pattern.exec(line) || [];
-    if (label) {
+    code[index] = _.trim(line);
+    console.log(pattern.exec(line));
+    const [, label] = pattern.exec(line);
+    if (_.isUndefined(label)) {
       memory.labels.set(label, index);
     }
   });
+
+  memory.code = code;
   utils.handleExecution(memory.programCounter);
   utils.displayRam();
 }

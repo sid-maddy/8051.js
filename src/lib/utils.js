@@ -68,10 +68,10 @@ function handleRegisters(reg) {
 
 function handleAddressingMode(op) {
   const number = _.parseInt(op.slice(1), 10);
-  if (op.match(/^#/i)) {
+  if (/^#/i.test(op)) {
     memory.ram[256] = number;
     return '256';
-  } else if (op.match(/^@/i)) {
+  } else if (/^@/i.test(op)) {
     return `${memory.ram[number]}`;
   }
   return op;
@@ -82,11 +82,11 @@ function parseLine(code) {
   // FIXME: Optimise this regex and make it readable
   const pattern = new RegExp([
     /\s*(?:[a-z]+\s*?:)?/, // Label:
-    /\s*?([a-z]{2,5})\s+?/, // Instruction
+    /\s*?([a-z]{2,5})\s*/, // Instruction
     // eslint-disable-next-line max-len
-    /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))/, // Operands
+    /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
   ].map(r => r.source).join(''), 'i');
-  let [, instruction, operands] = pattern.exec(code);
+  let [, instruction, operands = []] = pattern.exec(code);
 
   instruction = _.replace(instruction, /\s+/, '');
   console.log(`Instruction = ${instruction}`);
@@ -101,10 +101,10 @@ function parseLine(code) {
 
   _.forEach(operands, (operand, index) => {
     let op = operand;
-    if (op.match(/[0-9a-f]+h$/i)) {
+    if (/[0-9a-f]+h$/i.test(op)) {
       // Convert all hex numbers to decimal
       op = convertToDec(op, /(@|#)?([0-9a-f]+)h/i, 16);
-    } else if (op.match(/[01]+b$/i)) {
+    } else if (/[01]+b$/i.test(op)) {
       // Convert all binary numbers to decimal
       op = convertToDec(op, /(@|#)?([01]+)b/i, 2);
     }
@@ -131,12 +131,11 @@ function handleExecution(oldProgramCounter) {
   const code = memory.code;
   let i = oldProgramCounter;
   while (i < code.length) {
-    if (code[i].match(/RET|END/i)) {
-      return;
+    if (!/^(?:RET|END)$/i.test(code[i])) {
+      memory.programCounter += 1;
+      parseLine(code[i]);
+      i = memory.programCounter;
     }
-    memory.programCounter += 1;
-    parseLine(code[i]);
-    i = memory.programCounter;
   }
 }
 

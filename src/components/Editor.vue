@@ -13,9 +13,7 @@ import 'brace/mode/assembly_x86';
 export default {
   data() {
     return {
-      code: `MOV A, #00011111b
-MOV B, #11110001b
-ADD A, B`,
+      code: 'NOP',
     };
   },
   mounted() {
