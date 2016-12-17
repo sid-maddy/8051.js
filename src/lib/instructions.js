@@ -150,26 +150,27 @@ function djnz(addr, label) {
   }
 }
 
-function jumpBit(bitAddr, label, ifBitSet) {
+function jumpBit(bitAddr, label, ifBitSet, clearBeforeJump) {
   const [addr, bit] = utils.translateToBitAddressable(bitAddr);
-  const isBitSet = utils.isBitSet(addr, bit);
   // Shoddy excuse of a XNOR
-  if (ifBitSet ? isBitSet : !isBitSet) {
+  if (ifBitSet === utils.isBitSet(addr, bit)) {
+    if (clearBeforeJump) {
+      clr(bitAddr);
+    }
     jump(label);
   }
 }
 
 function jbc(bitAddr, label) {
-  clr(bitAddr);
-  jumpBit(bitAddr, label, true);
+  jumpBit(bitAddr, label, true, true);
 }
 
 function jb(bitAddr, label) {
-  jumpBit(bitAddr, label, true);
+  jumpBit(bitAddr, label, true, false);
 }
 
 function jnb(bitAddr, label) {
-  jumpBit(bitAddr, label, false);
+  jumpBit(bitAddr, label, false, false);
 }
 
 function jc(label) {
@@ -263,10 +264,10 @@ export default {
   jz,
   jnz,
   cjne,
+  lcall,
+  acall,
   inc,
   dec,
   nop,
-  lcall,
-  acall,
   updateParity,
 };
