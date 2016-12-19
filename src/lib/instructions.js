@@ -242,6 +242,101 @@ function updateParity() {
   }
 }
 
+function rotateA(addr, right, withCarry) {
+  if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
+    const originalA = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+    let C;
+    let rotatedA;
+    if (utils.isBitSet(memory.sfrMap.get('PSW'), 7)) {
+      C = '1';
+    } else {
+      C = '0';
+    }
+
+    if (right) {
+      if (withCarry) {
+        rotatedA = `${C}${originalA.slice(0, 7)}`;
+        if (originalA.slice(-1) === '1') {
+          setb(`${memory.sfrMap.get('PSW')}.7`);
+        } else {
+          clr(`${memory.sfrMap.get('PSW')}.7`);
+        }
+      } else {
+        rotatedA = `${originalA.slice(-1)}${originalA.slice(0, 7)}`;
+      }
+    } else if (withCarry) {
+      rotatedA = `${originalA.slice(1, 8)}${C}`;
+      if (originalA.slice(0, 1) === '1') {
+        setb(`${memory.sfrMap.get('PSW')}.7`);
+      } else {
+        clr(`${memory.sfrMap.get('PSW')}.7`);
+      }
+    } else {
+      rotatedA = `${originalA.slice(1, 8)}${C}`;
+    }
+
+    memory.ram[memory.sfrMap.get('A')] = parseInt(rotatedA, 2);
+  }
+}
+
+function rr(addr) {
+  rotateA(addr, true, false);
+}
+
+function rrc(addr) {
+  rotateA(addr, true, true);
+}
+
+function rl(addr) {
+  rotateA(addr, false, false);
+}
+
+function rlc(addr) {
+  rotateA(addr, false, true);
+}
+
+function swap(addr) {
+  if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
+    const A = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+    const lowerNibble = A.slice(4);
+    const higherNibble = A.slice(0, 4);
+    memory.ram[memory.sfrMap.get('A')] = parseInt(`${lowerNibble}${higherNibble}`, 2);
+  }
+}
+
+function push(addr) {
+  const SP = memory.sfrMap.get('SP');
+  memory.ram[SP] += 1;
+  memory.ram[memory.ram[SP]] = memory.ram[addr];
+}
+
+function pop(addr) {
+  const SP = memory.sfrMap.get('SP');
+  memory.ram[addr] = memory.ram[memory.ram[SP]];
+  memory.ram[SP] -= 1;
+}
+
+function xchd(addr1, addr2) {
+  if (parseInt(addr1, 10) === memory.sfrMap.get('A')) {
+    const A = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+    const binaryOfAddr2 = utils.convertToBinary(memory.ram[addr2]);
+    const lNibA = A.slice(4);
+    const hNibA = A.slice(0, 4);
+    const lNibAddr2 = binaryOfAddr2.slice(4);
+    const hNibAddr2 = binaryOfAddr2.slice(0, 4);
+    memory.ram[memory.sfrMap.get('A')] = parseInt(`${hNibA}${lNibAddr2}`, 2);
+    memory.ram[addr2] = parseInt(`${hNibAddr2}${lNibA}`, 2);
+  }
+}
+
+function xch(addr1, addr2) {
+  if (parseInt(addr1, 10) === memory.sfrMap.get('A')) {
+    const temp = memory.ram[addr1];
+    memory.ram[addr1] = memory.ram[addr2];
+    memory.ram[addr2] = temp;
+  }
+}
+
 export default {
   mov,
   setb,
@@ -270,4 +365,13 @@ export default {
   dec,
   nop,
   updateParity,
+  rr,
+  rrc,
+  rl,
+  rlc,
+  swap,
+  push,
+  pop,
+  xchd,
+  xch,
 };
