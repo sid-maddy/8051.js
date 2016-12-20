@@ -1,11 +1,8 @@
 /* eslint-disable no-bitwise */
+/* eslint no-cond-assign: [2, "except-parens"] */
 import _ from 'lodash';
 import memory from './data';
 import utils from './utils';
-
-function mov(addr1, addr2) {
-  memory.ram[addr1] = memory.ram[addr2];
-}
 
 function setb(bitAddr) {
   const [addr, bit] = utils.translateToBitAddressable(bitAddr);
@@ -20,6 +17,23 @@ function clr(bitAddr) {
   } else {
     const binary = utils.changeBit(addr, bit, 0);
     memory.ram[addr] = _.parseInt(binary, 2);
+  }
+}
+
+function mov(addr1, addr2) {
+  const C = `${memory.sfrMap.get('PSW')}.7`;
+  let [byteAddr1, bit1] = [memory.sfrMap.get('PSW'), 7];
+  let [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
+  if ((addr1 === C)
+    || ((addr2 === C) && ([byteAddr2, bit2] = [memory.sfrMap.get('PSW'), 7])
+      && ([byteAddr1, bit1] = utils.translateToBitAddressable(addr1)))) {
+    if (utils.isBitSet(byteAddr2, bit2)) {
+      setb(`${byteAddr1}.${bit1}`);
+    } else {
+      clr(`${byteAddr1}.${bit1}`);
+    }
+  } else {
+    memory.ram[addr1] = memory.ram[addr2];
   }
 }
 
