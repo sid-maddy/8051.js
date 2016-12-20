@@ -23,4 +23,5 @@ function compile(input) {
 export default {
   compile,
   memory,
+  utils,
 };

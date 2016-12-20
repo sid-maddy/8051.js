@@ -1,32 +1,36 @@
 <template lang="pug">
-#app
-  pin-diagram
-  editor
+#app.ui.center.aligned.grid.container
+  .row
+    .ui.middle.aligned.padded.three.wide.column.container
+      pin-diagram
+    .ui.middle.aligned.padded.three.wide.column.container
+      seven-segment
+    .ui.middle.aligned.padded.three.wide.column.container
+      motor
+    .ui.center.aligned.padded.three.wide.column.container
+      editor
 </template>
 
 <script>
-import Editor from './components/Editor';
-import PinDiagram from './components/PinDiagram';
+import 'semantic-ui-css/semantic.min.css';
+
+import Editor from 'components/Editor';
+import PinDiagram from 'components/PinDiagram';
+import SevenSegment from 'components/SevenSegment';
+import Motor from 'components/Motor';
 
 export default {
   components: {
     Editor,
     PinDiagram,
+    SevenSegment,
+    Motor,
   },
 };
 </script>
 
 <style lang="scss" scoped>
-#pin-diagram {
-  width: 30%;
-  height: 100%;
-}
-
-#editor {
-  position: absolute;
-  top: 0;
-  left: 70%;
-  width: 30%;
+#app {
   height: 100%;
 }
 </style>

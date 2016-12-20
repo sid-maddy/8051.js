@@ -52,7 +52,8 @@ function executeFunctionByName(funcName, context, args) {
 
 function handleRegisters(reg) {
   return reg.replace(/^C$/i, `${memory.sfrMap.get('PSW')}.7`)
-    .replace(/^(@|#)?([a-z]{1,4})(\.\d)?$/i, (match, addrMode = '', sfr, bit = '') => {
+    .replace(/^(@|#)?([a-z]{1,4}\d?)(\.\d)?$/i, (match, addrMode = '', sfr, bit = '') => {
+      console.log(match);
       let sfrAddr = memory.sfrMap.get(_.toUpper(sfr));
       if (_.isUndefined(sfrAddr)) {
         sfrAddr = sfr;
@@ -67,7 +68,7 @@ function handleRegisters(reg) {
 }
 
 function handleAddressingMode(op) {
-  const number = _.parseInt(op.slice(1), 10);
+  const number = _.parseInt(op.slice(1));
   if (/^#/i.test(op)) {
     memory.ram[256] = number;
     return '256';
@@ -161,6 +162,7 @@ export default {
   convertToBinary,
   displayRam,
   handleExecution,
+  handleRegisters,
   initMemory,
   translateToBitAddressable,
 };

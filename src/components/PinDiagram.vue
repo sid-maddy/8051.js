@@ -1,305 +1,249 @@
 <template lang="pug">
 #pin-diagram
-  <svg id="pinDiagramSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 744.09448819 1052.3622047">
-    <g font-size="40" font-family="sans-serif" letter-spacing="0" word-spacing="0">
-      <text x="585.40179" y="29.505333" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="585.40179" y="29.505333">Vcc</tspan>
-      </text>
-      <text x="581.78851" y="1035.2194" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="1035.2194">P2.0</tspan>
-      </text>
-      <text x="581.78851" y="982.61908" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="982.61908">P2.1</tspan>
-      </text>
-      <text x="581.78851" y="930.01874" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="930.01874">P2.2</tspan>
-      </text>
-      <text x="581.78851" y="876.85205" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="876.85205">P2.3</tspan>
-      </text>
-      <text x="581.78851" y="824.25177" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="824.25177">P2.4</tspan>
-      </text>
-      <text x="581.78851" y="771.08502" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="771.08502">P2.5</tspan>
-      </text>
-      <text x="581.78851" y="717.91833" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="717.91833">P2.6</tspan>
-      </text>
-      <text x="581.78851" y="665.31805" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="665.31805">P2.7</tspan>
-      </text>
-      <text x="581.78851" y="612.15137" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="612.15137">PSEN</tspan>
-      </text>
-      <text x="585.40179" y="559.55109" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="585.40179" y="559.55109">ALE</tspan>
-      </text>
-      <text x="581.78851" y="507.47818" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="507.47818">EA</tspan>
-      </text>
-      <text x="581.78851" y="82.67202" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="82.67202">P0.0</tspan>
-      </text>
-      <text x="581.78851" y="135.8387" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="135.8387">P0.1</tspan>
-      </text>
-      <text x="581.78851" y="189.00539" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="189.00539">P0.2</tspan>
-      </text>
-      <text x="581.78851" y="242.17207" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="242.17207">P0.3</tspan>
-      </text>
-      <text x="581.78851" y="295.33878" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="295.33878">P0.4</tspan>
-      </text>
-      <text x="581.78851" y="348.50546" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="348.50546">P0.5</tspan>
-      </text>
-      <text x="581.78851" y="401.67215" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="401.67215">P0.6</tspan>
-      </text>
-      <text x="581.78851" y="454.83884" style="line-height:125%" transform="translate(20.333 3.998)">
-        <tspan x="581.78851" y="454.83884">P0.7</tspan>
-      </text>
-    </g>
-    <g font-size="40" font-family="sans-serif" letter-spacing="0" word-spacing="0">
-      <text x="581.40179" y="29.505333" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.40179" y="29.505333">P1.0</tspan>
-      </text>
-      <text x="581.78851" y="1035.2194" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="1035.2194">GND</tspan>
-      </text>
-      <text x="581.78851" y="982.61908" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="982.61908">XTAL1</tspan>
-      </text>
-      <text x="581.78851" y="930.01874" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="930.01874">XTAL2</tspan>
-      </text>
-      <text x="581.78851" y="876.85205" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="876.85205">P3.7</tspan>
-      </text>
-      <text x="581.78851" y="824.25177" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="824.25177">P3.6</tspan>
-      </text>
-      <text x="581.78851" y="771.08502" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="771.08502">P3.5</tspan>
-      </text>
-      <text x="581.78851" y="717.91833" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="717.91833">P3.4</tspan>
-      </text>
-      <text x="581.78851" y="665.31805" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="665.31805">P3.3</tspan>
-      </text>
-      <text x="581.78851" y="612.15137" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="612.15137">P3.2</tspan>
-      </text>
-      <text x="585.40179" y="559.55109" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="585.40179" y="559.55109">P3.1</tspan>
-      </text>
-      <text x="581.78851" y="507.47818" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="507.47818">P3.0</tspan>
-      </text>
-      <text x="581.78851" y="82.67202" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="82.67202">P1.1</tspan>
-      </text>
-      <text x="581.78851" y="135.8387" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="135.8387">P1.2</tspan>
-      </text>
-      <text x="581.78851" y="189.00539" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="189.00539">P1.3</tspan>
-      </text>
-      <text x="581.78851" y="242.17207" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="242.17207">P1.4</tspan>
-      </text>
-      <text x="581.78851" y="295.33878" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="295.33878">P1.5</tspan>
-      </text>
-      <text x="581.78851" y="348.50546" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="348.50546">P1.6</tspan>
-      </text>
-      <text x="581.78851" y="401.67215" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="401.67215">P1.7</tspan>
-      </text>
-      <text x="581.78851" y="454.83884" style="line-height:125%" transform="translate(-563.233 3.998)">
-        <tspan x="581.78851" y="454.83884">RST</tspan>
-      </text>
-    </g>
-    <rect width="398.99921" height="1040.142" x="-571.54681" y="7.2529106" fill="none" stroke="#000" stroke-width="1.00078225" transform="matrix(-1 0 0 1 0 -1.07)" ry="5.1715283" rx="4.3269048"/>
-    <g fill="none" stroke="#000">
-      <path d="M572.04721 19.252831h28.57142"/>
-      <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      <g transform="translate(0 54)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 106)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 160)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 212)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 264)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 318)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 372)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 426)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 478)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 528)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 582)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 636)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 688)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 742)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 796)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 848)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 900)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 952)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="translate(0 1006)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-    </g>
-    <g fill="none" stroke="#000">
-      <g transform="matrix(-1 0 0 1 744.094 0)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 54)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 106)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 160)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 212)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 264)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 318)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 372)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 426)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 478)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 528)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 582)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 636)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 688)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 742)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 796)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 848)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 900)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 952)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-      <g transform="matrix(-1 0 0 1 744.094 1006)">
-        <path d="M572.04721 19.252831h28.57142"/>
-        <circle cx="594.95624" cy="19.252831" r="5.1623631"/>
-      </g>
-    </g>
-  </svg>
+  svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 683.2 1043")
+    g(font-size="40", font-family="sans-serif", letter-spacing="0", word-spacing="0")
+      text(x="585.4", y="29.5", transform="translate(.586 .183)")
+        tspan(x="585.4", y="29.5") Vcc
+      text(x="581.8", y="1035.2", transform="translate(.586 .183)")
+        tspan(x="581.8", y="1035.2") P2.0
+      text(x="581.8", y="982.6", transform="translate(.586 .183)")
+        tspan(x="581.8", y="982.6") P2.1
+      text(x="581.8", y="930", transform="translate(.586 .183)")
+        tspan(x="581.8", y="930") P2.2
+      text(x="581.8", y="876.9", transform="translate(.586 .183)")
+        tspan(x="581.8", y="876.9") P2.3
+      text(x="581.8", y="824.3", transform="translate(.586 .183)")
+        tspan(x="581.8", y="824.3") P2.4
+      text(x="581.8", y="771.1", transform="translate(.586 .183)")
+        tspan(x="581.8", y="771.1") P2.5
+      text(x="581.8", y="717.9", transform="translate(.586 .183)")
+        tspan(x="581.8", y="717.9") P2.6
+      text(x="581.8", y="665.3", transform="translate(.586 .183)")
+        tspan(x="581.8", y="665.3") P2.7
+      text(x="581.8", y="612.2", transform="translate(.586 .183)")
+        tspan(x="581.8", y="612.2") PSEN
+      text(x="585.4", y="559.6", transform="translate(.586 .183)")
+        tspan(x="585.4", y="559.6") ALE
+      text(x="581.8", y="507.5", transform="translate(.586 .183)")
+        tspan(x="581.8", y="507.5") EA
+      text(x="581.8", y="82.7", transform="translate(.586 .183)")
+        tspan(x="581.8", y="82.7") P0.0
+      text(x="581.8", y="135.8", transform="translate(.586 .183)")
+        tspan(x="581.8", y="135.8") P0.1
+      text(x="581.8", y="189", transform="translate(.586 .183)")
+        tspan(x="581.8", y="189") P0.2
+      text(x="581.8", y="242.2", transform="translate(.586 .183)")
+        tspan(x="581.8", y="242.2") P0.3
+      text(x="581.8", y="295.3", transform="translate(.586 .183)")
+        tspan(x="581.8", y="295.3") P0.4
+      text(x="581.8", y="348.5", transform="translate(.586 .183)")
+        tspan(x="581.8", y="348.5") P0.5
+      text(x="581.8", y="401.7", transform="translate(.586 .183)")
+        tspan(x="581.8", y="401.7") P0.6
+      text(x="581.8", y="454.8", transform="translate(.586 .183)")
+        tspan(x="581.8", y="454.8") P0.7
+    g(font-size="40", font-family="sans-serif", letter-spacing="0", word-spacing="0")
+      text(x="581.4", y="29.5", transform="translate(-582.98 .182)")
+        tspan(x="581.4", y="29.5") P1.0
+      text(x="581.8", y="1035.2", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="1035.2") GND
+      text(x="581.8", y="982.6", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="982.6") XTAL1
+      text(x="581.8", y="930", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="930") XTAL2
+      text(x="581.8", y="876.9", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="876.9") P3.7
+      text(x="581.8", y="824.3", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="824.3") P3.6
+      text(x="581.8", y="771.1", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="771.1") P3.5
+      text(x="581.8", y="717.9", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="717.9") P3.4
+      text(x="581.8", y="665.3", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="665.3") P3.3
+      text(x="581.8", y="612.2", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="612.2") P3.2
+      text(x="585.4", y="559.6", transform="translate(-582.98 .182)")
+        tspan(x="585.4", y="559.6") P3.1
+      text(x="581.8", y="507.5", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="507.5") P3.0
+      text(x="581.8", y="82.7", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="82.7") P1.1
+      text(x="581.8", y="135.8", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="135.8") P1.2
+      text(x="581.8", y="189", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="189") P1.3
+      text(x="581.8", y="242.2", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="242.2") P1.4
+      text(x="581.8", y="295.3", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="295.3") P1.5
+      text(x="581.8", y="348.5", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="348.5") P1.6
+      text(x="581.8", y="401.7", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="401.7") P1.7
+      text(x="581.8", y="454.8", transform="translate(-582.98 .182)")
+        tspan(x="581.8", y="454.8") RST
+    rect(width="399", height="1040.1", x="-571.5", y="7.3", fill="none", stroke="#000", transform="matrix(-1 0 0 1 -19.746 -4.887)", ry="5.2", rx="4.3")
+    g(fill="none", stroke="#000")
+      g(transform="translate(-19.746 -3.816)")
+        path(d="M572 19.3h28.6")
+        circle.high(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 50.184)")
+        path(d="M572 19.3h28.6")
+        circle#port00(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 102.184)")
+        path(d="M572 19.3h28.6")
+        circle#port01(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 156.184)")
+        path(d="M572 19.3h28.6")
+        circle#port02(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 208.184)")
+        path(d="M572 19.3h28.6")
+        circle#port03(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 260.184)")
+        path(d="M572 19.3h28.6")
+        circle#port04(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 314.184)")
+        path(d="M572 19.3h28.6")
+        circle#port05(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 368.184)")
+        path(d="M572 19.3h28.6")
+        circle#port06(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 422.184)")
+        path(d="M572 19.3h28.6")
+        circle#port07(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 474.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 524.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 578.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 632.184)")
+        path(d="M572 19.3h28.6")
+        circle#port27(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 684.184)")
+        path(d="M572 19.3h28.6")
+        circle#port26(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 738.184)")
+        path(d="M572 19.3h28.6")
+        circle#port25(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 792.184)")
+        path(d="M572 19.3h28.6")
+        circle#port24(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 844.184)")
+        path(d="M572 19.3h28.6")
+        circle#port23(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 896.184)")
+        path(d="M572 19.3h28.6")
+        circle#port22(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 948.184)")
+        path(d="M572 19.3h28.6")
+        circle#port21(cx="595", cy="19.3", r="5.2")
+      g(transform="translate(-19.746 1002.184)")
+        path(d="M572 19.3h28.6")
+        circle#port20(cx="595", cy="19.3", r="5.2")
+    g(fill="none", stroke="#000")
+      g(transform="matrix(-1 0 0 1 724.348 -3.816)")
+        path(d="M572 19.3h28.6")
+        circle#port10(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 50.184)")
+        path(d="M572 19.3h28.6")
+        circle#port11(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 102.184)")
+        path(d="M572 19.3h28.6")
+        circle#port12(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 156.184)")
+        path(d="M572 19.3h28.6")
+        circle#port13(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 208.184)")
+        path(d="M572 19.3h28.6")
+        circle#port14(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 260.184)")
+        path(d="M572 19.3h28.6")
+        circle#port15(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 314.184)")
+        path(d="M572 19.3h28.6")
+        circle#port16(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 368.184)")
+        path(d="M572 19.3h28.6")
+        circle#port17(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 422.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 474.184)")
+        path(d="M572 19.3h28.6")
+        circle#port30(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 524.184)")
+        path(d="M572 19.3h28.6")
+        circle#port31(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 578.184)")
+        path(d="M572 19.3h28.6")
+        circle#port32(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 632.184)")
+        path(d="M572 19.3h28.6")
+        circle#port33(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 684.184)")
+        path(d="M572 19.3h28.6")
+        circle#port34(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 738.184)")
+        path(d="M572 19.3h28.6")
+        circle#port35(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 792.184)")
+        path(d="M572 19.3h28.6")
+        circle#port36(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 844.184)")
+        path(d="M572 19.3h28.6")
+        circle#port37(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 896.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 948.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
+      g(transform="matrix(-1 0 0 1 724.348 1002.184)")
+        path(d="M572 19.3h28.6")
+        circle.low(cx="595", cy="19.3", r="5.2")
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
+import _ from 'lodash';
 
 export default {
-  computed: mapState([
-    'memory',
+  computed: mapGetters([
+    'getP0',
+    'getP1',
+    'getP2',
+    'getP3',
   ]),
+  mounted() {
+    this.$store.subscribe(() => {
+      _.forEach(_.range(4), (i) => {
+        const port = this.$store.state.utils.convertToBinary(this[`getP${i}`]());
+        _.forEach(_.range(7), (j) => {
+          const elt = this.$el.querySelector(`#port${i}${j}`);
+          elt.setAttribute('class', port[7 - j] === '1' ? 'high' : 'low');
+        });
+      });
+    });
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+.high {
+  fill: red;
+}
+
+.low {
+  fill: none;
+}
 </style>

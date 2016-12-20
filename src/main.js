@@ -11,12 +11,17 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     memory: lib.memory,
+    utils: lib.utils,
   },
   mutations: {
     compile(state, code) {
       lib.compile(code);
     },
   },
+});
+
+store.state.memory.sfrMap.forEach((v, k) => {
+  Object.assign(store.getters, { [`get${k}`]() { return store.state.memory.ram[v]; } });
 });
 
 new Vue({

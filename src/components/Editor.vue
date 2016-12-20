@@ -1,6 +1,7 @@
 <template lang="pug">
 #editor
   pre#ace-editor {{ code }}
+  button#compile-btn.ui.positive.button Compile
 </template>
 
 <script>
@@ -13,7 +14,7 @@ import 'brace/mode/assembly_x86';
 export default {
   data() {
     return {
-      code: 'NOP',
+      code: 'MOV P1, #7Fh',
     };
   },
   mounted() {
@@ -26,6 +27,10 @@ export default {
       exec: e => this.compile(e.getValue()),
       readOnly: true,
     });
+    this.$el.querySelector('#compile-btn')
+      .addEventListener('click', () => {
+        this.compile(editor.getValue());
+      });
     editor.focus();
   },
   computed: mapState([
@@ -41,8 +46,13 @@ export default {
 #ace-editor {
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
+  bottom: 2.5em;
   right: 0;
+}
+
+#compile-btn {
+  position: absolute;
+  bottom: 0;
 }
 </style>
