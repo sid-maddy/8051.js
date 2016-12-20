@@ -404,17 +404,7 @@ function orl(addr1, addr2) {
 }
 
 function xrl(addr1, addr2) {
-  const [byteAddr1, bit1] = utils.translateToBitAddressable(addr1);
-  if (_.isUndefined(bit1)) {
-    memory.ram[addr1] ^= memory.ram[addr2];
-  } else {
-    const [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
-    if (utils.isBitSet(byteAddr1, bit1) !== utils.isBitSet(byteAddr2, bit2)) {
-      setb(`${byteAddr1}.${bit1}`);
-    } else {
-      clr(`${byteAddr1}.${bit1}`);
-    }
-  }
+  memory.ram[addr1] ^= memory.ram[addr2];
 }
 
 export default {
