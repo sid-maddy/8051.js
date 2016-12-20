@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import _ from 'lodash';
 import memory from './data';
 import utils from './utils';
@@ -337,6 +338,71 @@ function xch(addr1, addr2) {
   }
 }
 
+function da(addr) {
+  if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
+    const A = memory.sfrMap.get('A');
+    const PSW = memory.sfrMap.get('PSW');
+    const lNibA = parseInt(utils.convertToBinary(memory.ram[A]).slice(4), 2);
+    const hNibA = parseInt(utils.convertToBinary(memory.ram[A]).slice(0, 4), 2);
+    let num = 0;
+    if (lNibA > 9 && hNibA > 9) {
+      num = 102;
+    } else if (lNibA > 9) {
+      num = 6;
+    } else if (hNibA > 9) {
+      num = 96;
+    }
+    memory.ram[A] += num;
+    if (memory.ram[A] > 153) {
+      setb(`${PSW}.7`);
+    } else {
+      clr(`${PSW}.7`);
+    }
+  }
+}
+
+function anl(addr1, addr2) {
+  const [byteAddr1, bit1] = utils.translateToBitAddressable(addr1);
+  if (_.isUndefined(bit1)) {
+    memory.ram[addr1] &= memory.ram[addr2];
+  } else {
+    const [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
+    if (utils.isBitSet(byteAddr1, bit1) && utils.isBitSet(byteAddr2, bit2)) {
+      setb(`${byteAddr1}.${bit1}`);
+    } else {
+      clr(`${byteAddr1}.${bit1}`);
+    }
+  }
+}
+
+function orl(addr1, addr2) {
+  const [byteAddr1, bit1] = utils.translateToBitAddressable(addr1);
+  if (_.isUndefined(bit1)) {
+    memory.ram[addr1] |= memory.ram[addr2];
+  } else {
+    const [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
+    if (utils.isBitSet(byteAddr1, bit1) || utils.isBitSet(byteAddr2, bit2)) {
+      setb(`${byteAddr1}.${bit1}`);
+    } else {
+      clr(`${byteAddr1}.${bit1}`);
+    }
+  }
+}
+
+function xrl(addr1, addr2) {
+  const [byteAddr1, bit1] = utils.translateToBitAddressable(addr1);
+  if (_.isUndefined(bit1)) {
+    memory.ram[addr1] ^= memory.ram[addr2];
+  } else {
+    const [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
+    if (utils.isBitSet(byteAddr1, bit1) !== utils.isBitSet(byteAddr2, bit2)) {
+      setb(`${byteAddr1}.${bit1}`);
+    } else {
+      clr(`${byteAddr1}.${bit1}`);
+    }
+  }
+}
+
 export default {
   mov,
   setb,
@@ -374,4 +440,8 @@ export default {
   pop,
   xchd,
   xch,
+  da,
+  anl,
+  orl,
+  xrl,
 };
