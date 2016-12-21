@@ -137,8 +137,9 @@ function div(addr) {
       memory.ram[b] = 0;
     } else {
       clr(`${psw}.2`);
-      memory.ram[a] = _.floor(memory.ram[a] / memory.ram[b]);
+      const temp = _.floor(memory.ram[a] / memory.ram[b]);
       memory.ram[b] = memory.ram[a] % memory.ram[b];
+      memory.ram[a] = temp;
     }
   }
 }
