@@ -1,5 +1,5 @@
 <template lang="pug">
-#app.ui.four.column.grid
+#app.ui.four.column.stackable.grid
   .row
     .middle.aligned.column
       pin-diagram

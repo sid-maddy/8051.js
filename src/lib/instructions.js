@@ -53,7 +53,7 @@ function cpl(bitAddr) {
 function add(addr1, addr2) {
   const [num1, num2] = _.map([addr1, addr2], addr => memory.ram[addr]);
   const [nib1, nib2] = _.map([num1, num2], num =>
-    _.parseInt(utils.convertToBinary(num).slice(4), 2));
+    _.parseInt(utils.convertToBin(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
   if (nib1 + nib2 > 15) {
@@ -81,7 +81,7 @@ function addc(addr1, addr2) {
 function subb(addr1, addr2) {
   const [num1, num2] = _.map([addr1, addr2], addr => memory.ram[addr]);
   const [nib1, nib2] = _.map([num1, num2], num =>
-    _.parseInt(utils.convertToBinary(num).slice(4), 2));
+    _.parseInt(utils.convertToBin(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
   let minuend = num1;
@@ -101,7 +101,7 @@ function subb(addr1, addr2) {
     clr(`${psw}.7`);
   }
 
-  memory.ram[addr1] = minuend - num2;
+  memory.ram[addr1] = minuend - (utils.isBitSet(psw, 7) ? 1 : 0) - num2;
 }
 
 function mul(addr) {
@@ -113,9 +113,10 @@ function mul(addr) {
 
     clr(`${psw}.7`);
     if (product > 255) {
+      const binary = utils.convertToBin(product, 16);
       setb(`${psw}.2`);
-      memory.ram[b] = product - 255;
-      memory.ram[a] = 255;
+      memory.ram[a] = _.parseInt(binary.slice(8), 2);
+      memory.ram[b] = _.parseInt(binary.slice(0, 8), 2);
     } else {
       clr(`${psw}.2`);
       memory.ram[a] = product;
@@ -137,9 +138,10 @@ function div(addr) {
       memory.ram[b] = 0;
     } else {
       clr(`${psw}.2`);
-      const temp = _.floor(memory.ram[a] / memory.ram[b]);
-      memory.ram[b] = memory.ram[a] % memory.ram[b];
-      memory.ram[a] = temp;
+      const quotient = _.floor(memory.ram[a] / memory.ram[b]);
+      const remainder = memory.ram[a] % memory.ram[b];
+      memory.ram[a] = quotient;
+      memory.ram[b] = remainder;
     }
   }
 }
@@ -252,7 +254,7 @@ function nop() {
 }
 
 function updateParity() {
-  const acc = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+  const acc = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
   if ((_.countBy(_.toArray(acc))['1'] || 0) % 2 === 0) {
     clr(`${memory.sfrMap.get('PSW')}.0`);
   } else {
@@ -262,7 +264,7 @@ function updateParity() {
 
 function rotateA(addr, right, withCarry) {
   if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
-    const originalA = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+    const originalA = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
     let C;
     let rotatedA;
     if (utils.isBitSet(memory.sfrMap.get('PSW'), 7)) {
@@ -315,7 +317,7 @@ function rlc(addr) {
 
 function swap(addr) {
   if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
-    const A = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
+    const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
     const lowerNibble = A.slice(4);
     const higherNibble = A.slice(0, 4);
     memory.ram[memory.sfrMap.get('A')] = parseInt(`${lowerNibble}${higherNibble}`, 2);
@@ -336,8 +338,8 @@ function pop(addr) {
 
 function xchd(addr1, addr2) {
   if (parseInt(addr1, 10) === memory.sfrMap.get('A')) {
-    const A = utils.convertToBinary(memory.ram[memory.sfrMap.get('A')]);
-    const binaryOfAddr2 = utils.convertToBinary(memory.ram[addr2]);
+    const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
+    const binaryOfAddr2 = utils.convertToBin(memory.ram[addr2]);
     const lNibA = A.slice(4);
     const hNibA = A.slice(0, 4);
     const lNibAddr2 = binaryOfAddr2.slice(4);
@@ -359,8 +361,8 @@ function da(addr) {
   if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
     const A = memory.sfrMap.get('A');
     const PSW = memory.sfrMap.get('PSW');
-    const lNibA = parseInt(utils.convertToBinary(memory.ram[A]).slice(4), 2);
-    const hNibA = parseInt(utils.convertToBinary(memory.ram[A]).slice(0, 4), 2);
+    const lNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(4), 2);
+    const hNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(0, 4), 2);
     let num = 0;
     if (lNibA > 9 && hNibA > 9) {
       num = 102;

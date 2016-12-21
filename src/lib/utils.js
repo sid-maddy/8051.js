@@ -3,14 +3,14 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
-function convertToBinary(number) {
+function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
   const toBin = _.partialRight(toString.call.bind(toString), 2);
-  return _.padStart(toBin(number), 8, '0');
+  return _.padStart(toBin(number), padWidth, '0');
 }
 
 function changeBit(addr, bit, value) {
-  const binary = convertToBinary(memory.ram[addr]);
+  const binary = convertToBin(memory.ram[addr]);
   return _
     .chain(binary)
     .toArray()
@@ -22,7 +22,7 @@ function changeBit(addr, bit, value) {
 }
 
 function isBitSet(addr, bit) {
-  const binary = convertToBinary(memory.ram[addr]);
+  const binary = convertToBin(memory.ram[addr]);
   return _
     .chain(binary)
     .toArray()
@@ -61,7 +61,7 @@ function handleRegisters(reg) {
       return `${addrMode}${sfrAddr}${bit}`;
     }).replace(/^(@)?R([0-7])$/i, (match, addrMode = '', number) => {
       const regBankMode = _.parseInt(
-        convertToBinary(memory.ram[memory.sfrMap.get('PSW')]).slice(3, 5), 2);
+        convertToBin(memory.ram[memory.sfrMap.get('PSW')]).slice(3, 5), 2);
       return `${addrMode}${_.parseInt(number) + (regBankMode * 8)}`;
     });
 }
@@ -161,7 +161,7 @@ function translateToBitAddressable(op) {
 export default {
   changeBit,
   isBitSet,
-  convertToBinary,
+  convertToBin,
   displayRam,
   handleExecution,
   handleRegisters,

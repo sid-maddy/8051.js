@@ -50,8 +50,9 @@ export default {
     'getP3',
   ]),
   mounted() {
+    const toBin = this.$store.state.utils.convertToBin;
     this.$store.subscribe(() => {
-      const port = this.$store.state.utils.convertToBinary(this[`getP${this.portNum}`]());
+      const port = toBin(this[`getP${this.portNum}`]());
       _.forEach(_.range(7), (i) => {
         const elt = this.$el.querySelector(`#segment${i}`);
         if (port[7 - i] === '1') {

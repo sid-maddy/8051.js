@@ -19,7 +19,7 @@ export default {
     updateSFRs(mem) {
       const temp = {};
       for (const [k, v] of mem.sfrMap) {
-        temp[k] = mem.ram[v];
+        temp[k] = `0x${mem.ram[v].toString(16)}`;
       }
       this.sfrs = temp;
     },
