@@ -108,6 +108,9 @@ function parseLine(code) {
     } else if (/[01]+b$/i.test(op)) {
       // Convert all binary numbers to decimal
       op = convertToDec(op, /(@|#)?([01]+)b/i, 2);
+    } else if (/[0-9]+d$/i.test(op)) {
+      // Remove optional D from decimal number
+      op = op.slice(0, -1);
     }
 
     // Replace all registors with their ram addresses (in decimal)
