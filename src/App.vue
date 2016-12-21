@@ -1,30 +1,30 @@
 <template lang="pug">
-#app.ui.center.aligned.grid.container
+#app.ui.four.column.grid
   .row
-    .ui.middle.aligned.padded.three.wide.column.container
+    .middle.aligned.column
       pin-diagram
-    .ui.middle.aligned.padded.three.wide.column.container
+    .middle.aligned.column
       seven-segment
-    .ui.middle.aligned.padded.three.wide.column.container
-      motor
-    .ui.center.aligned.padded.three.wide.column.container
+    .middle.aligned.column
+      sfr-status
+    .column
       editor
 </template>
 
 <script>
 import 'semantic-ui-css/semantic.min.css';
 
-import Editor from 'components/Editor';
 import PinDiagram from 'components/PinDiagram';
 import SevenSegment from 'components/SevenSegment';
-import Motor from 'components/Motor';
+import SfrStatus from 'components/SfrStatus';
+import Editor from 'components/Editor';
 
 export default {
   components: {
-    Editor,
     PinDiagram,
     SevenSegment,
-    Motor,
+    SfrStatus,
+    Editor,
   },
 };
 </script>

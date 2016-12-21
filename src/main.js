@@ -4,7 +4,6 @@ import App from './App';
 
 import lib from './lib/8051';
 
-// Vue logic
 Vue.use(Vuex);
 
 /* eslint-disable no-new */
@@ -20,9 +19,9 @@ const store = new Vuex.Store({
   },
 });
 
-store.state.memory.sfrMap.forEach((v, k) => {
-  Object.assign(store.getters, { [`get${k}`]() { return store.state.memory.ram[v]; } });
-});
+for (const [k, v] of store.state.memory.sfrMap) {
+  store.getters[`get${k}`] = () => store.state.memory.ram[v];
+}
 
 new Vue({
   el: '#app',
