@@ -21,12 +21,14 @@ function clr(bitAddr) {
 }
 
 function mov(addr1, addr2) {
-  const C = `${memory.sfrMap.get('PSW')}.7`;
+  const carry = `${memory.sfrMap.get('PSW')}.7`;
   let [byteAddr1, bit1] = [memory.sfrMap.get('PSW'), 7];
   let [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
-  if ((addr1 === C)
-    || ((addr2 === C) && ([byteAddr2, bit2] = [memory.sfrMap.get('PSW'), 7])
-      && ([byteAddr1, bit1] = utils.translateToBitAddressable(addr1)))) {
+  if ((addr1 === carry) || (
+      (addr2 === carry) &&
+      ([byteAddr2, bit2] = [memory.sfrMap.get('PSW'), 7]) &&
+      ([byteAddr1, bit1] = utils.translateToBitAddressable(addr1))
+    )) {
     if (utils.isBitSet(byteAddr2, bit2)) {
       setb(`${byteAddr1}.${bit1}`);
     } else {
@@ -408,9 +410,9 @@ function xrl(addr1, addr2) {
 }
 
 export default {
-  mov,
   setb,
   clr,
+  mov,
   cpl,
   add,
   addc,
@@ -431,21 +433,21 @@ export default {
   cjne,
   lcall,
   acall,
+  anl,
+  orl,
+  xrl,
+  rl,
+  rlc,
+  rr,
+  rrc,
+  da,
+  swap,
+  xch,
+  xchd,
+  push,
+  pop,
   inc,
   dec,
   nop,
   updateParity,
-  rr,
-  rrc,
-  rl,
-  rlc,
-  swap,
-  push,
-  pop,
-  xchd,
-  xch,
-  da,
-  anl,
-  orl,
-  xrl,
 };

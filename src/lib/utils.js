@@ -61,8 +61,7 @@ function handleRegisters(reg) {
       return `${addrMode}${sfrAddr}${bit}`;
     }).replace(/^(@)?R([0-7])$/i, (match, addrMode = '', number) => {
       const regBankMode = _.parseInt(
-        convertToBinary(memory.ram[memory.sfrMap.get('PSW')]).slice(3, 5), 2
-      );
+        convertToBinary(memory.ram[memory.sfrMap.get('PSW')]).slice(3, 5), 2);
       return `${addrMode}${_.parseInt(number) + (regBankMode * 8)}`;
     });
 }
@@ -125,8 +124,7 @@ function parseLine(code) {
   // Call appropriate function with operands
   executeFunctionByName(instruction.toLowerCase(), funcs, operands);
   if (_.includes(
-      operands, _.toString(memory.sfrMap.get('A'))
-    )) {
+      operands, _.toString(memory.sfrMap.get('A')))) {
     funcs.updateParity();
   }
 }
