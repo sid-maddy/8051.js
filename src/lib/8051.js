@@ -10,7 +10,7 @@ function compile(input) {
   _.forEach(code, (line, index) => {
     code[index] = _.trim(line);
     const [, label] = pattern.exec(line);
-    if (_.isUndefined(label)) {
+    if (!_.isUndefined(label)) {
       memory.labels.set(label, index);
     }
   });
