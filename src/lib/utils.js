@@ -133,11 +133,12 @@ function handleExecution(oldProgramCounter) {
   const code = memory.code;
   let i = oldProgramCounter;
   while (i < code.length) {
-    if (!/^(?:RET|END)$/i.test(code[i])) {
-      memory.programCounter += 1;
-      parseLine(code[i]);
-      i = memory.programCounter;
+    if (/^(?:RET|END)$/i.test(code[i])) {
+      break;
     }
+    memory.programCounter += 1;
+    parseLine(code[i]);
+    i = memory.programCounter;
   }
 }
 

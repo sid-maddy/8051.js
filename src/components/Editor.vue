@@ -14,7 +14,7 @@ import 'brace/mode/assembly_x86';
 export default {
   data() {
     return {
-      code: 'MOV P0, #7Fh',
+      code: '',
     };
   },
   mounted() {
