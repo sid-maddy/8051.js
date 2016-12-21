@@ -223,7 +223,7 @@ export default {
     this.$store.subscribe(() => {
       _.forEach(_.range(4), (i) => {
         const port = this.$store.state.utils.convertToBinary(this[`getP${i}`]());
-        _.forEach(_.range(7), (j) => {
+        _.forEach(_.range(8), (j) => {
           const elt = this.$el.querySelector(`#port${i}${j}`);
           elt.setAttribute('class', port[7 - j] === '1' ? 'high' : 'low');
         });
