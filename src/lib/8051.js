@@ -5,7 +5,7 @@ import utils from './utils';
 function compile(input) {
   utils.initMemory();
   const code = _.split(input, '\n');
-  const pattern = /(?:([a-z]+)\s*?:)?/i;
+  const pattern = /\s*(?:([a-z]+)\s*?:)?/i;
 
   _.forEach(code, (line, index) => {
     code[index] = _.trim(line);

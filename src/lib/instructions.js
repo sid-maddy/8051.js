@@ -93,11 +93,9 @@ function subb(addr1, addr2) {
   }
 
   if (num1 < num2) {
-    setb(`${psw}.2`);
     setb(`${psw}.7`);
     minuend += 256;
   } else {
-    clr(`${psw}.2`);
     clr(`${psw}.7`);
   }
 

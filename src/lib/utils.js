@@ -83,18 +83,14 @@ function handleAddressingMode(op) {
     return `${memory.ram[number]}`;
   } else if (/^\//i.test(op)) {
     const [byteAddr, bit] = translateToBitAddressable(op.slice(1));
-    if (isBitSet(byteAddr, bit)) {
-      memory.ram[256] = 1;
-    } else {
-      memory.ram[256] = 0;
-    }
+    memory.ram[256] = isBitSet(byteAddr, bit) ? 0 : 1;
     return '256.0';
   }
   return op;
 }
 
 function parseLine(code) {
-  if (!(/^\s*$/.test(code) || /^\s*;/.test(code))) {
+  if (!/^\s*(?:;.*)?$/.test(code)) {
     // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
     // FIXME: Optimise this regex and make it readable
     const pattern = new RegExp([
@@ -151,7 +147,7 @@ function handleExecution(oldProgramCounter) {
   const code = memory.code;
   let i = oldProgramCounter;
   while (i < code.length) {
-    if (/^(?:RET|END)$/i.test(code[i])) {
+    if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI|END)\s*(?:;.*)?$/i.test(code[i])) {
       break;
     }
     memory.programCounter += 1;
