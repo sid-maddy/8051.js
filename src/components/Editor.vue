@@ -30,9 +30,19 @@ export default {
       exec: e => this.run(e.getValue()),
       readOnly: true,
     });
+    editor.commands.addCommand({
+      name: 'debug',
+      bindKey: { win: 'Ctrl-Shift-Enter', mac: 'Command-Shift-Enter' },
+      exec: e => this.debug(e.getValue()),
+      readOnly: true,
+    });
     this.$el.querySelector('#run-btn')
       .addEventListener('click', () => {
         this.run(editor.getValue());
+      });
+    this.$el.querySelector('#debug-btn')
+      .addEventListener('click', () => {
+        this.debug(editor.getValue());
       });
     editor.focus();
   },
@@ -41,6 +51,7 @@ export default {
   ]),
   methods: mapMutations([
     'run',
+    'debug',
   ]),
 };
 </script>

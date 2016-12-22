@@ -16,6 +16,9 @@ const store = new Vuex.Store({
     run(state, code) {
       lib.run(code);
     },
+    debug(state, code) {
+      lib.debug(code);
+    },
   },
 });
 
