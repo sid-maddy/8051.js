@@ -227,7 +227,9 @@ function cjne(addr1, addr2, label) {
 function call(label) {
   const tempProgramCounter = memory.programCounter;
   jump(label);
+  memory.ram[memory.sfrMap.get('SP')] += 2;
   utils.handleExecution(memory.programCounter);
+  memory.ram[memory.sfrMap.get('SP')] -= 2;
   memory.programCounter = tempProgramCounter;
 }
 
