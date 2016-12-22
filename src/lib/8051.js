@@ -2,7 +2,7 @@ import _ from 'lodash';
 import memory from './data';
 import utils from './utils';
 
-function compile(input) {
+function run(input) {
   utils.initMemory();
   const code = _.split(input, '\n');
   const pattern = /\s*(?:([a-z]+)\s*?:)?/i;
@@ -21,7 +21,7 @@ function compile(input) {
 }
 
 export default {
-  compile,
+  run,
   memory,
   utils,
 };

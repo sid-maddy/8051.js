@@ -1,7 +1,10 @@
 <template lang="pug">
 #editor
   pre#ace-editor {{ code }}
-  button#compile-btn.ui.positive.button Compile
+  #buttons.ui.buttons
+    button#run-btn.ui.green.button Run
+    .or
+    btn#debug-btn.ui.blue.button Debug
 </template>
 
 <script>
@@ -22,14 +25,14 @@ export default {
     editor.getSession().setMode('ace/mode/assembly_x86');
     editor.setTheme('ace/theme/tomorrow');
     editor.commands.addCommand({
-      name: 'compile',
+      name: 'run',
       bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
-      exec: e => this.compile(e.getValue()),
+      exec: e => this.run(e.getValue()),
       readOnly: true,
     });
-    this.$el.querySelector('#compile-btn')
+    this.$el.querySelector('#run-btn')
       .addEventListener('click', () => {
-        this.compile(editor.getValue());
+        this.run(editor.getValue());
       });
     editor.focus();
   },
@@ -37,7 +40,7 @@ export default {
     'memory',
   ]),
   methods: mapMutations([
-    'compile',
+    'run',
   ]),
 };
 </script>
@@ -51,7 +54,7 @@ export default {
   right: 0;
 }
 
-#compile-btn {
+#buttons {
   position: absolute;
   bottom: 0;
 }

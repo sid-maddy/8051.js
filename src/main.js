@@ -13,8 +13,8 @@ const store = new Vuex.Store({
     utils: lib.utils,
   },
   mutations: {
-    compile(state, code) {
-      lib.compile(code);
+    run(state, code) {
+      lib.run(code);
     },
   },
 });
