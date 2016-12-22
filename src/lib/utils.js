@@ -182,7 +182,7 @@ function initValues(input) {
   memory.code = code;
 }
 
-function handleDebugging(input) {
+function handleDebug(input) {
   const END = /^\s*(?:([a-z]+)\s*?:)?\s*(?:END)\s*(?:;.*)?$/i;
   const RET = /^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI)\s*(?:;.*)?$/i;
   const CALL = /^\s*(?:[a-z]+\s*?:)?\s*(?:LCALL|ACALL)\s+([a-z]+)\s*(?:;.*)?$/i;
@@ -221,12 +221,12 @@ function handleDebugging(input) {
 
 export default {
   changeBit,
-  isBitSet,
   convertToBin,
   displayRam,
+  handleDebug,
   handleExecution,
   handleRegisters,
   initValues,
+  isBitSet,
   translateToBitAddressable,
-  handleDebugging,
 };

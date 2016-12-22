@@ -13,11 +13,11 @@ const store = new Vuex.Store({
     utils: lib.utils,
   },
   mutations: {
+    debug(state, code) {
+      Vue.set(state, 'debugResult', lib.debug(code));
+    },
     run(state, code) {
       lib.run(code);
-    },
-    debug(state, code) {
-      lib.debug(code);
     },
   },
 });

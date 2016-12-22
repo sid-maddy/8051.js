@@ -29,8 +29,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
   height: 100%;
+}
+
+.currentLine {
+  position: absolute;
+  background: lightgreen;
+  z-index: 100;
 }
 </style>

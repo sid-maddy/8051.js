@@ -9,12 +9,12 @@ function run(input) {
 }
 
 function debug(input) {
-  console.log(utils.handleDebugging(input));
+  return utils.handleDebug(input);
 }
 
 export default {
-  run,
-  memory,
-  utils,
   debug,
+  memory,
+  run,
+  utils,
 };

@@ -4,20 +4,23 @@
   #buttons.ui.buttons
     button#run-btn.ui.green.button Run
     .or
-    btn#debug-btn.ui.blue.button Debug
+    button#debug-btn.ui.blue.button Debug
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations } from 'vuex';
 
 import ace from 'brace';
 import 'brace/theme/tomorrow';
 import 'brace/mode/assembly_x86';
 
+const Range = ace.acequire('ace/range').Range;
+
 export default {
   data() {
     return {
       code: '',
+      marker: 0,
     };
   },
   mounted() {
@@ -27,32 +30,42 @@ export default {
     editor.commands.addCommand({
       name: 'run',
       bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
-      exec: e => this.run(e.getValue()),
+      exec: e => this.runEditor(e),
       readOnly: true,
     });
     editor.commands.addCommand({
       name: 'debug',
       bindKey: { win: 'Ctrl-Shift-Enter', mac: 'Command-Shift-Enter' },
-      exec: e => this.debug(e.getValue()),
+      exec: e => this.debugEditor(e),
       readOnly: true,
     });
     this.$el.querySelector('#run-btn')
       .addEventListener('click', () => {
-        this.run(editor.getValue());
+        this.runEditor(editor);
       });
     this.$el.querySelector('#debug-btn')
       .addEventListener('click', () => {
-        this.debug(editor.getValue());
+        this.debugEditor(editor);
       });
     editor.focus();
   },
-  computed: mapState([
-    'memory',
-  ]),
-  methods: mapMutations([
-    'run',
-    'debug',
-  ]),
+  methods: {
+    ...mapMutations([
+      'run',
+      'debug',
+    ]),
+    runEditor(editor) {
+      this.run(editor.getValue());
+    },
+    debugEditor(editor) {
+      this.debug(editor.getValue());
+      const result = this.$store.state.debugResult;
+      if (result.status) {
+        editor.getSession().removeMarker(this.marker);
+        this.marker = editor.getSession().addMarker(new Range(result.line, 0, result.line, 1), 'currentLine', 'fullLine');
+      }
+    },
+  },
 };
 </script>
 
