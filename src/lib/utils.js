@@ -66,6 +66,14 @@ function handleRegisters(reg) {
     });
 }
 
+function translateToBitAddressable(op) {
+  const [addr, bit] = _.chain(op).split('.').map(_.parseInt).value();
+  if (_.inRange(addr, 128) && _.isUndefined(bit)) {
+    return [_.toInteger(addr / 8) + 32, addr % 8];
+  }
+  return [addr, bit];
+}
+
 function handleAddressingMode(op) {
   const number = _.parseInt(op.slice(1));
   if (/^#/i.test(op)) {
@@ -73,59 +81,69 @@ function handleAddressingMode(op) {
     return '256';
   } else if (/^@/i.test(op)) {
     return `${memory.ram[number]}`;
+  } else if (/^\//i.test(op)) {
+    const [byteAddr, bit] = translateToBitAddressable(op.slice(1));
+    if (isBitSet(byteAddr, bit)) {
+      memory.ram[256] = 1;
+    } else {
+      memory.ram[256] = 0;
+    }
+    return '256.0';
   }
   return op;
 }
 
 function parseLine(code) {
-  // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
-  // FIXME: Optimise this regex and make it readable
-  const pattern = new RegExp([
-    /\s*(?:[a-z]+\s*?:)?/, // Label:
-    /\s*?([a-z]{2,5})\s*/, // Instruction
-    // eslint-disable-next-line max-len
-    /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
-  ].map(r => r.source).join(''), 'i');
-  let [, instruction, operands = []] = pattern.exec(code);
+  if (!(/^\s*$/.test(code) || /^\s*;/.test(code))) {
+    // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
+    // FIXME: Optimise this regex and make it readable
+    const pattern = new RegExp([
+      /\s*(?:[a-z]+\s*?:)?/, // Label:
+      /\s*?([a-z]{2,5})\s*/, // Instruction
+      // eslint-disable-next-line max-len
+      /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
+    ].map(r => r.source).join(''), 'i');
+    let [, instruction, operands = []] = pattern.exec(code);
 
-  instruction = _.replace(instruction, /\s+/, '');
-  console.log(`Instruction = ${instruction}`);
+    instruction = _.replace(instruction, /\s+/, '');
+    console.log(`Instruction = ${instruction}`);
 
-  // Filter out empty operands (?)
-  operands = _
-    .chain(operands)
-    .replace(/\s+/, '')
-    .split(',')
-    .filter(v => v !== '')
-    .value();
+    // Filter out empty operands (?)
+    operands = _
+      .chain(operands)
+      .replace(/\s+/, '')
+      .split(',')
+      .filter(v => v !== '')
+      .value();
 
-  _.forEach(operands, (operand, index) => {
-    let op = operand;
-    if (/[0-9a-f]+h$/i.test(op)) {
-      // Convert all hex numbers to decimal
-      op = convertToDec(op, /(@|#)?([0-9a-f]+)h/i, 16);
-    } else if (/[01]+b$/i.test(op)) {
-      // Convert all binary numbers to decimal
-      op = convertToDec(op, /(@|#)?([01]+)b/i, 2);
-    } else if (/[0-9]+d$/i.test(op)) {
-      // Remove optional D from decimal number
-      op = op.slice(0, -1);
+    _.forEach(operands, (operand, index) => {
+      let op = operand;
+      if (/[0-9a-f]+h$/i.test(op)) {
+        // Convert all hex numbers to decimal
+        op = convertToDec(op, /(@|#)?([0-9a-f]+)h/i, 16);
+      } else if (/[01]+b$/i.test(op)) {
+        // Convert all binary numbers to decimal
+        op = convertToDec(op, /(@|#)?([01]+)b/i, 2);
+      } else if (/[0-9]+d$/i.test(op)) {
+        // Remove optional D from decimal number
+        op = op.slice(0, -1);
+      }
+
+      // Replace all registors with their ram addresses (in decimal)
+      op = handleRegisters(op);
+      // Replace @ with the address and save immediate data at 256 index of RAM
+      op = handleAddressingMode(op);
+
+      operands[index] = op;
+    });
+    console.log(`Operands: ${operands}`);
+
+    // Call appropriate function with operands
+    executeFunctionByName(instruction.toLowerCase(), funcs, operands);
+    if (_.includes(
+        operands, _.toString(memory.sfrMap.get('A')))) {
+      funcs.updateParity();
     }
-
-    // Replace all registors with their ram addresses (in decimal)
-    op = handleRegisters(op);
-    // Replace @ with the address and save immediate data at 256 index of RAM
-    op = handleAddressingMode(op);
-
-    operands[index] = op;
-  });
-  console.log(`Operands: ${operands}`);
-
-  // Call appropriate function with operands
-  executeFunctionByName(instruction.toLowerCase(), funcs, operands);
-  if (_.includes(
-      operands, _.toString(memory.sfrMap.get('A')))) {
-    funcs.updateParity();
   }
 }
 
@@ -148,14 +166,6 @@ function initMemory() {
   memory.code = '';
   memory.labels = new Map();
   memory.programCounter = 0;
-}
-
-function translateToBitAddressable(op) {
-  const [addr, bit] = _.chain(op).split('.').map(_.parseInt).value();
-  if (_.inRange(addr, 128) && _.isUndefined(bit)) {
-    return [_.toInteger(addr / 8) + 32, addr % 8];
-  }
-  return [addr, bit];
 }
 
 export default {
