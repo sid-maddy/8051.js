@@ -3,9 +3,6 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
-let resetMemory = true;
-let debugProgramCounterStack = [];
-
 function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
   const toBin = _.partialRight(toString.call.bind(toString), 2);
@@ -146,9 +143,9 @@ function parseLine(code) {
   }
 }
 
-function handleExecution(oldProgramCounter) {
+function handleExecution() {
   const code = memory.code;
-  let i = oldProgramCounter;
+  let i = memory.programCounter;
   while (i < code.length) {
     if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI|END)\s*(?:;.*)?$/i.test(code[i])) {
       break;
@@ -182,48 +179,11 @@ function initValues(input) {
   memory.code = code;
 }
 
-function handleDebug(input) {
-  const END = /^\s*(?:([a-z]+)\s*?:)?\s*(?:END)\s*(?:;.*)?$/i;
-  const RET = /^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI)\s*(?:;.*)?$/i;
-  const CALL = /^\s*(?:[a-z]+\s*?:)?\s*(?:LCALL|ACALL)\s+([a-z]+)\s*(?:;.*)?$/i;
-
-  if (resetMemory || !(_.isEqual(memory.code, _.split(input, '\n')))) {
-    initValues(input);
-    resetMemory = false;
-    debugProgramCounterStack = [];
-  }
-  memory.programCounter += 1;
-  if (END.test(memory.code[memory.programCounter - 1])) {
-    resetMemory = true;
-  } else if (RET.test(memory.code[memory.programCounter - 1])) {
-    if (debugProgramCounterStack.length > 0) {
-      memory.programCounter = debugProgramCounterStack.pop();
-      memory.ram[memory.sfrMap.get('SP')] -= 2;
-    } else {
-      resetMemory = true;
-    }
-  } else {
-    const label = CALL.exec(memory.code[memory.programCounter - 1]);
-    if (!_.isNull(label)) {
-      debugProgramCounterStack.push(memory.programCounter);
-      memory.programCounter = memory.labels.get(label[1]);
-      memory.ram[memory.sfrMap.get('SP')] += 2;
-    } else {
-      parseLine(memory.code[memory.programCounter - 1]);
-    }
-  }
-  displayRam();
-  if (memory.programCounter >= memory.code.length) {
-    resetMemory = true;
-  }
-  return { status: true, line: memory.programCounter - 1 };
-}
-
 export default {
   changeBit,
   convertToBin,
   displayRam,
-  handleDebug,
+  parseLine,
   handleExecution,
   handleRegisters,
   initValues,

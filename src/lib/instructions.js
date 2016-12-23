@@ -228,7 +228,7 @@ function call(label) {
   const tempProgramCounter = memory.programCounter;
   jump(label);
   memory.ram[memory.sfrMap.get('SP')] += 2;
-  utils.handleExecution(memory.programCounter);
+  utils.handleExecution();
   memory.ram[memory.sfrMap.get('SP')] -= 2;
   memory.programCounter = tempProgramCounter;
 }
