@@ -1,14 +1,13 @@
 <template lang="pug">
-#app.ui.four.column.stackable.grid
-  .row
-    .middle.aligned.column
-      pin-diagram
-    .middle.aligned.column
-      seven-segment
-    .middle.aligned.column
-      sfr-status
-    .column
-      editor
+#app.ui.four.column.stackable.grid.basic.segment
+  .middle.aligned.column
+    pin-diagram
+  .middle.aligned.column
+    seven-segment
+  .middle.aligned.column
+    sfr-status
+  .column
+    editor
 </template>
 
 <script>

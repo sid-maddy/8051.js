@@ -62,7 +62,11 @@ export default {
       const result = this.$store.state.debugResult;
       if (result.status) {
         editor.getSession().removeMarker(this.marker);
-        this.marker = editor.getSession().addMarker(new Range(result.line, 0, result.line, 1), 'currentLine', 'fullLine');
+        this.marker = editor.getSession().addMarker(
+          new Range(result.line, 0, result.line, 1),
+          'currentLine',
+          'fullLine',
+        );
       }
     },
   },
@@ -80,6 +84,8 @@ export default {
 
 #buttons {
   position: absolute;
+  left: 0;
   bottom: 0;
+  right: 0;
 }
 </style>

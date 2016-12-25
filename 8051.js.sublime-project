@@ -1,0 +1,6 @@
+{
+  "folders": [{
+    "path": ".",
+    "folder_include_patterns": ["src", "src/", "static"],
+  }]
+}
