@@ -1,12 +1,25 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VueRouter from 'vue-router';
+
 import App from './App';
+import SevenSegment from './components/SevenSegment';
+import Motor from './components/Motor';
 
 import lib from './lib/8051';
 
+Vue.use(VueRouter);
 Vue.use(Vuex);
 
 /* eslint-disable no-new */
+const router = new VueRouter({
+  routes: [{
+    path: '/seven-segment', component: SevenSegment,
+  }, {
+    path: '/motor', component: Motor,
+  }],
+});
+
 const store = new Vuex.Store({
   state: {
     memory: lib.memory,
@@ -28,6 +41,7 @@ for (const [k, v] of store.state.memory.sfrMap) {
 
 new Vue({
   el: '#app',
+  router,
   store,
   template: '<App/>',
   components: { App },

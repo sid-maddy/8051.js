@@ -1,16 +1,16 @@
 <template>
-  <div id="app" class="ui five column stackable grid basic segment">
+  <div id="app" class="ui four column stackable grid">
     <div class="middle aligned column">
       <pin-diagram></pin-diagram>
-    </div>
-    <div class="middle aligned center aligned column">
-      <seven-segment></seven-segment>
     </div>
     <div class="middle aligned column">
       <sfr-status></sfr-status>
     </div>
     <div class="middle aligned center aligned column">
-      <motor></motor>
+      <select id="component-select" v-model="route">
+        <option v-for="route in $router.options.routes" :value="route.path">{{ humanize(route.component.name) }}</option>
+      </select>
+      <router-view class="ui basic segment"></router-view>
     </div>
     <div class="column">
       <editor></editor>
@@ -20,20 +20,37 @@
 
 <script>
 import 'semantic-ui-css/semantic.min.css';
+import { forEach, replace } from 'lodash';
 
 import PinDiagram from 'components/PinDiagram';
-import SevenSegment from 'components/SevenSegment';
 import SfrStatus from 'components/SfrStatus';
-import Motor from 'components/Motor';
 import Editor from 'components/Editor';
 
 export default {
+  data() {
+    return {
+      route: '',
+    };
+  },
   components: {
     PinDiagram,
-    SevenSegment,
     SfrStatus,
-    Motor,
     Editor,
+  },
+  methods: {
+    humanize(name) {
+      return replace(name, '-', ' ');
+    },
+  },
+  watch: {
+    route(route) {
+      this.$router.replace(route);
+    },
+  },
+  mounted() {
+    forEach(this.$router.options.routes, (v) => {
+      console.log(v);
+    });
   },
 };
 </script>
