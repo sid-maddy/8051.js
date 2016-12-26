@@ -3,6 +3,49 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
+// https://stackoverflow.com/a/3886106
+function isInt(n) {
+  return Number(n) === n && n % 1 === 0;
+}
+
+function isFloat(n) {
+  return Number(n) === n && n % 1 !== 0;
+}
+
+function isBitAddr(addr) {
+  const intAddr = parseInt(addr, 10);
+  if (isInt(addr)) {
+    if ((intAddr >= 0 && intAddr <= 127)) {
+      return true;
+    }
+  }
+  if (isFloat(addr)) {
+    // All SFRs that whose addresses are divisible by 8 can be accessed with bit operations.
+    // http://www.8052.com/tutsfr.php
+    if ((intAddr % 8 === 0) && (intAddr >= 128 && intAddr <= 256)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isByteAddr(addr) {
+  if (isInt(addr)) {
+    const intAddr = parseInt(addr, 10);
+    if ((intAddr >= 0 && intAddr <= 31) || (intAddr >= 48 && intAddr <= 256)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isLabel(label) {
+  if (memory.labels.has(label)) {
+    return true;
+  }
+  return false;
+}
+
 function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
   const toBin = _.partialRight(toString.call.bind(toString), 2);
@@ -103,7 +146,7 @@ function parseLine(code) {
     ].map(r => r.source).join(''), 'i');
     let [, instruction, operands = []] = pattern.exec(code);
 
-    instruction = _.replace(instruction, /\s+/g, '');
+    instruction = _.replace(instruction, /\s+/g, '').toLowerCase();
     console.log(`Instruction = ${instruction}`);
 
     // Remove spaces
@@ -135,11 +178,14 @@ function parseLine(code) {
     });
     console.log(`Operands: ${operands}`);
 
-    // Call appropriate function with operands
-    executeFunctionByName(instruction.toLowerCase(), funcs, operands);
-    if (_.includes(
-        operands, _.toString(memory.sfrMap.get('A')))) {
-      funcs.updateParity();
+    const instructionCheck = memory.instructionCheck.get(instruction);
+    if (!_.isUndefined(instructionCheck) && instructionCheck(operands)) {
+      // Call appropriate function with operands
+      executeFunctionByName(instruction, funcs, operands);
+      if (_.includes(
+          operands, _.toString(memory.sfrMap.get('A')))) {
+        funcs.updateParity();
+      }
     }
   }
 }
@@ -181,6 +227,9 @@ function initValues(input) {
 }
 
 export default {
+  isBitAddr,
+  isByteAddr,
+  isLabel,
   changeBit,
   convertToBin,
   displayRam,

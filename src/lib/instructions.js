@@ -103,44 +103,42 @@ function subb(addr1, addr2) {
 }
 
 function mul(addr) {
-  if (/ab/i.test(addr)) {
-    const psw = memory.sfrMap.get('PSW');
-    const a = memory.sfrMap.get('A');
-    const b = memory.sfrMap.get('B');
-    const product = memory.ram[a] * memory.ram[b];
+  console.log(addr); // jabardasti h `addr` use karna, for eslint
+  const psw = memory.sfrMap.get('PSW');
+  const a = memory.sfrMap.get('A');
+  const b = memory.sfrMap.get('B');
+  const product = memory.ram[a] * memory.ram[b];
 
-    clr(`${psw}.7`);
-    if (product > 255) {
-      const binary = utils.convertToBin(product, 16);
-      setb(`${psw}.2`);
-      memory.ram[a] = _.parseInt(binary.slice(8), 2);
-      memory.ram[b] = _.parseInt(binary.slice(0, 8), 2);
-    } else {
-      clr(`${psw}.2`);
-      memory.ram[a] = product;
-      memory.ram[b] = 0;
-    }
+  clr(`${psw}.7`);
+  if (product > 255) {
+    const binary = utils.convertToBin(product, 16);
+    setb(`${psw}.2`);
+    memory.ram[a] = _.parseInt(binary.slice(8), 2);
+    memory.ram[b] = _.parseInt(binary.slice(0, 8), 2);
+  } else {
+    clr(`${psw}.2`);
+    memory.ram[a] = product;
+    memory.ram[b] = 0;
   }
 }
 
 function div(addr) {
-  if (/ab/i.test(addr)) {
-    const psw = memory.sfrMap.get('PSW');
-    const a = memory.sfrMap.get('A');
-    const b = memory.sfrMap.get('B');
+  console.log(addr); // jabardasti h `addr` use karna, for eslint
+  const psw = memory.sfrMap.get('PSW');
+  const a = memory.sfrMap.get('A');
+  const b = memory.sfrMap.get('B');
 
-    clr(`${psw}.7`);
-    if (memory.ram[b] === 0) {
-      setb(`${psw}.2`);
-      memory.ram[a] = 0;
-      memory.ram[b] = 0;
-    } else {
-      clr(`${psw}.2`);
-      const quotient = _.floor(memory.ram[a] / memory.ram[b]);
-      const remainder = memory.ram[a] % memory.ram[b];
-      memory.ram[a] = quotient;
-      memory.ram[b] = remainder;
-    }
+  clr(`${psw}.7`);
+  if (memory.ram[b] === 0) {
+    setb(`${psw}.2`);
+    memory.ram[a] = 0;
+    memory.ram[b] = 0;
+  } else {
+    clr(`${psw}.2`);
+    const quotient = _.floor(memory.ram[a] / memory.ram[b]);
+    const remainder = memory.ram[a] % memory.ram[b];
+    memory.ram[a] = quotient;
+    memory.ram[b] = remainder;
   }
 }
 
@@ -262,40 +260,38 @@ function updateParity() {
 }
 
 function rotateA(addr, right, withCarry) {
-  if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
-    const originalA = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
-    let C;
-    let rotatedA;
-    if (utils.isBitSet(memory.sfrMap.get('PSW'), 7)) {
-      C = '1';
-    } else {
-      C = '0';
-    }
+  const originalA = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
+  let C;
+  let rotatedA;
+  if (utils.isBitSet(memory.sfrMap.get('PSW'), 7)) {
+    C = '1';
+  } else {
+    C = '0';
+  }
 
-    if (right) {
-      if (withCarry) {
-        rotatedA = `${C}${originalA.slice(0, 7)}`;
-        if (originalA.slice(-1) === '1') {
-          setb(`${memory.sfrMap.get('PSW')}.7`);
-        } else {
-          clr(`${memory.sfrMap.get('PSW')}.7`);
-        }
-      } else {
-        rotatedA = `${originalA.slice(-1)}${originalA.slice(0, 7)}`;
-      }
-    } else if (withCarry) {
-      rotatedA = `${originalA.slice(1, 8)}${C}`;
-      if (originalA.slice(0, 1) === '1') {
+  if (right) {
+    if (withCarry) {
+      rotatedA = `${C}${originalA.slice(0, 7)}`;
+      if (originalA.slice(-1) === '1') {
         setb(`${memory.sfrMap.get('PSW')}.7`);
       } else {
         clr(`${memory.sfrMap.get('PSW')}.7`);
       }
     } else {
-      rotatedA = `${originalA.slice(1, 8)}${originalA.slice(0, 1)}`;
+      rotatedA = `${originalA.slice(-1)}${originalA.slice(0, 7)}`;
     }
-
-    memory.ram[memory.sfrMap.get('A')] = parseInt(rotatedA, 2);
+  } else if (withCarry) {
+    rotatedA = `${originalA.slice(1, 8)}${C}`;
+    if (originalA.slice(0, 1) === '1') {
+      setb(`${memory.sfrMap.get('PSW')}.7`);
+    } else {
+      clr(`${memory.sfrMap.get('PSW')}.7`);
+    }
+  } else {
+    rotatedA = `${originalA.slice(1, 8)}${originalA.slice(0, 1)}`;
   }
+
+  memory.ram[memory.sfrMap.get('A')] = parseInt(rotatedA, 2);
 }
 
 function rr(addr) {
@@ -315,12 +311,11 @@ function rlc(addr) {
 }
 
 function swap(addr) {
-  if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
-    const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
-    const lowerNibble = A.slice(4);
-    const higherNibble = A.slice(0, 4);
-    memory.ram[memory.sfrMap.get('A')] = parseInt(`${lowerNibble}${higherNibble}`, 2);
-  }
+  console.log(addr); // jabardasti h `addr` use karna, for eslint
+  const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
+  const lowerNibble = A.slice(4);
+  const higherNibble = A.slice(0, 4);
+  memory.ram[memory.sfrMap.get('A')] = parseInt(`${lowerNibble}${higherNibble}`, 2);
 }
 
 function push(addr) {
@@ -357,25 +352,24 @@ function xch(addr1, addr2) {
 }
 
 function da(addr) {
-  if (parseInt(addr, 10) === memory.sfrMap.get('A')) {
-    const A = memory.sfrMap.get('A');
-    const PSW = memory.sfrMap.get('PSW');
-    const lNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(4), 2);
-    const hNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(0, 4), 2);
-    let num = 0;
-    if (lNibA > 9 && hNibA > 9) {
-      num = 102;
-    } else if (lNibA > 9) {
-      num = 6;
-    } else if (hNibA > 9) {
-      num = 96;
-    }
-    memory.ram[A] += num;
-    if (memory.ram[A] > 153) {
-      setb(`${PSW}.7`);
-    } else {
-      clr(`${PSW}.7`);
-    }
+  console.log(addr); // jabardasti h `addr` use karna, for eslint
+  const A = memory.sfrMap.get('A');
+  const PSW = memory.sfrMap.get('PSW');
+  const lNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(4), 2);
+  const hNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(0, 4), 2);
+  let num = 0;
+  if (lNibA > 9 && hNibA > 9) {
+    num = 102;
+  } else if (lNibA > 9) {
+    num = 6;
+  } else if (hNibA > 9) {
+    num = 96;
+  }
+  memory.ram[A] += num;
+  if (memory.ram[A] > 153) {
+    setb(`${PSW}.7`);
+  } else {
+    clr(`${PSW}.7`);
   }
 }
 
