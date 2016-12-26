@@ -170,7 +170,6 @@ function djnz(addr, label) {
 
 function jumpBit(bitAddr, label, ifBitSet, clearBeforeJump) {
   const [addr, bit] = utils.translateToBitAddressable(bitAddr);
-  // Shoddy excuse of a XNOR
   if (ifBitSet === utils.isBitSet(addr, bit)) {
     if (clearBeforeJump) {
       clr(bitAddr);
@@ -292,7 +291,7 @@ function rotateA(addr, right, withCarry) {
         clr(`${memory.sfrMap.get('PSW')}.7`);
       }
     } else {
-      rotatedA = `${originalA.slice(1, 8)}${C}`;
+      rotatedA = `${originalA.slice(1, 8)}${originalA.slice(0, 1)}`;
     }
 
     memory.ram[memory.sfrMap.get('A')] = parseInt(rotatedA, 2);

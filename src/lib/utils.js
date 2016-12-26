@@ -52,7 +52,7 @@ function executeFunctionByName(funcName, context, args) {
 
 function handleRegisters(reg) {
   return reg.replace(/^C$/i, `${memory.sfrMap.get('PSW')}.7`)
-    .replace(/^(@|#)?([a-z]{1,4}\d?)(\.\d)?$/i, (match, addrMode = '', sfr, bit = '') => {
+    .replace(/^(@)?([a-z]{1,4}[0-3]?)(\.[0-7])?$/i, (match, addrMode = '', sfr, bit = '') => {
       console.log(match);
       let sfrAddr = memory.sfrMap.get(_.toUpper(sfr));
       if (_.isUndefined(sfrAddr)) {
@@ -99,29 +99,28 @@ function parseLine(code) {
       // eslint-disable-next-line max-len
       // /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
       // eslint-disable-next-line max-len
-      /((?:(?:(?:[0-1]+b)|(?:[\dabcdef]+h)|(?:\d+d?))|(?:@R[0-1])|(?:[a-z]+\d?(?:\.[0-7])?))(?:\s*,\s*(?:(?:#?(?:(?:[0-1]+b)|(?:[\dabcdef]+h)|(?:\d+d?)))|(?:@R[0-1])|(?:[a-z]+\d?(?:\.[0-7])?)))?(?:\s*,\s*(?:[a-z]+\s*?))?)?/, // Operands
+      /((?:(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?))(?:\s*,\s*(?:(?:(?:#|\/)?(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?)))?(?:\s*,\s*(?:[a-z]+\s*?))?)?/, // Operands
     ].map(r => r.source).join(''), 'i');
     let [, instruction, operands = []] = pattern.exec(code);
 
-    instruction = _.replace(instruction, /\s+/, '');
+    instruction = _.replace(instruction, /\s+/g, '');
     console.log(`Instruction = ${instruction}`);
 
-    // Filter out empty operands (?)
+    // Remove spaces
     operands = _
       .chain(operands)
-      .replace(/\s+/, '')
+      .replace(/\s+/g, '')
       .split(',')
-      .filter(v => v !== '')
       .value();
 
     _.forEach(operands, (operand, index) => {
       let op = operand;
       if (/[0-9a-f]+h$/i.test(op)) {
         // Convert all hex numbers to decimal
-        op = convertToDec(op, /(@|#)?([0-9a-f]+)h/i, 16);
+        op = convertToDec(op, /(@|#|\/)?([0-9a-f]+)h/i, 16);
       } else if (/[01]+b$/i.test(op)) {
         // Convert all binary numbers to decimal
-        op = convertToDec(op, /(@|#)?([01]+)b/i, 2);
+        op = convertToDec(op, /(@|#|\/)?([01]+)b/i, 2);
       } else if (/[0-9]+d$/i.test(op)) {
         // Remove optional D from decimal number
         op = op.slice(0, -1);
