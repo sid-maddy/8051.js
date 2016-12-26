@@ -3,6 +3,95 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
+const labelPattern = /\s*(?:[a-z]+\s*?:)?/;
+const instructionPattern = /\s*?([a-z]{2,5})\s*/;
+
+// This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
+const operandsPattern = new RegExp(_.replace(String.raw`
+(
+  (?:
+    (?:
+      (?:
+        [01]+b
+      )
+      |
+      (?:
+        [\da-f]+h
+      )
+      |
+      (?:
+        \d+d?
+      )
+    )
+    |
+    (?:
+      @R[01]
+    )
+    |
+    (?:
+      [a-z]+[0-7]?
+      (?:
+        \.[0-7]
+      )?
+    )
+  )
+  (?:
+    \s*,\s*
+    (?:
+      (?:
+        (?:
+          #|\/
+        )?
+        (?:
+          (?:
+            [01]+b
+          )
+          |
+          (?:
+            [\da-f]+h
+          )
+          |
+          (?:
+            \d+d?
+          )
+        )
+      )
+      |
+      (?:
+        @R[01]
+      )
+      |
+      (?:
+        [a-z]+[0-7]?
+        (?:
+          \.[0-7]
+        )?
+      )
+    )
+  )?
+  (?:
+    \s*,\s*
+    (?:
+      [a-z]+\s*?
+    )
+  )?
+)?
+`, /\s+/g, ''));
+
+// Old pattern
+// eslint-disable-next-line max-len
+// /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
+
+// Verbatim pattern
+// eslint-disable-next-line max-len
+// operandsPattern = /((?:(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?))(?:\s*,\s*(?:(?:(?:#|\/)?(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?)))?(?:\s*,\s*(?:[a-z]+\s*?))?)?/; // Operands
+
+const codePattern = new RegExp(_.replace(String.raw`
+  ${labelPattern}
+  ${instructionPattern}
+  ${operandsPattern}
+`, /\s+/g, ''), 'i');
+
 function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
   const toBin = _.partialRight(toString.call.bind(toString), 2);
@@ -91,17 +180,7 @@ function handleAddressingMode(op) {
 
 function parseLine(code) {
   if (!/^\s*(?:;.*)?$/.test(code)) {
-    // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
-    // FIXME: Optimise this regex and make it readable
-    const pattern = new RegExp([
-      /\s*(?:[a-z]+\s*?:)?/, // Label:
-      /\s*?([a-z]{2,5})\s*/, // Instruction
-      // eslint-disable-next-line max-len
-      // /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
-      // eslint-disable-next-line max-len
-      /((?:(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?))(?:\s*,\s*(?:(?:(?:#|\/)?(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?)))?(?:\s*,\s*(?:[a-z]+\s*?))?)?/, // Operands
-    ].map(r => r.source).join(''), 'i');
-    let [, instruction, operands = []] = pattern.exec(code);
+    let [, instruction, operands = []] = codePattern.exec(code);
 
     instruction = _.replace(instruction, /\s+/g, '');
     console.log(`Instruction = ${instruction}`);
