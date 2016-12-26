@@ -93,9 +93,10 @@ svg {
 
 @mixin apply-animation($name) {
   animation-direction: if($name == c, normal, reverse);
-  animation-duration: infinite;
-  animation-timing-function: linear;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
   animation-name: $name;
+  animation-timing-function: linear;
 }
 
 @mixin rotate-animation($name, $deg) {
