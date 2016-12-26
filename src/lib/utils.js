@@ -97,7 +97,9 @@ function parseLine(code) {
       /\s*(?:[a-z]+\s*?:)?/, // Label:
       /\s*?([a-z]{2,5})\s*/, // Instruction
       // eslint-disable-next-line max-len
-      /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
+      // /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
+      // eslint-disable-next-line max-len
+      /((?:(?:(?:[0-1]+b)|(?:[\dabcdef]+h)|(?:\d+d?))|(?:@R[0-1])|(?:[a-z]+\d?(?:\.[0-7])?))(?:\s*,\s*(?:(?:#?(?:(?:[0-1]+b)|(?:[\dabcdef]+h)|(?:\d+d?)))|(?:@R[0-1])|(?:[a-z]+\d?(?:\.[0-7])?)))?(?:\s*,\s*(?:[a-z]+\s*?))?)?/, // Operands
     ].map(r => r.source).join(''), 'i');
     let [, instruction, operands = []] = pattern.exec(code);
 
