@@ -1,6 +1,14 @@
 <template>
   <div id="sfr-status">
-    <pre>{{ sfrs }}</pre>
+    <table class="ui compact table">
+      <tbody>
+        <tr v-for="item in sfrs">
+          <td class="center aligned eight wide">{{ item.sfr }}</td>
+          <td class="center aligned eight wide">{{ item.value }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <pre>{{ sfrs }}</pre> -->
   </div>
 </template>
 
@@ -8,7 +16,7 @@
 export default {
   data() {
     return {
-      sfrs: {},
+      sfrs: [],
       memory: this.$store.state.memory,
     };
   },
@@ -18,9 +26,9 @@ export default {
   },
   methods: {
     updateSFRs(mem) {
-      const temp = {};
+      const temp = [];
       for (const [k, v] of mem.sfrMap) {
-        temp[k] = `0x${mem.ram[v].toString(16)}`;
+        temp.push({ sfr: k, value: `0x${mem.ram[v].toString(16)}` });
       }
       this.sfrs = temp;
     },

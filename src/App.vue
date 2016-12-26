@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="ui four column stackable grid container">
+  <div id="app" class="ui four column stackable grid">
     <div class="row">
       <div class="middle aligned center aligned column">
         <h2 class="ui header">Pin Diagram</h1>
@@ -15,10 +15,10 @@
       </div>
     </div>
     <div class="row">
-      <div class="middle aligned column">
+      <div class="column">
         <pin-diagram></pin-diagram>
       </div>
-      <div class="middle aligned column">
+      <div class="column">
         <sfr-status></sfr-status>
       </div>
       <div class="center aligned column">
@@ -71,6 +71,7 @@ export default {
 
 <style lang="scss">
 #app {
+  margin: 0 0.5em;
   height: 100%;
 }
 
