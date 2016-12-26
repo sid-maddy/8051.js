@@ -113,6 +113,13 @@ function parseLine(code) {
       .split(',')
       .value();
 
+    let containsA = false;
+    _.forEach(operands, (op) => {
+      if (/A/i.test(op)) {
+        containsA = true;
+      }
+    });
+
     _.forEach(operands, (operand, index) => {
       let op = operand;
       if (/[0-9a-f]+h$/i.test(op)) {
@@ -137,8 +144,7 @@ function parseLine(code) {
 
     // Call appropriate function with operands
     executeFunctionByName(instruction.toLowerCase(), funcs, operands);
-    if (_.includes(
-        operands, _.toString(memory.sfrMap.get('A')))) {
+    if (containsA) {
       funcs.updateParity();
     }
   }
@@ -148,7 +154,7 @@ function handleExecution() {
   const code = memory.code;
   let i = memory.programCounter;
   while (i < code.length) {
-    if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI|END)\s*(?:;.*)?$/i.test(code[i])) {
+    if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RETI?|END)\s*(?:;.*)?$/i.test(code[i])) {
       break;
     }
     memory.programCounter += 1;
