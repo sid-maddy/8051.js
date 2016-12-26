@@ -1,13 +1,21 @@
-<template lang="pug">
-#app.ui.four.column.stackable.grid.basic.segment
-  .middle.aligned.column
-    pin-diagram
-  .middle.aligned.column
-    seven-segment
-  .middle.aligned.column
-    sfr-status
-  .column
-    editor
+<template>
+  <div id="app" class="ui five column stackable grid basic segment">
+    <div class="middle aligned column">
+      <pin-diagram></pin-diagram>
+    </div>
+    <div class="middle aligned center aligned column">
+      <seven-segment></seven-segment>
+    </div>
+    <div class="middle aligned column">
+      <sfr-status></sfr-status>
+    </div>
+    <div class="middle aligned center aligned column">
+      <motor></motor>
+    </div>
+    <div class="column">
+      <editor></editor>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -16,6 +24,7 @@ import 'semantic-ui-css/semantic.min.css';
 import PinDiagram from 'components/PinDiagram';
 import SevenSegment from 'components/SevenSegment';
 import SfrStatus from 'components/SfrStatus';
+import Motor from 'components/Motor';
 import Editor from 'components/Editor';
 
 export default {
@@ -23,6 +32,7 @@ export default {
     PinDiagram,
     SevenSegment,
     SfrStatus,
+    Motor,
     Editor,
   },
 };

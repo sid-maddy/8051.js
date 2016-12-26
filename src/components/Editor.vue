@@ -1,10 +1,12 @@
-<template lang="pug">
-#editor
-  pre#ace-editor {{ code }}
-  #buttons.ui.buttons
-    button#run-btn.ui.green.button Run
-    .or
-    button#debug-btn.ui.blue.button Debug
+<template>
+  <div id="editor">
+    <pre id="ace-editor">{{ code }}</pre>
+    <div id="buttons" class="ui buttons">
+      <button id="run-btn" class="ui green button">Run</button>
+      <div class="or"></div>
+      <button id="debug-btn" class="ui blue button">Debug</button>
+    </div>
+  </div>
 </template>
 
 <script>

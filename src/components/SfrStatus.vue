@@ -1,6 +1,7 @@
-<template lang="pug">
-#sfr-status
-  pre {{ sfrs }}
+<template>
+  <div id="sfr-status">
+    <pre>{{ sfrs }}</pre>
+  </div>
 </template>
 
 <script>
