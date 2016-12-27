@@ -3,47 +3,34 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
-// https://stackoverflow.com/a/3886106
-function isInt(n) {
-  return Number(n) === n && n % 1 === 0;
+function isInt(str) {
+  return (str.indexOf('.') === -1);
 }
 
-function isFloat(n) {
-  return Number(n) === n && n % 1 !== 0;
+function isFloat(str) {
+  return (str.indexOf('.') !== -1);
 }
 
 function isBitAddr(addr) {
   const intAddr = parseInt(addr, 10);
   if (isInt(addr)) {
-    if ((intAddr >= 0 && intAddr <= 127)) {
-      return true;
-    }
+    return ((intAddr >= 0 && intAddr <= 127));
   }
   if (isFloat(addr)) {
     // All SFRs that whose addresses are divisible by 8 can be accessed with bit operations.
     // http://www.8052.com/tutsfr.php
-    if ((intAddr % 8 === 0) && (intAddr >= 128 && intAddr <= 256)) {
-      return true;
-    }
+    return ((intAddr % 8 === 0) && (intAddr >= 128 && intAddr <= 256));
   }
   return false;
 }
 
 function isByteAddr(addr) {
-  if (isInt(addr)) {
-    const intAddr = parseInt(addr, 10);
-    if ((intAddr >= 0 && intAddr <= 31) || (intAddr >= 48 && intAddr <= 256)) {
-      return true;
-    }
-  }
-  return false;
+  const intAddr = parseInt(addr, 10);
+  return ((isInt(addr)) && ((intAddr >= 0 && intAddr <= 31) || (intAddr >= 48 && intAddr <= 256)));
 }
 
 function isLabel(label) {
-  if (memory.labels.has(label)) {
-    return true;
-  }
-  return false;
+  return (memory.labels.has(label));
 }
 
 function convertToBin(number, padWidth = 8) {
@@ -133,6 +120,7 @@ function handleAddressingMode(op) {
 }
 
 function parseLine(code) {
+  let valid = { status: true };
   if (!/^\s*(?:;.*)?$/.test(code)) {
     // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
     // FIXME: Optimise this regex and make it readable
@@ -179,28 +167,39 @@ function parseLine(code) {
     console.log(`Operands: ${operands}`);
 
     const instructionCheck = memory.instructionCheck.get(instruction);
-    if (!_.isUndefined(instructionCheck) && instructionCheck(operands)) {
-      // Call appropriate function with operands
-      executeFunctionByName(instruction, funcs, operands);
-      if (_.includes(
-          operands, _.toString(memory.sfrMap.get('A')))) {
-        funcs.updateParity();
+    if (!_.isUndefined(instructionCheck)) {
+      valid = instructionCheck(operands);
+      if (valid.status) {
+        // Call appropriate function with operands
+        executeFunctionByName(instruction, funcs, operands);
+        if (_.includes(
+            operands, _.toString(memory.sfrMap.get('A')))) {
+          funcs.updateParity();
+        }
       }
+    } else {
+      valid = { status: false, msg: 'Invalid instruction' };
     }
   }
+  return valid;
 }
 
 function handleExecution() {
   const code = memory.code;
-  let i = memory.programCounter;
-  while (i < code.length) {
-    if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI|END)\s*(?:;.*)?$/i.test(code[i])) {
+  let executionStatus = { status: true };
+  while (memory.programCounter < code.length) {
+    if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI|END)\s*(?:;.*)?$/i.test(code[memory.programCounter])) {
+      executionStatus.line = memory.programCounter;
       break;
     }
     memory.programCounter += 1;
-    parseLine(code[i]);
-    i = memory.programCounter;
+    executionStatus = parseLine(code[memory.programCounter - 1]);
+    if (!executionStatus.status) {
+      executionStatus.line = memory.programCounter - 1;
+      break;
+    }
   }
+  return executionStatus;
 }
 
 function initMemory() {

@@ -30,194 +30,366 @@ ram[sfrMap.get('SP')] = 0x07;
 
 const instructionCheck = new Map([
   ['setb', function (operands) {
-    if (operands.length === 1 && utils.isBitAddr(operands[0])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isBitAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['clr', function (operands) {
-    if (operands.length === 1 &&
-       (utils.isBitAddr(operands[0]) || parseInt(operands[0], 10) === sfrMap.get('A'))) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if ((utils.isBitAddr(operands[0]) || parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        return { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['mov', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['cpl', function (operands) {
-    if (operands.length === 1 &&
-       (utils.isBitAddr(operands[0]) || parseInt(operands[0], 10) === sfrMap.get('A'))) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if ((utils.isBitAddr(operands[0]) || parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        return { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['add', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['addc', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['subb', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['mul', function (operands) {
-    if (operands.length === 1 && /^ab$/i.test(operands[0])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(/^AB$/i.test(operands[0]))) {
+        return { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['div', function (operands) {
-    if (operands.length === 1 && /^ab$/i.test(operands[0])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(/^AB$/i.test(operands[0]))) {
+        return { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['ajmp', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['ljmp', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['sjmp', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['djnz', function (operands) {
-    if (operands.length === 2 && utils.isByteAddr(operands[0]) && sfrMap.has(operands[1])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 2) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      } else if (utils.isLabel(operands[1])) {
+        result = { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['jbc', function (operands) {
-    if (operands.length === 2 && utils.isBitAddr(operands[0]) && sfrMap.has(operands[1])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 2) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      } else if (utils.isLabel(operands[1])) {
+        result = { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['jb', function (operands) {
-    if (operands.length === 2 && utils.isBitAddr(operands[0]) && sfrMap.has(operands[1])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 2) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      } else if (utils.isLabel(operands[1])) {
+        result = { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['jnb', function (operands) {
-    if (operands.length === 2 && utils.isBitAddr(operands[0]) && sfrMap.has(operands[1])) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 2) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      } else if (utils.isLabel(operands[1])) {
+        result = { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['jc', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['jnc', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['jz', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['jnz', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['cjne', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['lcall', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['acall', function (operands) {
-    if (operands.length === 1 && utils.isLabel(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isLabel(operands[0])) {
+        return { status: false, msg: 'Invalid label' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['anl', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['orl', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['xrl', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['rl', function (operands) {
-    if (operands.length === 1 && parseInt(operands[0], 10) === sfrMap.get('A')) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['rlc', function (operands) {
-    if (operands.length === 1 && parseInt(operands[0], 10) === sfrMap.get('A')) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['rr', function (operands) {
-    if (operands.length === 1 && parseInt(operands[0], 10) === sfrMap.get('A')) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['rrc', function (operands) {
-    if (operands.length === 1 && parseInt(operands[0], 10) === sfrMap.get('A')) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['da', function (operands) {
-    if (operands.length === 1 && parseInt(operands[0], 10) === sfrMap.get('A')) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['swap', function (operands) {
-    if (operands.length === 1 && parseInt(operands[0], 10) === sfrMap.get('A')) {
-      return true;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
     }
-    return false;
+    return result;
   }],
   ['xch', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['xchd', function (operands) {
     console.log(operands);
-    return true;
+    return { status: true };
   }],
   ['push', function (operands) {
-    if (operands.length === 1 && utils.isByteAddr(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['pop', function (operands) {
-    if (operands.length === 1 && utils.isByteAddr(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['inc', function (operands) {
-    if (operands.length === 1 && utils.isByteAddr(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['dec', function (operands) {
-    if (operands.length === 1 && utils.isByteAddr(operands[0])) { return true; }
-    return false;
+    let result = { status: true };
+    if (operands.length === 1) {
+      if (!utils.isByteAddr(operands[0])) {
+        result = { status: false, msg: 'Invalid operand' };
+      }
+    } else {
+      result = { status: false, msg: 'Invalid number of operands' };
+    }
+    return result;
   }],
   ['nop', function (operands) {
-    if (operands.length === 0) { return true; }
-    return false;
+    if (operands.length === 0) {
+      return { status: true };
+    }
+    return { status: false, msg: 'Invalid number of operands' };
   }],
 ]);
 
