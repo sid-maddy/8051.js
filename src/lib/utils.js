@@ -11,6 +11,40 @@ function isFloat(str) {
   return (str.indexOf('.') !== -1);
 }
 
+function isPort(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr === 0x80 || intAddr === 0x90 || intAddr === 0xA0 || intAddr === 0xB0);
+}
+
+function isALU(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr === 0xE0 || intAddr === 0xF0 || addr === `${memory.sfrMap.get('PSW')}.7`);
+}
+
+function isRAM(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr >= 0 && intAddr <= 127);
+}
+
+function isSFR(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (!(isPort(addr) && isALU(addr) && isRAM(addr) && intAddr >= 128 && intAddr <= 255));
+}
+
+function isRtoR(addr1, addr2) {
+  const intAddr1 = parseInt(addr1, 10);
+  const intAddr2 = parseInt(addr2, 10);
+  return ((intAddr1 >= 0 && intAddr1 <= 31) && (intAddr2 >= 0 && intAddr2 <= 31));
+}
+
+function isPortToPort(addr1, addr2) {
+  return (isPort(addr1) && isPort(addr2));
+}
+
+function isSFRtoSFR(addr1, addr2) {
+  return (isSFR(addr1) && isSFR(addr2));
+}
+
 function isBitAddr(addr) {
   const intAddr = parseInt(addr, 10);
   if (isInt(addr)) {
@@ -231,6 +265,13 @@ function initValues(input) {
 }
 
 export default {
+  isPort,
+  isALU,
+  isRAM,
+  isSFR,
+  isRtoR,
+  isPortToPort,
+  isSFRtoSFR,
   isBitAddr,
   isByteAddr,
   isLabel,

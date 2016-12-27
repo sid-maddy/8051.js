@@ -1,4 +1,4 @@
-/* eslint-disable no-console, func-names */
+/* eslint-disable func-names */
 import utils from './utils';
 
 const sfrMap = new Map([
@@ -43,8 +43,8 @@ const instructionCheck = new Map([
   ['clr', function (operands) {
     let result = { status: true };
     if (operands.length === 1) {
-      if ((utils.isBitAddr(operands[0]) || parseInt(operands[0], 10) === sfrMap.get('A'))) {
-        return { status: false, msg: 'Invalid operand' };
+      if (!(utils.isBitAddr(operands[0]) || parseInt(operands[0], 10) === sfrMap.get('A'))) {
+        return { status: false, msg: 'Operand must be bit-address OR accumulator' };
       }
     } else {
       result = { status: false, msg: 'Invalid number of operands' };
@@ -54,7 +54,17 @@ const instructionCheck = new Map([
   ['mov', function (operands) {
     let result = { status: true };
     if (operands.length === 2) {
-      console.log(operands);
+      if (operands[0] === `${sfrMap.get('PSW')}.7` || operands[1] === `${sfrMap.get('PSW')}.7`) {
+        if (!(utils.isBitAddr(operands[0]) && utils.isBitAddr(operands[1]))) {
+          result = { status: false, msg: 'Invalid operands' };
+        }
+      } else if (utils.isRtoR(operands[0], operands[1])) {
+        result = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+      } else if (utils.isPortToPort(operands[0], operands[1])) {
+        result = { status: false, msg: 'Cannot move data from port to port' };
+      } else if (utils.isSFRtoSFR(operands[0], operands[1])) {
+        result = { status: false, msg: 'Both operands cannot be SFRs' };
+      }
     } else {
       result = { status: false, msg: 'Invalid number of operands' };
     }
@@ -66,7 +76,11 @@ const instructionCheck = new Map([
   ['add', function (operands) {
     let result = { status: true };
     if (operands.length === 2) {
-      console.log(operands);
+      if (parseInt(operands[0], 10) !== sfrMap.get('A')) {
+        result = { status: false, msg: '1st operand must be accumulator' };
+      } else if (!utils.isByteAddr(operands[1])) {
+        result = { status: false, msg: 'Invalid 2nd operand' };
+      }
     } else {
       result = { status: false, msg: 'Invalid number of operands' };
     }
@@ -82,7 +96,7 @@ const instructionCheck = new Map([
     let result = { status: true };
     if (operands.length === 1) {
       if (!(/^AB$/i.test(operands[0]))) {
-        return { status: false, msg: 'Invalid operand' };
+        return { status: false, msg: "Operand must be 'AB'" };
       }
     } else {
       result = { status: false, msg: 'Invalid number of operands' };
@@ -115,7 +129,7 @@ const instructionCheck = new Map([
       if (!utils.isByteAddr(operands[0])) {
         result = { status: false, msg: 'Invalid 1st operand' };
       }
-      if (utils.isLabel(operands[1])) {
+      if (!utils.isLabel(operands[1])) {
         result = { status: false, msg: 'Invalid label' };
       }
     } else {
@@ -129,7 +143,7 @@ const instructionCheck = new Map([
       if (!utils.isBitAddr(operands[0])) {
         result = { status: false, msg: 'Invalid 1st operand' };
       }
-      if (utils.isLabel(operands[1])) {
+      if (!utils.isLabel(operands[1])) {
         result = { status: false, msg: 'Invalid label' };
       }
     } else {
@@ -158,7 +172,20 @@ const instructionCheck = new Map([
   ['cjne', function (operands) {
     let result = { status: true };
     if (operands.length === 3) {
-      console.log(operands);
+      if (parseInt(operands[0], 10) === sfrMap.get('A')) {
+        if (!utils.isByteAddr(operands[1])) {
+          result = { status: false, msg: 'Invalid 2nd operand' };
+        }
+      } else if (utils.isByteAddr(operands[0])) {
+        if (operands[1] !== '256') {
+          result = { status: false, msg: '2nd operand must be immediate data if 1st operand is not accumulator' };
+        }
+      } else {
+        result = { status: false, msg: 'Invalid 1st operand' };
+      }
+      if (!utils.isLabel(operands[2])) {
+        result = { status: false, msg: 'Invalid label' };
+      }
     } else {
       result = { status: false, msg: 'Invalid number of operands' };
     }
@@ -186,7 +213,7 @@ const instructionCheck = new Map([
           result = { status: false, msg: 'Invalid 2nd operand' };
         }
       } else {
-        result = { status: false, msg: 'Invalid operands' };
+        result = { status: false, msg: 'Invalid 1st operand' };
       }
     } else {
       result = { status: false, msg: 'Invalid number of operands' };
@@ -201,11 +228,9 @@ const instructionCheck = new Map([
     if (operands.length === 2) {
       if (!utils.isByteAddr(operands[0])) {
         result = { status: false, msg: 'Invalid 1st operand' };
-      }
-      if (!utils.isByteAddr(operands[1])) {
+      } else if (!utils.isByteAddr(operands[1])) {
         result = { status: false, msg: 'Invalid 2nd operand' };
-      }
-      if (parseInt(operands[0], 10) === sfrMap.get('A')) {
+      } else if (parseInt(operands[0], 10) === sfrMap.get('A')) {
         if (!utils.isByteAddr(operands[1])) {
           result = { status: false, msg: 'Invalid 2nd operand' };
         }
@@ -222,7 +247,7 @@ const instructionCheck = new Map([
   ['rl', function (operands) {
     let result = { status: true };
     if (operands.length === 1) {
-      if (!(parseInt(operands[0], 10) === sfrMap.get('A'))) {
+      if (parseInt(operands[0], 10) !== sfrMap.get('A')) {
         result = { status: false, msg: 'Operand must be accumulator' };
       }
     } else {
@@ -249,9 +274,10 @@ const instructionCheck = new Map([
     let result = { status: true };
     if (operands.length === 2) {
       if (parseInt(operands[0], 10) !== sfrMap.get('A')) {
-        result = { status: false, msg: 'First operand must be accumulator' };
-      }
-      if (!utils.isByteAddr(operands[1])) {
+        result = { status: false, msg: '1st operand must be accumulator' };
+      } else if (operands[1] === '256') {
+        result = { status: false, msg: 'Immediate data is not allowed' };
+      } else if (!utils.isByteAddr(operands[1])) {
         result = { status: false, msg: 'Invalid 2nd operand' };
       }
     } else {
@@ -260,12 +286,15 @@ const instructionCheck = new Map([
     return result;
   }],
   ['xchd', function (operands) {
+    // the current code is same as 'xch', but xchd accepts limited operands,
+    // which we MAY handle later..
     let result = { status: true };
     if (operands.length === 2) {
       if (parseInt(operands[0], 10) !== sfrMap.get('A')) {
-        result = { status: false, msg: 'First operand must be accumulator' };
-      }
-      if (!utils.isByteAddr(operands[1])) {
+        result = { status: false, msg: '1st operand must be accumulator' };
+      } else if (operands[1] === '256') {
+        result = { status: false, msg: 'Immediate data is not allowed' };
+      } else if (!utils.isByteAddr(operands[1])) {
         result = { status: false, msg: 'Invalid 2nd operand' };
       }
     } else {
@@ -274,6 +303,7 @@ const instructionCheck = new Map([
     return result;
   }],
   ['push', function (operands) {
+    // Not sure if this should just call 'inc'
     let result = { status: true };
     if (operands.length === 1) {
       if (!utils.isByteAddr(operands[0])) {
@@ -303,7 +333,7 @@ const instructionCheck = new Map([
   }],
   ['nop', function (operands) {
     let result = { status: true };
-    if (operands.length !== 1) {
+    if (operands.length !== 1 || operands[0] !== '') {
       result = { status: false, msg: 'Invalid number of operands' };
     }
     return result;
