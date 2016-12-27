@@ -43,9 +43,16 @@ export default {
   height: 100%;
 }
 
-.currentLine {
+.highlight-line {
   position: absolute;
-  background: lightgreen;
-  z-index: 100;
+  z-index: 2;
+
+  &.current {
+    background-color: #76ff03;
+  }
+
+  &.error {
+    background-color: #f44336;
+  }
 }
 </style>

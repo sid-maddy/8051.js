@@ -1,5 +1,11 @@
 <template>
   <div id="editor">
+    <div v-if="isError" class="ui negative message">
+      <div class="header">
+        Error at line {{ lineNumber }}
+      </div>
+      <p>{{ errorMessage }}</p>
+    </div>
     <pre id="ace-editor">{{ code }}</pre>
     <div id="buttons" class="ui buttons">
       <button id="run-btn" class="ui green button">Run</button>
@@ -22,32 +28,34 @@ export default {
   data() {
     return {
       code: '',
+      isError: false,
       marker: 0,
     };
   },
   mounted() {
     const editor = ace.edit(this.$el.querySelector('#ace-editor'));
-    editor.getSession().setMode('ace/mode/assembly_x86');
+    const editorSession = editor.getSession();
     editor.setTheme('ace/theme/tomorrow');
+    editorSession.setMode('ace/mode/assembly_x86');
     editor.commands.addCommand({
       name: 'run',
       bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
-      exec: e => this.runEditor(e),
+      exec: e => this.runEditor(e.getSession()),
       readOnly: true,
     });
     editor.commands.addCommand({
       name: 'debug',
       bindKey: { win: 'Ctrl-Shift-Enter', mac: 'Command-Shift-Enter' },
-      exec: e => this.debugEditor(e),
+      exec: e => this.debugEditor(e.getSession()),
       readOnly: true,
     });
     this.$el.querySelector('#run-btn')
       .addEventListener('click', () => {
-        this.runEditor(editor);
+        this.runEditor(editorSession);
       });
     this.$el.querySelector('#debug-btn')
       .addEventListener('click', () => {
-        this.debugEditor(editor);
+        this.debugEditor(editorSession);
       });
     editor.focus();
   },
@@ -56,26 +64,42 @@ export default {
       'run',
       'debug',
     ]),
-    runEditor(editor) {
-      this.run(editor.getValue());
+    runEditor(e) {
+      this.run(e.getValue());
+      this.highlightLine(e, this.$store.state.result);
     },
-    debugEditor(editor) {
-      this.debug(editor.getValue());
-      const result = this.$store.state.debugResult;
-      if (result.status) {
-        editor.getSession().removeMarker(this.marker);
-        this.marker = editor.getSession().addMarker(
-          new Range(result.line, 0, result.line, 1),
-          'currentLine',
-          'fullLine',
-        );
+    debugEditor(e) {
+      this.debug(e.getValue());
+      this.highlightLine(e, this.$store.state.result);
+    },
+    highlightLine(e, result) {
+      e.removeMarker(this.marker);
+      this.marker = e.addMarker(
+        new Range(result.line, 0, result.line, 1),
+        `highlight-line ${result.status ? 'current' : 'error'}`,
+        'fullLine',
+      );
+
+      if (!result.status) {
+        this.showErrorMessage(result.msg, result.line);
+        setTimeout(() => e.removeMarker(this.marker), 2500);
       }
+    },
+    showErrorMessage(msg, line) {
+      this.isError = true;
+      setTimeout(() => { this.isError = false; }, 2000);
+      this.errorMessage = msg;
+      this.lineNumber = line + 1;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.message {
+  z-index: 100;
+}
+
 #ace-editor {
   position: absolute;
   top: 0;
