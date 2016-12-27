@@ -40,7 +40,7 @@ function debug(input) {
   } else {
     const label = CALL.exec(memory.code[memory.programCounter - 1]);
     if (!_.isNull(label)) {
-      debugStatus = memory.instructionCheck.get('lcall')(label[1]);
+      debugStatus = memory.instructionCheck.get('lcall')(new Array(label[1]));
       if (debugStatus.status) {
         debugProgramCounterStack.push(memory.programCounter);
         memory.programCounter = memory.labels.get(label[1]);
@@ -52,9 +52,15 @@ function debug(input) {
   }
   utils.displayRam();
   if (memory.programCounter >= memory.code.length) {
+    if (debugProgramCounterStack.length > 0 && !resetMemory) {
+      debugStatus = { status: false, msg: 'Expected RET statement on the next line' };
+    }
     resetMemory = true;
   }
   debugStatus.line = lineNumber;
+  if (!debugStatus.status) {
+    resetMemory = true;
+  }
   console.log(debugStatus);
   return debugStatus;
 }

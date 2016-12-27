@@ -225,17 +225,18 @@ function call(label) {
   const tempProgramCounter = memory.programCounter;
   jump(label);
   memory.ram[memory.sfrMap.get('SP')] += 2;
-  utils.handleExecution();
+  const status = utils.handleExecution();
   memory.ram[memory.sfrMap.get('SP')] -= 2;
   memory.programCounter = tempProgramCounter;
+  return status;
 }
 
 function lcall(label) {
-  call(label);
+  return call(label);
 }
 
 function acall(label) {
-  call(label);
+  return call(label);
 }
 
 function inc(addr) {

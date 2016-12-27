@@ -171,7 +171,10 @@ function parseLine(code) {
       valid = instructionCheck(operands);
       if (valid.status) {
         // Call appropriate function with operands
-        executeFunctionByName(instruction, funcs, operands);
+        const executionError = executeFunctionByName(instruction, funcs, operands);
+        if (!_.isUndefined(executionError)) {
+          valid = executionError;
+        }
         if (_.includes(
             operands, _.toString(memory.sfrMap.get('A')))) {
           funcs.updateParity();
@@ -195,7 +198,9 @@ function handleExecution() {
     memory.programCounter += 1;
     executionStatus = parseLine(code[memory.programCounter - 1]);
     if (!executionStatus.status) {
-      executionStatus.line = memory.programCounter - 1;
+      if (_.isUndefined(executionStatus.line)) {
+        executionStatus.line = memory.programCounter - 1;
+      }
       break;
     }
   }
