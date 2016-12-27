@@ -3,94 +3,103 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
-const labelPattern = /\s*(?:[a-z]+\s*?:)?/;
-const instructionPattern = /\s*?([a-z]{2,5})\s*/;
+function commentedRegex(strings) {
+  return _.chain(strings.raw[0])
+    .replace(/\s+/g, '')
+    .replace(/<.*>/g, '')
+    .value();
+}
+
+const labelPattern = new RegExp(commentedRegex `
+  \s*
+  (?:               <Any word followed by a colon>
+    [a-z]+\s*?:     <with any number of spaces between>
+  )?
+`);
+
+const instructionPattern = new RegExp(commentedRegex `
+  \s*?
+  (
+    [a-z]{2,5}      <Any word of length between 2 & 5>
+  )
+  \s*
+`);
+
+const numberRegex = commentedRegex `
+  (?:
+    [01]+b          <Binary numbers followed by 'b'>
+  )
+  |
+  (?:
+    [\da-f]+h       <Hexadecimal numbers followed by 'h'>
+  )
+  |
+  (?:
+    \d+d?           <Decimal numbers followed by an optional 'd'>
+  )
+`;
+
+const anyRegisterRegex = commentedRegex `
+  [a-z]+[0-7]?      <Any word followed by an optional digit>
+  (?:
+    \.[0-7]         <followed by an optional dot and digit>
+  )?
+`;
 
 // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
-const operandsPattern = new RegExp(_.replace(String.raw`
+const operandsPattern = new RegExp(commentedRegex `
 (
   (?:
     (?:
-      (?:
-        [01]+b
-      )
-      |
-      (?:
-        [\da-f]+h
-      )
-      |
-      (?:
-        \d+d?
-      )
+      ${numberRegex}
     )
     |
     (?:
-      @R[01]
+      @R[01]        <@ followed by R0 or R1>
     )
     |
     (?:
-      [a-z]+[0-7]?
-      (?:
-        \.[0-7]
-      )?
+      ${anyRegisterRegex}
     )
   )
   (?:
-    \s*,\s*
+    \s*,\s*         <Optional second operand>
     (?:
       (?:
         (?:
-          #|\/
+          #|\/      <number optionally prefixed with # or />
         )?
         (?:
-          (?:
-            [01]+b
-          )
-          |
-          (?:
-            [\da-f]+h
-          )
-          |
-          (?:
-            \d+d?
-          )
+          ${numberRegex}
         )
       )
       |
       (?:
-        @R[01]
+        @R[01]      <@ followed by R0 or R1>
       )
       |
       (?:
-        [a-z]+[0-7]?
-        (?:
-          \.[0-7]
-        )?
+        ${anyRegisterRegex}
       )
     )
   )?
   (?:
-    \s*,\s*
+    \s*,\s*         <Optional third operand>
     (?:
-      [a-z]+\s*?
+      [a-z]+\s*?    <which is always a label>
     )
   )?
 )?
-`, /\s+/g, ''));
+`);
 
-// Old pattern
-// eslint-disable-next-line max-len
-// /(\s*(?:(?:@|#)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?\s*,)*(?:\s*(?:@|#|\/)?(?:[a-z]{1,4})?(?:[\da-z]*(?:\.[\da-z]*)?[bh]?)?(?:\+[a-z]{1,4})?))?/, // Operands
+const codePattern = new RegExp(
+  labelPattern.source +
+  instructionPattern.source +
+  operandsPattern.source,
+  'i'
+);
 
-// Verbatim pattern
-// eslint-disable-next-line max-len
-// operandsPattern = /((?:(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?))(?:\s*,\s*(?:(?:(?:#|\/)?(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))|(?:@R[01])|(?:[a-z]+[0-7]?(?:\.[0-7])?)))?(?:\s*,\s*(?:[a-z]+\s*?))?)?/; // Operands
-
-const codePattern = new RegExp(_.replace(String.raw`
-  ${labelPattern}
-  ${instructionPattern}
-  ${operandsPattern}
-`, /\s+/g, ''), 'i');
+console.log(codePattern);
 
 function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
