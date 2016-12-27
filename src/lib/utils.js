@@ -3,29 +3,34 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
-function commentedRegex(strings) {
-  return _.chain(strings.raw[0])
+function commentedRegex(strings, ...values) {
+  const string = _.chain(strings.raw)
+    .map((v, i) => v + (values[i] || ''))
+    .join('')
+    .value();
+
+  return _.chain(string)
     .replace(/\s+/g, '')
-    .replace(/<.*>/g, '')
+    .replace(/<.*?>/g, '')
     .value();
 }
 
-const labelPattern = new RegExp(commentedRegex `
+const labelPattern = new RegExp(commentedRegex`
   \s*
   (?:               <Any word followed by a colon>
     [a-z]+\s*?:     <with any number of spaces between>
   )?
-`);
+`, 'i');
 
-const instructionPattern = new RegExp(commentedRegex `
+const instructionPattern = new RegExp(commentedRegex`
   \s*?
   (
     [a-z]{2,5}      <Any word of length between 2 & 5>
   )
   \s*
-`);
+`, 'i');
 
-const numberRegex = commentedRegex `
+const numberRegex = commentedRegex`
   (?:
     [01]+b          <Binary numbers followed by 'b'>
   )
@@ -39,15 +44,14 @@ const numberRegex = commentedRegex `
   )
 `;
 
-const anyRegisterRegex = commentedRegex `
+const anyRegisterRegex = commentedRegex`
   [a-z]+[0-7]?      <Any word followed by an optional digit>
   (?:
     \.[0-7]         <followed by an optional dot and digit>
   )?
 `;
 
-// This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
-const operandsPattern = new RegExp(commentedRegex `
+const operandsPattern = new RegExp(commentedRegex`
 (
   (?:
     (?:
@@ -90,16 +94,16 @@ const operandsPattern = new RegExp(commentedRegex `
     )
   )?
 )?
-`);
+`, 'i');
 
+// This regex matches all types of instructions with labels and operands.
+// Try it out at http://www.regexr.com/
 const codePattern = new RegExp(
   labelPattern.source +
   instructionPattern.source +
   operandsPattern.source,
-  'i'
+  'i',
 );
-
-console.log(codePattern);
 
 function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
@@ -188,15 +192,14 @@ function handleAddressingMode(op) {
 }
 
 function parseLine(code) {
-  if (!/^\s*(?:;.*)?$/.test(code)) {
+  if (!/^\s*?$/.test(code)) {
     let [, instruction, operands = []] = codePattern.exec(code);
 
     instruction = _.replace(instruction, /\s+/g, '');
     console.log(`Instruction = ${instruction}`);
 
     // Remove spaces
-    operands = _
-      .chain(operands)
+    operands = _.chain(operands)
       .replace(/\s+/g, '')
       .split(',')
       .value();
@@ -240,9 +243,21 @@ function parseLine(code) {
 
 function handleExecution() {
   const code = memory.code;
+  const pattern = new RegExp(commentedRegex`
+    ^
+      ${labelPattern}
+      \s*
+      (?:
+        RETI?       <RET or RETI>
+        |           <or>
+        END         <END>
+      )
+      \s*
+    $
+  `, 'i');
   let i = memory.programCounter;
   while (i < code.length) {
-    if (/^\s*(?:([a-z]+)\s*?:)?\s*(?:RETI?|END)\s*(?:;.*)?$/i.test(code[i])) {
+    if (pattern.test(code[i])) {
       break;
     }
     memory.programCounter += 1;
@@ -262,11 +277,10 @@ function initMemory() {
 function initValues(input) {
   initMemory();
   const code = _.split(input, '\n');
-  const pattern = /\s*(?:([a-z]+)\s*?:)?/i;
 
   _.forEach(code, (line, index) => {
     code[index] = _.trim(line);
-    const [, label] = pattern.exec(line);
+    const [, label] = labelPattern.exec(line);
     if (!_.isUndefined(label)) {
       memory.labels.set(label, index);
     }
