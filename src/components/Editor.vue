@@ -50,6 +50,12 @@ export default {
         this.debugEditor(editor);
       });
     editor.focus();
+
+    window.addEventListener('beforeunload', (e) => {
+      if (editor.getValue() !== '') {
+        e.preventDefault();
+      }
+    });
   },
   methods: {
     ...mapMutations([
