@@ -204,13 +204,6 @@ function parseLine(code) {
       .split(',')
       .value();
 
-    let containsA = false;
-    _.forEach(operands, (op) => {
-      if (/A/i.test(op)) {
-        containsA = true;
-      }
-    });
-
     _.forEach(operands, (operand, index) => {
       let op = operand;
       if (/[0-9a-f]+h$/i.test(op)) {
@@ -232,6 +225,13 @@ function parseLine(code) {
       operands[index] = op;
     });
     console.log(`Operands: ${operands}`);
+
+    let containsA = false;
+    _.forEach(operands, (op) => {
+      if (/^224(?:\.[0-7])?$/.test(op)) {
+        containsA = true;
+      }
+    });
 
     // Call appropriate function with operands
     executeFunctionByName(instruction.toLowerCase(), funcs, operands);
