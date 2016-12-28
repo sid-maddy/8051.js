@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { delay, isEmpty, isUndefined } from 'lodash';
+import { delay, isEmpty } from 'lodash';
 import { mapMutations } from 'vuex';
 
 import ace from 'brace';
@@ -89,26 +89,21 @@ export default {
     highlightLine() {
       this.removeMarker();
       const result = this.$store.state.result;
-      if (!isUndefined(result.line)) {
-        this.marker = this.e.addMarker(
-          new Range(result.line, 0, result.line, Infinity),
-          `highlight-line ${result.status ? 'current' : 'error'}`,
-          'fullLine',
-        );
-      }
+      this.marker = this.e.addMarker(
+        new Range(result.line, 0, result.line, Infinity),
+        `highlight-line ${result.status ? 'current' : 'error'}`,
+        'fullLine',
+      );
 
       if (!result.status) {
-        this.showErrorMessage(result.msg, result.line);
+        this.isError = true;
+        delay(() => { this.isError = false; }, 2000);
+        this.errorMessage = result.msg;
+        this.lineNumber = result.line + 1;
       }
     },
     removeMarker() {
       this.e.removeMarker(this.marker);
-    },
-    showErrorMessage(msg, line) {
-      this.isError = true;
-      delay(() => { this.isError = false; }, 2000);
-      this.errorMessage = msg;
-      this.lineNumber = line + 1;
     },
   },
 };
