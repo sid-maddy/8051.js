@@ -5,7 +5,7 @@
         <h2 class="ui header">Pin Diagram</h1>
       </div>
       <div class="middle aligned center aligned column">
-        <h2 class="ui header">SFR Status</h1>
+        <h2 class="ui header">Memory</h1>
       </div>
       <div class="middle aligned center aligned column">
         <h2 class="ui header">Select Module</h1>
@@ -19,7 +19,7 @@
         <pin-diagram></pin-diagram>
       </div>
       <div class="column">
-        <sfr-status></sfr-status>
+        <memory></memory>
       </div>
       <div class="center aligned column">
         <select id="component-select" v-model="route">
@@ -39,7 +39,7 @@ import 'semantic-ui-css/semantic.min.css';
 import { replace } from 'lodash';
 
 import PinDiagram from 'components/PinDiagram';
-import SfrStatus from 'components/SfrStatus';
+import Memory from 'components/Memory';
 import Editor from 'components/Editor';
 
 export default {
@@ -50,7 +50,7 @@ export default {
   },
   components: {
     PinDiagram,
-    SfrStatus,
+    Memory,
     Editor,
   },
   methods: {
