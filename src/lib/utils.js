@@ -105,6 +105,70 @@ const codePattern = new RegExp(
   'i',
 );
 
+function isInt(str) {
+  return (str.indexOf('.') === -1);
+}
+
+function isFloat(str) {
+  return (str.indexOf('.') !== -1);
+}
+
+function isPort(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr === 0x80 || intAddr === 0x90 || intAddr === 0xA0 || intAddr === 0xB0);
+}
+
+function isALU(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr === 0xE0 || intAddr === 0xF0 || addr === `${memory.sfrMap.get('PSW')}.7`);
+}
+
+function isRAM(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr >= 0 && intAddr <= 127);
+}
+
+function isSFR(addr) {
+  const intAddr = parseInt(addr, 10);
+  return (intAddr <= 255 && !(isPort(addr)) && !(isALU(addr)) && !(isRAM(addr)));
+}
+
+function isRtoR(addr1, addr2) {
+  const intAddr1 = parseInt(addr1, 10);
+  const intAddr2 = parseInt(addr2, 10);
+  return ((intAddr1 >= 0 && intAddr1 <= 31) && (intAddr2 >= 0 && intAddr2 <= 31));
+}
+
+function isPortToPort(addr1, addr2) {
+  return (isPort(addr1) && isPort(addr2));
+}
+
+function isSFRtoSFR(addr1, addr2) {
+  return (isSFR(addr1) && isSFR(addr2));
+}
+
+function isBitAddr(addr) {
+  const intAddr = parseInt(addr, 10);
+  if (isInt(addr)) {
+    return ((intAddr >= 0 && intAddr <= 127));
+  }
+  if (isFloat(addr)) {
+    // All SFRs that whose addresses are divisible by 8 can be accessed with bit operations.
+    // http://www.8052.com/tutsfr.php
+    return ((intAddr % 8 === 0) && (intAddr >= 128 && intAddr <= 256));
+  }
+  return false;
+}
+
+function isByteAddr(addr) {
+  const intAddr = parseInt(addr, 10);
+  return ((isInt(addr)) && ((intAddr >= 0 && intAddr <= 31) || (intAddr >= 48 && intAddr <= 256)));
+}
+
+function isLabel(label) {
+  return (memory.labels.has(label));
+}
+
 function convertToBin(number, padWidth = 8) {
   const toString = Number.prototype.toString;
   const toBin = _.partialRight(toString.call.bind(toString), 2);
@@ -192,10 +256,11 @@ function handleAddressingMode(op) {
 }
 
 function parseLine(code) {
-  if (!/^\s*?$/.test(code)) {
+  let valid = { status: true };
+  if (!/^\s*(?:ORG\s+(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))?(?:;.*)?$/i.test(code)) {
     let [, instruction, operands = []] = codePattern.exec(code);
 
-    instruction = _.replace(instruction, /\s+/g, '');
+    instruction = _.replace(instruction, /\s+/g, '').toLowerCase();
     console.log(`Instruction = ${instruction}`);
 
     // Remove spaces
@@ -204,8 +269,12 @@ function parseLine(code) {
       .split(',')
       .value();
 
+    let countOfRegBank = 0;
     _.forEach(operands, (operand, index) => {
       let op = operand;
+      if (/^(?:@)?R[0-7]$/i.test(op)) {
+        countOfRegBank += 1;
+      }
       if (/[0-9a-f]+h$/i.test(op)) {
         // Convert all hex numbers to decimal
         op = convertToDec(op, /(@|#|\/)?([0-9a-f]+)h/i, 16);
@@ -225,6 +294,9 @@ function parseLine(code) {
       operands[index] = op;
     });
     console.log(`Operands: ${operands}`);
+    if (countOfRegBank > 1) {
+      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+    }
 
     let containsA = false;
     _.forEach(operands, (op) => {
@@ -233,12 +305,26 @@ function parseLine(code) {
       }
     });
 
-    // Call appropriate function with operands
-    executeFunctionByName(instruction.toLowerCase(), funcs, operands);
-    if (containsA) {
-      funcs.updateParity();
+    if (valid.status) {
+      const instructionCheck = memory.instructionCheck.get(instruction);
+      if (!_.isUndefined(instructionCheck)) {
+        valid = instructionCheck(operands);
+        if (valid.status) {
+          // Call appropriate function with operands
+          const executionError = executeFunctionByName(instruction, funcs, operands);
+          if (!_.isUndefined(executionError)) {
+            valid = executionError;
+          }
+          if (containsA) {
+            funcs.updateParity();
+          }
+        }
+      } else {
+        valid = { status: false, msg: 'Invalid instruction' };
+      }
     }
   }
+  return valid;
 }
 
 function handleExecution() {
@@ -253,17 +339,27 @@ function handleExecution() {
         END         <END>
       )
       \s*
+      (?:
+        ;.*         <Optional comment>
+      )?
     $
   `, 'i');
-  let i = memory.programCounter;
-  while (i < code.length) {
-    if (pattern.test(code[i])) {
+  let executionStatus = { status: true };
+  while (memory.programCounter < code.length) {
+    if (pattern.test(code[memory.programCounter])) {
+      executionStatus.line = memory.programCounter;
       break;
     }
     memory.programCounter += 1;
-    parseLine(code[i]);
-    i = memory.programCounter;
+    executionStatus = parseLine(code[memory.programCounter - 1]);
+    if (!executionStatus.status) {
+      if (_.isUndefined(executionStatus.line)) {
+        executionStatus.line = memory.programCounter - 1;
+      }
+      break;
+    }
   }
+  return executionStatus;
 }
 
 function initMemory() {
@@ -289,6 +385,16 @@ function initValues(input) {
 }
 
 export default {
+  isPort,
+  isALU,
+  isRAM,
+  isSFR,
+  isRtoR,
+  isPortToPort,
+  isSFRtoSFR,
+  isBitAddr,
+  isByteAddr,
+  isLabel,
   changeBit,
   convertToBin,
   displayRam,

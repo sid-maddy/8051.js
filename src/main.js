@@ -27,10 +27,10 @@ const store = new Vuex.Store({
   },
   mutations: {
     debug(state, code) {
-      Vue.set(state, 'debugResult', lib.debug(code));
+      Vue.set(state, 'result', lib.debug(code));
     },
     run(state, code) {
-      lib.run(code);
+      Vue.set(state, 'result', lib.run(code));
     },
   },
 });
