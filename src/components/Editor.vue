@@ -29,34 +29,39 @@ export default {
     return {
       code: '',
       isError: false,
-      marker: 0,
     };
   },
   mounted() {
     const editor = ace.edit(this.$el.querySelector('#ace-editor'));
     const editorSession = editor.getSession();
+    this.e = editorSession;
     editor.setTheme('ace/theme/tomorrow');
     editorSession.setMode('ace/mode/assembly_x86');
     editor.commands.addCommand({
       name: 'run',
       bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
-      exec: e => this.runEditor(e.getSession()),
+      exec: () => this.runEditor(),
       readOnly: true,
     });
     editor.commands.addCommand({
       name: 'debug',
       bindKey: { win: 'Ctrl-Shift-Enter', mac: 'Command-Shift-Enter' },
-      exec: e => this.debugEditor(e.getSession()),
+      exec: () => this.debugEditor(),
       readOnly: true,
     });
     this.$el.querySelector('#run-btn')
       .addEventListener('click', () => {
-        this.runEditor(editorSession);
+        this.runEditor();
       });
     this.$el.querySelector('#debug-btn')
       .addEventListener('click', () => {
-        this.debugEditor(editorSession);
+        this.debugEditor();
       });
+    editorSession.on('change', () => {
+      if (this.marker !== undefined) {
+        this.removeMarker();
+      }
+    });
     editor.focus();
   },
   methods: {
@@ -64,26 +69,32 @@ export default {
       'run',
       'debug',
     ]),
-    runEditor(e) {
-      this.run(e.getValue());
-      this.highlightLine(e, this.$store.state.result);
+    runEditor() {
+      this.run(this.e.getValue());
+      this.highlightLine();
     },
-    debugEditor(e) {
-      this.debug(e.getValue());
-      this.highlightLine(e, this.$store.state.result);
+    debugEditor() {
+      this.debug(this.e.getValue());
+      this.highlightLine();
     },
-    highlightLine(e, result) {
-      e.removeMarker(this.marker);
-      this.marker = e.addMarker(
-        new Range(result.line, 0, result.line, 1),
-        `highlight-line ${result.status ? 'current' : 'error'}`,
-        'fullLine',
-      );
+    highlightLine() {
+      this.removeMarker();
+      const result = this.$store.state.result;
+      if (result.line !== undefined) {
+        this.marker = this.e.addMarker(
+          new Range(result.line, 0, result.line, Infinity),
+          `highlight-line ${result.status ? 'current' : 'error'}`,
+          'fullLine',
+        );
+      }
 
       if (!result.status) {
         this.showErrorMessage(result.msg, result.line);
-        setTimeout(() => e.removeMarker(this.marker), 2500);
       }
+    },
+    removeMarker() {
+      this.e.removeMarker(this.marker);
+      delete this.marker;
     },
     showErrorMessage(msg, line) {
       this.isError = true;
