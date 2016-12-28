@@ -16,7 +16,7 @@ function run(input) {
 
 function debug(input) {
   const END = /^\s*(?:([a-z]+)\s*?:)?\s*(?:END)\s*(?:;.*)?$/i;
-  const RET = /^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI)\s*(?:;.*)?$/i;
+  const RET = /^\s*(?:([a-z]+)\s*?:)?\s*(?:RETI?)\s*(?:;.*)?$/i;
   const CALL = /^\s*(?:[a-z]+\s*?:)?\s*(?:LCALL|ACALL)\s+([a-z]+)\s*(?:;.*)?$/i;
 
   if (resetMemory || !(_.isEqual(memory.code, _.split(input, '\n')))) {

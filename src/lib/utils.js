@@ -270,6 +270,7 @@ function parseLine(code) {
       .value();
 
     let countOfRegBank = 0;
+    let containsA = false;
     _.forEach(operands, (operand, index) => {
       let op = operand;
       if (/^(?:@)?R[0-7]$/i.test(op)) {
@@ -291,36 +292,31 @@ function parseLine(code) {
       // Replace @ with the address and save immediate data at 256 index of RAM
       op = handleAddressingMode(op);
 
-      operands[index] = op;
-    });
-    console.log(`Operands: ${operands}`);
-    if (countOfRegBank > 1) {
-      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
-    }
-
-    let containsA = false;
-    _.forEach(operands, (op) => {
       if (/^224(?:\.[0-7])?$/.test(op)) {
         containsA = true;
       }
+
+      operands[index] = op;
     });
+    console.log(`Operands: ${operands}`);
+
+    const instructionCheck = memory.instructionCheck.get(instruction);
+    if (_.isUndefined(instructionCheck)) {
+      valid = { status: false, msg: 'Invalid instruction' };
+    } else if (countOfRegBank > 1) {
+      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+    } else {
+      valid = instructionCheck(operands);
+    }
 
     if (valid.status) {
-      const instructionCheck = memory.instructionCheck.get(instruction);
-      if (!_.isUndefined(instructionCheck)) {
-        valid = instructionCheck(operands);
-        if (valid.status) {
-          // Call appropriate function with operands
-          const executionError = executeFunctionByName(instruction, funcs, operands);
-          if (!_.isUndefined(executionError)) {
-            valid = executionError;
-          }
-          if (containsA) {
-            funcs.updateParity();
-          }
-        }
-      } else {
-        valid = { status: false, msg: 'Invalid instruction' };
+      // Call appropriate function with operands
+      const executionError = executeFunctionByName(instruction, funcs, operands);
+      if (!_.isUndefined(executionError)) {
+        valid = executionError;
+      }
+      if (containsA) {
+        funcs.updateParity();
       }
     }
   }
@@ -331,7 +327,7 @@ function handleExecution() {
   const code = memory.code;
   const pattern = new RegExp(commentedRegex`
     ^
-      ${labelPattern}
+      ${labelPattern.source}
       \s*
       (?:
         RETI?       <RET or RETI>
@@ -353,11 +349,11 @@ function handleExecution() {
     memory.programCounter += 1;
     executionStatus = parseLine(code[memory.programCounter - 1]);
     if (!executionStatus.status) {
-      if (_.isUndefined(executionStatus.line)) {
-        executionStatus.line = memory.programCounter - 1;
-      }
       break;
     }
+  }
+  if (_.isUndefined(executionStatus.line)) {
+    executionStatus.line = memory.programCounter - 1;
   }
   return executionStatus;
 }
@@ -376,8 +372,9 @@ function initValues(input) {
 
   _.forEach(code, (line, index) => {
     code[index] = _.trim(line);
-    const [, label] = labelPattern.exec(line);
-    if (!_.isUndefined(label)) {
+    let [label] = labelPattern.exec(line);
+    if (!_.isUndefined(label) && label !== '') {
+      label = _.trim(label.slice(0, -1));
       memory.labels.set(label, index);
     }
   });

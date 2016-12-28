@@ -1,4 +1,5 @@
 /* eslint-disable func-names */
+import _ from 'lodash';
 import utils from './utils';
 
 const sfrMap = new Map([
@@ -54,7 +55,9 @@ const instructionCheck = new Map([
   ['mov', function (operands) {
     let result = { status: true };
     if (operands.length === 2) {
-      if (operands[0] === `${sfrMap.get('PSW')}.7` || operands[1] === `${sfrMap.get('PSW')}.7`) {
+      if (_.isNaN(parseInt(operands[0], 10)) || _.isNaN(parseInt(operands[1], 10))) {
+        result = { status: false, msg: 'Invalid operands' };
+      } else if (operands[0] === `${sfrMap.get('PSW')}.7` || operands[1] === `${sfrMap.get('PSW')}.7`) {
         if (!(utils.isBitAddr(operands[0]) && utils.isBitAddr(operands[1]))) {
           result = { status: false, msg: 'Invalid operands' };
         }
