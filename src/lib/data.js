@@ -50,7 +50,9 @@ const instructionCheck = new Map([
   }],
   ['mov', (operands) => {
     if (operands.length === 2) {
-      if (operands[0] === `${sfrMap.get('PSW')}.7` || operands[1] === `${sfrMap.get('PSW')}.7`) {
+      if (isNaN(parseInt(operands[0], 10)) || isNaN(parseInt(operands[1], 10))) {
+        return { status: false, msg: 'Invalid operands' };
+      } else if (operands[0] === `${sfrMap.get('PSW')}.7` || operands[1] === `${sfrMap.get('PSW')}.7`) {
         if (!(utils.isBitAddr(operands[0]) && utils.isBitAddr(operands[1]))) {
           return { status: false, msg: 'Invalid operands' };
         }
