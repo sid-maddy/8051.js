@@ -28,7 +28,7 @@ function isRAM(addr) {
 
 function isSFR(addr) {
   const intAddr = parseInt(addr, 10);
-  return (!(isPort(addr) && isALU(addr) && isRAM(addr) && intAddr >= 128 && intAddr <= 255));
+  return (intAddr <= 255 && !(isPort(addr)) && !(isALU(addr)) && !(isRAM(addr)));
 }
 
 function isRtoR(addr1, addr2) {
@@ -155,7 +155,7 @@ function handleAddressingMode(op) {
 
 function parseLine(code) {
   let valid = { status: true };
-  if (!/^\s*(?:;.*)?$/.test(code)) {
+  if (!/^\s*(?:ORG\s+(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))?(?:;.*)?$/i.test(code)) {
     // This regex matches all types of instructions with labels and operands. Try it out here http://www.regexr.com/
     // FIXME: Optimise this regex and make it readable
     const pattern = new RegExp([
@@ -178,8 +178,12 @@ function parseLine(code) {
       .split(',')
       .value();
 
+    let countOfRegBank = 0;
     _.forEach(operands, (operand, index) => {
       let op = operand;
+      if (/^(?:@)?R[0-7]$/i.test(op)) {
+        countOfRegBank += 1;
+      }
       if (/[0-9a-f]+h$/i.test(op)) {
         // Convert all hex numbers to decimal
         op = convertToDec(op, /(@|#|\/)?([0-9a-f]+)h/i, 16);
@@ -199,23 +203,28 @@ function parseLine(code) {
       operands[index] = op;
     });
     console.log(`Operands: ${operands}`);
+    if (countOfRegBank > 1) {
+      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+    }
 
-    const instructionCheck = memory.instructionCheck.get(instruction);
-    if (!_.isUndefined(instructionCheck)) {
-      valid = instructionCheck(operands);
-      if (valid.status) {
-        // Call appropriate function with operands
-        const executionError = executeFunctionByName(instruction, funcs, operands);
-        if (!_.isUndefined(executionError)) {
-          valid = executionError;
+    if (valid.status) {
+      const instructionCheck = memory.instructionCheck.get(instruction);
+      if (!_.isUndefined(instructionCheck)) {
+        valid = instructionCheck(operands);
+        if (valid.status) {
+          // Call appropriate function with operands
+          const executionError = executeFunctionByName(instruction, funcs, operands);
+          if (!_.isUndefined(executionError)) {
+            valid = executionError;
+          }
+          if (_.includes(
+              operands, _.toString(memory.sfrMap.get('A')))) {
+            funcs.updateParity();
+          }
         }
-        if (_.includes(
-            operands, _.toString(memory.sfrMap.get('A')))) {
-          funcs.updateParity();
-        }
+      } else {
+        valid = { status: false, msg: 'Invalid instruction' };
       }
-    } else {
-      valid = { status: false, msg: 'Invalid instruction' };
     }
   }
   return valid;
