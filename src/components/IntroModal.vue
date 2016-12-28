@@ -1,0 +1,48 @@
+<template>
+  <div id="intro-modal" class="ui active small modal">
+    <div class="header">Important Note</div>
+    <div class="content">
+      <p>
+        This simulator does not support Timer and Serial programs.
+        So, registers related to those programs will not work as expected.
+        They are treated as normal registers.
+      </p>
+      <pre><code>HERE: JNB P0.0 HERE</code></pre>
+      <p>
+        Infinitely looping code, such as the one above, which relies on external input(s) to
+        break the loop <strong>will</strong> hang the site, prompting you to reload the site.
+        Also, use debug to, well, debug your code. Enjoy <i class="icon smile"></i>
+      </p>
+    </div>
+    <div class="actions">
+      <div class="ui positive button" @click="closeModal">OK</div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { includes } from 'lodash';
+
+export default {
+  methods: {
+    closeModal() {
+      const expires = new Date();
+      expires.setFullYear(expires.getFullYear() + 1);
+      document.cookie = `firstVisit=false; expires=${expires.toUTCString()} path=/`;
+      this.$el.classList.remove('active');
+      this.$emit('closeModal');
+    },
+  },
+  mounted() {
+    if (includes(document.cookie, 'firstVisit')) {
+      this.closeModal();
+    }
+  },
+};
+</script>
+
+<style scoped>
+#intro-modal {
+  top: 1em;
+}
+</style>

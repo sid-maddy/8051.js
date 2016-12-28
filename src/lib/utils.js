@@ -203,10 +203,6 @@ function convertToDec(op, pattern, base) {
   return `${addrMode}${decimal}`;
 }
 
-function displayRam() {
-  console.log(memory.ram);
-}
-
 // See http://stackoverflow.com/a/359910/4405407 for explanation
 function executeFunctionByName(funcName, context, args) {
   const namespaces = _.split(funcName, '.');
@@ -219,7 +215,6 @@ function executeFunctionByName(funcName, context, args) {
 function handleRegisters(reg) {
   return reg.replace(/^C$/i, `${memory.sfrMap.get('PSW')}.7`)
     .replace(/^(@)?([a-z]{1,4}[0-3]?)(\.[0-7])?$/i, (match, addrMode = '', sfr, bit = '') => {
-      console.log(match);
       let sfrAddr = memory.sfrMap.get(_.toUpper(sfr));
       if (_.isUndefined(sfrAddr)) {
         sfrAddr = sfr;
@@ -261,7 +256,6 @@ function parseLine(code) {
     let [, instruction, operands = []] = codePattern.exec(code);
 
     instruction = _.replace(instruction, /\s+/g, '').toLowerCase();
-    console.log(`Instruction = ${instruction}`);
 
     // Remove spaces
     operands = _.chain(operands)
@@ -293,7 +287,6 @@ function parseLine(code) {
 
       operands[index] = op;
     });
-    console.log(`Operands: ${operands}`);
     if (countOfRegBank > 1) {
       valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
     }
@@ -397,7 +390,6 @@ export default {
   isLabel,
   changeBit,
   convertToBin,
-  displayRam,
   parseLine,
   handleExecution,
   handleRegisters,

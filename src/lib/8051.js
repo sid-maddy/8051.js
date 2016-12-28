@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEqual, isNull, split } from 'lodash';
 import memory from './data';
 import utils from './utils';
 
@@ -8,9 +8,7 @@ let debugProgramCounterStack = [];
 function run(input) {
   utils.initValues(input);
   const executionStatus = utils.handleExecution();
-  utils.displayRam();
   resetMemory = true;
-  console.log(executionStatus);
   return executionStatus;
 }
 
@@ -19,7 +17,7 @@ function debug(input) {
   const RET = /^\s*(?:([a-z]+)\s*?:)?\s*(?:RET|RETI)\s*(?:;.*)?$/i;
   const CALL = /^\s*(?:[a-z]+\s*?:)?\s*(?:LCALL|ACALL)\s+([a-z]+)\s*(?:;.*)?$/i;
 
-  if (resetMemory || !(_.isEqual(memory.code, _.split(input, '\n')))) {
+  if (resetMemory || !(isEqual(memory.code, split(input, '\n')))) {
     utils.initValues(input);
     resetMemory = false;
     debugProgramCounterStack = [];
@@ -39,7 +37,7 @@ function debug(input) {
     }
   } else {
     const label = CALL.exec(memory.code[memory.programCounter - 1]);
-    if (!_.isNull(label)) {
+    if (!isNull(label)) {
       debugStatus = memory.instructionCheck.get('lcall')(new Array(label[1]));
       if (debugStatus.status) {
         debugProgramCounterStack.push(memory.programCounter);
@@ -50,7 +48,6 @@ function debug(input) {
       debugStatus = utils.parseLine(memory.code[memory.programCounter - 1]);
     }
   }
-  utils.displayRam();
   if (memory.programCounter >= memory.code.length) {
     if (debugProgramCounterStack.length > 0 && !resetMemory) {
       debugStatus = { status: false, msg: 'Expected RET statement on the next line' };
@@ -61,7 +58,6 @@ function debug(input) {
   if (!debugStatus.status) {
     resetMemory = true;
   }
-  console.log(debugStatus);
   return debugStatus;
 }
 

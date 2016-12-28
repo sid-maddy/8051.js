@@ -2,132 +2,132 @@
   <div id="pin-diagram">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 684.4 1043">
       <g font-size="40" font-family="sans-serif" letter-spacing="0" word-spacing="0">
-        <text x="585.4" y="29.5" transform="translate(1.77 .183)">
-          <tspan x="585.4" y="29.5">Vcc</tspan>
+        <text x="583.4" y="29.5" transform="translate(1.77 .183)">
+          <tspan>Vcc</tspan>
         </text>
-        <text x="581.8" y="1035.2" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="1035.2">P2.0</tspan>
+        <text x="583.4" y="1035.2" transform="translate(1.77 .183)">
+          <tspan>P2.0</tspan>
         </text>
-        <text x="581.8" y="982.6" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="982.6">P2.1</tspan>
+        <text x="583.4" y="982.6" transform="translate(1.77 .183)">
+          <tspan>P2.1</tspan>
         </text>
-        <text x="581.8" y="930" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="930">P2.2</tspan>
+        <text x="583.4" y="930" transform="translate(1.77 .183)">
+          <tspan>P2.2</tspan>
         </text>
-        <text x="581.8" y="876.9" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="876.9">P2.3</tspan>
+        <text x="583.4" y="876.9" transform="translate(1.77 .183)">
+          <tspan>P2.3</tspan>
         </text>
-        <text x="581.8" y="824.3" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="824.3">P2.4</tspan>
+        <text x="583.4" y="824.3" transform="translate(1.77 .183)">
+          <tspan>P2.4</tspan>
         </text>
-        <text x="581.8" y="771.1" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="771.1">P2.5</tspan>
+        <text x="583.4" y="771.1" transform="translate(1.77 .183)">
+          <tspan>P2.5</tspan>
         </text>
-        <text x="581.8" y="717.9" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="717.9">P2.6</tspan>
+        <text x="583.4" y="717.9" transform="translate(1.77 .183)">
+          <tspan>P2.6</tspan>
         </text>
-        <text x="581.8" y="665.3" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="665.3">P2.7</tspan>
+        <text x="583.4" y="665.3" transform="translate(1.77 .183)">
+          <tspan>P2.7</tspan>
         </text>
-        <text x="581.8" y="612.2" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="612.2">PSEN</tspan>
+        <text x="583.4" y="612.2" transform="translate(1.77 .183)">
+          <tspan>PSEN</tspan>
         </text>
-        <text x="585.4" y="559.6" transform="translate(1.77 .183)">
-          <tspan x="585.4" y="559.6">ALE</tspan>
+        <text x="583.4" y="559.6" transform="translate(1.77 .183)">
+          <tspan>ALE</tspan>
         </text>
-        <text x="581.8" y="507.5" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="507.5">EA</tspan>
+        <text x="583.4" y="507.5" transform="translate(1.77 .183)">
+          <tspan>EA</tspan>
         </text>
-        <text x="581.8" y="82.7" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="82.7">P0.0</tspan>
+        <text x="583.4" y="82.7" transform="translate(1.77 .183)">
+          <tspan>P0.0</tspan>
         </text>
-        <text x="581.8" y="135.8" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="135.8">P0.1</tspan>
+        <text x="583.4" y="135.8" transform="translate(1.77 .183)">
+          <tspan>P0.1</tspan>
         </text>
-        <text x="581.8" y="189" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="189">P0.2</tspan>
+        <text x="583.4" y="189" transform="translate(1.77 .183)">
+          <tspan>P0.2</tspan>
         </text>
-        <text x="581.8" y="242.2" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="242.2">P0.3</tspan>
+        <text x="583.4" y="242.2" transform="translate(1.77 .183)">
+          <tspan>P0.3</tspan>
         </text>
-        <text x="581.8" y="295.3" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="295.3">P0.4</tspan>
+        <text x="583.4" y="295.3" transform="translate(1.77 .183)">
+          <tspan>P0.4</tspan>
         </text>
-        <text x="581.8" y="348.5" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="348.5">P0.5</tspan>
+        <text x="583.4" y="348.5" transform="translate(1.77 .183)">
+          <tspan>P0.5</tspan>
         </text>
-        <text x="581.8" y="401.7" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="401.7">P0.6</tspan>
+        <text x="583.4" y="401.7" transform="translate(1.77 .183)">
+          <tspan>P0.6</tspan>
         </text>
-        <text x="581.8" y="454.8" transform="translate(1.77 .183)">
-          <tspan x="581.8" y="454.8">P0.7</tspan>
+        <text x="583.4" y="454.8" transform="translate(1.77 .183)">
+          <tspan>P0.7</tspan>
         </text>
-        <text x="617.4" y="29.5" transform="translate(-582.98 .182)">
-          <tspan x="617.4" y="29.5">P1.0</tspan>
+        <text x="583.4" y="29.5" transform="translate(-582.98 .182)">
+          <tspan>P1.0</tspan>
         </text>
-        <text x="611.8" y="1035.2" transform="translate(-582.98 .182)">
-          <tspan x="611.8" y="1035.2">GND</tspan>
+        <text x="583.4" y="1035.2" transform="translate(-582.98 .182)">
+          <tspan>GND</tspan>
         </text>
-        <text x="581.8" y="982.6" transform="translate(-582.98 .182)">
-          <tspan x="581.8" y="982.6">XTAL1</tspan>
+        <text x="583.4" y="982.6" transform="translate(-582.98 .182)">
+          <tspan>XTAL1</tspan>
         </text>
-        <text x="581.8" y="930" transform="translate(-582.98 .182)">
-          <tspan x="581.8" y="930">XTAL2</tspan>
+        <text x="583.4" y="930" transform="translate(-582.98 .182)">
+          <tspan>XTAL2</tspan>
         </text>
-        <text x="617.8" y="876.9" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="876.9">P3.7</tspan>
+        <text x="583.4" y="876.9" transform="translate(-582.98 .182)">
+          <tspan>P3.7</tspan>
         </text>
-        <text x="617.8" y="824.3" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="824.3">P3.6</tspan>
+        <text x="583.4" y="824.3" transform="translate(-582.98 .182)">
+          <tspan>P3.6</tspan>
         </text>
-        <text x="617.8" y="771.1" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="771.1">P3.5</tspan>
+        <text x="583.4" y="771.1" transform="translate(-582.98 .182)">
+          <tspan>P3.5</tspan>
         </text>
-        <text x="615.8" y="717.9" transform="translate(-582.98 .182)">
-          <tspan x="615.8" y="717.9">P3.4</tspan>
+        <text x="583.4" y="717.9" transform="translate(-582.98 .182)">
+          <tspan>P3.4</tspan>
         </text>
-        <text x="617.8" y="665.3" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="665.3">P3.3</tspan>
+        <text x="583.4" y="665.3" transform="translate(-582.98 .182)">
+          <tspan>P3.3</tspan>
         </text>
-        <text x="617.8" y="612.2" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="612.2">P3.2</tspan>
+        <text x="583.4" y="612.2" transform="translate(-582.98 .182)">
+          <tspan>P3.2</tspan>
         </text>
-        <text x="617.4" y="559.6" transform="translate(-582.98 .182)">
-          <tspan x="617.4" y="559.6">P3.1</tspan>
+        <text x="583.4" y="559.6" transform="translate(-582.98 .182)">
+          <tspan>P3.1</tspan>
         </text>
-        <text x="615.8" y="507.5" transform="translate(-582.98 .182)">
-          <tspan x="615.8" y="507.5">P3.0</tspan>
+        <text x="583.4" y="507.5" transform="translate(-582.98 .182)">
+          <tspan>P3.0</tspan>
         </text>
-        <text x="617.8" y="82.7" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="82.7">P1.1</tspan>
+        <text x="583.4" y="82.7" transform="translate(-582.98 .182)">
+          <tspan>P1.1</tspan>
         </text>
-        <text x="617.8" y="135.8" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="135.8">P1.2</tspan>
+        <text x="583.4" y="135.8" transform="translate(-582.98 .182)">
+          <tspan>P1.2</tspan>
         </text>
-        <text x="617.8" y="189" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="189">P1.3</tspan>
+        <text x="583.4" y="189" transform="translate(-582.98 .182)">
+          <tspan>P1.3</tspan>
         </text>
-        <text x="617.8" y="242.2" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="242.2">P1.4</tspan>
+        <text x="583.4" y="242.2" transform="translate(-582.98 .182)">
+          <tspan>P1.4</tspan>
         </text>
-        <text x="617.8" y="295.3" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="295.3">P1.5</tspan>
+        <text x="583.4" y="295.3" transform="translate(-582.98 .182)">
+          <tspan>P1.5</tspan>
         </text>
-        <text x="617.8" y="348.5" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="348.5">P1.6</tspan>
+        <text x="583.4" y="348.5" transform="translate(-582.98 .182)">
+          <tspan>P1.6</tspan>
         </text>
-        <text x="617.8" y="401.7" transform="translate(-582.98 .182)">
-          <tspan x="617.8" y="401.7">P1.7</tspan>
+        <text x="583.4" y="401.7" transform="translate(-582.98 .182)">
+          <tspan>P1.7</tspan>
         </text>
-        <text x="623.8" y="454.8" transform="translate(-582.98 .182)">
-          <tspan x="623.8" y="454.8">RST</tspan>
+        <text x="583.4" y="454.8" transform="translate(-582.98 .182)">
+          <tspan>RST</tspan>
         </text>
       </g>
       <g fill="#9e9e9e" stroke="#000" transform="translate(-19.082 -4.887)">
         <rect width="399" height="1040.1" x="-571.5" y="7.3" transform="scale(-1 1)" ry="5.2" rx="4.3"/>
       </g>
-      <text x="236.9" y="565.3" font-size="107.1" font-family="sans-serif" letter-spacing="0" word-spacing="0" transform="translate(-19.082 -3.816)">
-        <tspan x="236.9" y="565.3">8051</tspan>
+      <text x="250.9" y="565.3" font-size="107.1" font-family="sans-serif" transform="translate(-19.082 -3.816)">
+        <tspan>8051</tspan>
       </text>
       <g fill="none" stroke="#000" stroke-width="3.1">
         <g transform="translate(59.526 -.778) scale(.8422)">
@@ -257,7 +257,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import _ from 'lodash';
+import { forEach, range } from 'lodash';
 
 export default {
   computed: mapGetters([
@@ -269,9 +269,9 @@ export default {
   mounted() {
     const toBin = this.$store.state.utils.convertToBin;
     this.$store.subscribe(() => {
-      _.forEach(_.range(4), (i) => {
+      forEach(range(4), (i) => {
         const port = toBin(this[`getP${i}`]());
-        _.forEach(_.range(8), (j) => {
+        forEach(range(8), (j) => {
           const elt = this.$el.querySelector(`#port${i}${j}`);
           elt.setAttribute('class', port[7 - j] === '1' ? 'high' : 'low');
         });
@@ -281,12 +281,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-svg {
-  width: 100%;
-  height: 100%;
-}
-
+<style scoped>
 .high {
   fill: red;
 }

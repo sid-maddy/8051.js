@@ -27,7 +27,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import _ from 'lodash';
+import { floor, forEach } from 'lodash';
 
 export default {
   name: 'DC-Motor',
@@ -45,16 +45,16 @@ export default {
       'getP3',
     ]),
     portNum1() {
-      return _.floor(this.portPinNum1);
+      return floor(this.portPinNum1);
     },
     portNum2() {
-      return _.floor(this.portPinNum2);
+      return floor(this.portPinNum2);
     },
     pinNum1() {
-      return _.floor((this.portPinNum1 % 1).toFixed(1) * 10);
+      return floor((this.portPinNum1 % 1, 1) * 10);
     },
     pinNum2() {
-      return _.floor((this.portPinNum2 % 1).toFixed(1) * 10);
+      return floor((this.portPinNum2 % 1, 1) * 10);
     },
   },
   mounted() {
@@ -75,7 +75,7 @@ export default {
         motorClass = 'counter-clockwise';
       }
 
-      _.forEach(rotator.children, (child) => {
+      forEach(rotator.children, (child) => {
         child.setAttribute('class', `motor ${motorClass}`);
 
         // To restart animation, see https://css-tricks.com/restart-css-animation/
@@ -87,11 +87,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-svg {
-  width: 100%;
-  height: 100%;
-}
-
 @mixin apply-animation($name) {
   animation-direction: if($name == c, normal, reverse);
   animation-duration: 2s;

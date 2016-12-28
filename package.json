@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "brace": "^0.9.0",
-    "lodash": "^4.17.2",
+    "lodash": "^4.17.3",
     "semantic-ui-css": "^2.2.4",
-    "vue": "^2.1.0",
+    "vue": "^2.1.8",
     "vue-router": "^2.1.1",
     "vuex": "^2.1.1"
   },
@@ -73,11 +73,11 @@
     "url-loader": "^0.5.7",
     "vue-loader": "^10.0.0",
     "vue-style-loader": "^1.0.0",
-    "vue-template-compiler": "^2.1.0",
+    "vue-template-compiler": "^2.1.8",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.3",
     "webpack-hot-middleware": "^2.12.2",
-    "webpack-merge": "^1.1.2"
+    "webpack-merge": "^2.0.0"
   },
   "engines": {
     "node": ">= 6.9.0",

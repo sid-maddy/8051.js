@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="ui four column stackable grid">
+    <intro-modal v-if="showModal" @closeModal="showModal = false"></intro-modal>
     <div class="row">
       <div class="middle aligned center aligned column">
         <h2 class="ui header">Pin Diagram</h1>
@@ -8,7 +9,7 @@
         <h2 class="ui header">Memory</h1>
       </div>
       <div class="middle aligned center aligned column">
-        <h2 class="ui header">Select Module</h1>
+        <h2 class="ui header">Peripherals</h1>
       </div>
       <div class="middle aligned center aligned column">
         <h2 class="ui header">Editor</h1>
@@ -23,7 +24,11 @@
       </div>
       <div class="center aligned column">
         <select id="component-select" v-model="route">
-          <option v-for="route in $router.options.routes" :value="route.path">{{ humanize(route.component.name) }}</option>
+          <option
+            v-for="route in $router.options.routes"
+            :value="route.path">
+            {{ humanize(route.component.name) }}
+          </option>
         </select>
         <router-view class="ui basic segment"></router-view>
       </div>
@@ -38,17 +43,20 @@
 import 'semantic-ui-css/semantic.min.css';
 import { replace } from 'lodash';
 
-import PinDiagram from 'components/PinDiagram';
-import Memory from 'components/Memory';
-import Editor from 'components/Editor';
+import IntroModal from './components/IntroModal';
+import PinDiagram from './components/PinDiagram';
+import Memory from './components/Memory';
+import Editor from './components/Editor';
 
 export default {
   data() {
     return {
       route: '/seven-segment',
+      showModal: true,
     };
   },
   components: {
+    IntroModal,
     PinDiagram,
     Memory,
     Editor,
@@ -63,7 +71,7 @@ export default {
       this.$router.replace(route);
     },
   },
-  mounted() {
+  created() {
     this.$router.replace(this.route);
   },
 };
@@ -72,7 +80,6 @@ export default {
 <style lang="scss">
 #app {
   margin: 0 0.5em;
-  height: 100%;
 }
 
 .highlight-line {

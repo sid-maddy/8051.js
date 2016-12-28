@@ -1,22 +1,29 @@
 /* eslint-disable no-bitwise */
 /* eslint no-cond-assign: [2, "except-parens"] */
-import _ from 'lodash';
+import {
+  countBy,
+  floor,
+  isUndefined,
+  map,
+  parseInt as int,
+  toArray,
+} from 'lodash';
 import memory from './data';
 import utils from './utils';
 
 function setb(bitAddr) {
   const [addr, bit] = utils.translateToBitAddressable(bitAddr);
   const binary = utils.changeBit(addr, bit, 1);
-  memory.ram[addr] = _.parseInt(binary, 2);
+  memory.ram[addr] = int(binary, 2);
 }
 
 function clr(bitAddr) {
   const [addr, bit] = utils.translateToBitAddressable(bitAddr);
-  if (_.isUndefined(bit)) {
+  if (isUndefined(bit)) {
     memory.ram[addr] = 0;
   } else {
     const binary = utils.changeBit(addr, bit, 0);
-    memory.ram[addr] = _.parseInt(binary, 2);
+    memory.ram[addr] = int(binary, 2);
   }
 }
 
@@ -41,7 +48,7 @@ function mov(addr1, addr2) {
 
 function cpl(bitAddr) {
   const [addr, bit] = utils.translateToBitAddressable(bitAddr);
-  if (_.isUndefined(bit)) {
+  if (isUndefined(bit)) {
     memory.ram[addr] = 255 - memory.ram[addr];
   } else if (utils.isBitSet(addr, bit)) {
     clr(bitAddr);
@@ -51,9 +58,9 @@ function cpl(bitAddr) {
 }
 
 function add(addr1, addr2) {
-  const [num1, num2] = _.map([addr1, addr2], addr => memory.ram[addr]);
-  const [nib1, nib2] = _.map([num1, num2], num =>
-    _.parseInt(utils.convertToBin(num).slice(4), 2));
+  const [num1, num2] = map([addr1, addr2], addr => memory.ram[addr]);
+  const [nib1, nib2] = map([num1, num2], num =>
+    int(utils.convertToBin(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
   if (nib1 + nib2 > 15) {
@@ -79,9 +86,9 @@ function addc(addr1, addr2) {
 }
 
 function subb(addr1, addr2) {
-  const [num1, num2] = _.map([addr1, addr2], addr => memory.ram[addr]);
-  const [nib1, nib2] = _.map([num1, num2], num =>
-    _.parseInt(utils.convertToBin(num).slice(4), 2));
+  const [num1, num2] = map([addr1, addr2], addr => memory.ram[addr]);
+  const [nib1, nib2] = map([num1, num2], num =>
+    int(utils.convertToBin(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
   let minuend = num1;
@@ -102,8 +109,8 @@ function subb(addr1, addr2) {
   memory.ram[addr1] = minuend - (utils.isBitSet(psw, 7) ? 1 : 0) - num2;
 }
 
+// eslint-disable-next-line no-unused-vars
 function mul(addr) {
-  console.log(addr); // jabardasti h `addr` use karna, for eslint
   const psw = memory.sfrMap.get('PSW');
   const a = memory.sfrMap.get('A');
   const b = memory.sfrMap.get('B');
@@ -113,8 +120,8 @@ function mul(addr) {
   if (product > 255) {
     const binary = utils.convertToBin(product, 16);
     setb(`${psw}.2`);
-    memory.ram[a] = _.parseInt(binary.slice(8), 2);
-    memory.ram[b] = _.parseInt(binary.slice(0, 8), 2);
+    memory.ram[a] = int(binary.slice(8), 2);
+    memory.ram[b] = int(binary.slice(0, 8), 2);
   } else {
     clr(`${psw}.2`);
     memory.ram[a] = product;
@@ -122,8 +129,8 @@ function mul(addr) {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function div(addr) {
-  console.log(addr); // jabardasti h `addr` use karna, for eslint
   const psw = memory.sfrMap.get('PSW');
   const a = memory.sfrMap.get('A');
   const b = memory.sfrMap.get('B');
@@ -135,7 +142,7 @@ function div(addr) {
     memory.ram[b] = 0;
   } else {
     clr(`${psw}.2`);
-    const quotient = _.floor(memory.ram[a] / memory.ram[b]);
+    const quotient = floor(memory.ram[a] / memory.ram[b]);
     const remainder = memory.ram[a] % memory.ram[b];
     memory.ram[a] = quotient;
     memory.ram[b] = remainder;
@@ -253,7 +260,7 @@ function nop() {
 
 function updateParity() {
   const acc = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
-  if ((_.countBy(_.toArray(acc))['1'] || 0) % 2 === 0) {
+  if ((countBy(toArray(acc))['1'] || 0) % 2 === 0) {
     clr(`${memory.sfrMap.get('PSW')}.0`);
   } else {
     setb(`${memory.sfrMap.get('PSW')}.0`);
@@ -311,8 +318,8 @@ function rlc(addr) {
   rotateA(addr, false, true);
 }
 
+// eslint-disable-next-line no-unused-vars
 function swap(addr) {
-  console.log(addr); // jabardasti h `addr` use karna, for eslint
   const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
   const lowerNibble = A.slice(4);
   const higherNibble = A.slice(0, 4);
@@ -352,8 +359,8 @@ function xch(addr1, addr2) {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function da(addr) {
-  console.log(addr); // jabardasti h `addr` use karna, for eslint
   const A = memory.sfrMap.get('A');
   const PSW = memory.sfrMap.get('PSW');
   const lNibA = parseInt(utils.convertToBin(memory.ram[A]).slice(4), 2);
@@ -376,7 +383,7 @@ function da(addr) {
 
 function anl(addr1, addr2) {
   const [byteAddr1, bit1] = utils.translateToBitAddressable(addr1);
-  if (_.isUndefined(bit1)) {
+  if (isUndefined(bit1)) {
     memory.ram[addr1] &= memory.ram[addr2];
   } else {
     const [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);
@@ -390,7 +397,7 @@ function anl(addr1, addr2) {
 
 function orl(addr1, addr2) {
   const [byteAddr1, bit1] = utils.translateToBitAddressable(addr1);
-  if (_.isUndefined(bit1)) {
+  if (isUndefined(bit1)) {
     memory.ram[addr1] |= memory.ram[addr2];
   } else {
     const [byteAddr2, bit2] = utils.translateToBitAddressable(addr2);

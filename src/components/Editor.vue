@@ -1,6 +1,6 @@
 <template>
   <div id="editor">
-    <div v-if="isError" class="ui negative message">
+    <div v-show="isError" class="ui negative message">
       <div class="header">
         Error at line {{ lineNumber }}
       </div>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { delay, isEmpty, isUndefined } from 'lodash';
 import { mapMutations } from 'vuex';
 
 import ace from 'brace';
@@ -28,7 +29,9 @@ export default {
   data() {
     return {
       code: '',
+      errorMessage: '',
       isError: false,
+      lineNumber: 0,
     };
   },
   mounted() {
@@ -65,7 +68,7 @@ export default {
     editor.focus();
 
     window.addEventListener('beforeunload', (e) => {
-      if (editor.getValue() !== '') {
+      if (!isEmpty(editor.getValue())) {
         e.preventDefault();
       }
     });
@@ -86,7 +89,7 @@ export default {
     highlightLine() {
       this.removeMarker();
       const result = this.$store.state.result;
-      if (result.line !== undefined) {
+      if (!isUndefined(result.line)) {
         this.marker = this.e.addMarker(
           new Range(result.line, 0, result.line, Infinity),
           `highlight-line ${result.status ? 'current' : 'error'}`,
@@ -100,11 +103,10 @@ export default {
     },
     removeMarker() {
       this.e.removeMarker(this.marker);
-      delete this.marker;
     },
     showErrorMessage(msg, line) {
       this.isError = true;
-      setTimeout(() => { this.isError = false; }, 2000);
+      delay(() => { this.isError = false; }, 2000);
       this.errorMessage = msg;
       this.lineNumber = line + 1;
     },
@@ -112,7 +114,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .message {
   z-index: 100;
 }

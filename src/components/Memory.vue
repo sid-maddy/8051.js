@@ -1,7 +1,7 @@
 <template>
   <div id="memory" class="ui stackable grid">
     <div class="eight wide column">
-      <table id="sfrTable" class="ui small compact center aligned table">
+      <table id="sfrTable" class="ui small very basic very compact center aligned table">
         <thead>
           <tr>
             <th>SFR</th>
@@ -17,7 +17,7 @@
       </table>
     </div>
     <div class="eight wide column">
-      <table id="ramTable" class="ui small compact center aligned table">
+      <table id="ramTable" class="ui small very basic very compact center aligned table">
         <thead>
           <tr>
             <th>Location</th>
@@ -38,7 +38,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import { padStart, parseInt } from 'lodash';
+import { padStart, parseInt as int } from 'lodash';
 
 export default {
   data() {
@@ -47,13 +47,9 @@ export default {
     };
   },
   computed: mapState(['memory']),
-  mounted() {
-    this.updateMemory(this.memory);
-    this.$store.subscribe((_, state) => this.updateMemory(state.memory));
-  },
   methods: {
     toHex(value) {
-      return `0x${padStart(parseInt(value).toString(16), 2, '0')}`;
+      return `0x${padStart(int(value).toString(16), 2, '0')}`;
     },
     updateMemory(mem) {
       const temp = [];
@@ -63,5 +59,16 @@ export default {
       this.sfrs = temp;
     },
   },
+  created() {
+    this.updateMemory(this.memory);
+    this.$store.subscribe((_, state) => this.updateMemory(state.memory));
+  },
 };
 </script>
+
+<style scoped>
+.column {
+  height: 35em;
+  overflow-y: scroll;
+}
+</style>
