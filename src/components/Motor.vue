@@ -14,12 +14,12 @@
     </svg>
     <select id="port-pin1-select" v-model="portPinNum1">
       <optgroup v-for="i in 4" :label="'Port ' + (i - 1)">
-        <option v-for="j in 7" :value="(i - 1) + ((j - 1) / 10)">Pin P{{ (i - 1) + '.' + (j - 1) }}</option>
+        <option v-for="j in 8" :value="(i - 1) + ((j - 1) / 10)">Pin P{{ (i - 1) + '.' + (j - 1) }}</option>
       </optgroup>
     </select>
     <select id="port-pin2-select" v-model="portPinNum2">
       <optgroup v-for="i in 4" :label="'Port ' + (i - 1)">
-        <option v-for="j in 7" :value="(i - 1) + ((j - 1) / 10)">Pin P{{ (i - 1) + '.' + (j - 1) }}</option>
+        <option v-for="j in 8" :value="(i - 1) + ((j - 1) / 10)">Pin P{{ (i - 1) + '.' + (j - 1) }}</option>
       </optgroup>
     </select>
   </div>

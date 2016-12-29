@@ -58,6 +58,9 @@ function debug(input) {
   if (!debugStatus.status) {
     resetMemory = true;
   }
+  if (!resetMemory) {
+    debugStatus.nextLine = memory.programCounter;
+  }
   return debugStatus;
 }
 
