@@ -51,10 +51,10 @@ export default {
       return floor(this.portPinNum2);
     },
     pinNum1() {
-      return floor((this.portPinNum1 % 1, 1) * 10);
+      return floor((this.portPinNum1 % 1).toFixed(1) * 10);
     },
     pinNum2() {
-      return floor((this.portPinNum2 % 1, 1) * 10);
+      return floor((this.portPinNum2 % 1).toFixed(1) * 10);
     },
   },
   mounted() {
