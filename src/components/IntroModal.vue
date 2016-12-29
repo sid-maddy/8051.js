@@ -11,7 +11,11 @@
       <p>
         Infinitely looping code, such as the one above, which relies on external input(s) to
         break the loop <strong>will</strong> hang the site, prompting you to reload the site.
-        Also, use debug to, well, debug your code. Enjoy <i class="icon smile"></i>
+      </p>
+      <p>
+        <span class="ui green label">Last executed line</span>
+        <span class="ui blue label">Next line to be executed (Program Counter)</span>
+        <span class="ui red label">Errored line</span>
       </p>
     </div>
     <div class="actions">
@@ -26,10 +30,7 @@ import { includes } from 'lodash';
 export default {
   methods: {
     closeModal() {
-      const expires = new Date();
-      expires.setFullYear(expires.getFullYear() + 1);
-      document.cookie = `firstVisit=false; expires=${expires.toUTCString()} path=/`;
-      this.$el.classList.remove('active');
+      document.cookie = 'firstVisit=false; path=/';
       this.$emit('closeModal');
     },
   },

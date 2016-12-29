@@ -90,6 +90,10 @@ export default {
     background-color: #76ff03;
   }
 
+  &.next {
+    background-color: #03a9f4;
+  }
+
   &.error {
     background-color: #f44336;
   }

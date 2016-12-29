@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { delay, isEmpty } from 'lodash';
+import { delay, forEach, isEmpty, isUndefined } from 'lodash';
 import { mapMutations } from 'vuex';
 
 import ace from 'brace';
@@ -32,6 +32,7 @@ export default {
       errorMessage: '',
       isError: false,
       lineNumber: 0,
+      markers: [],
     };
   },
   mounted() {
@@ -40,31 +41,9 @@ export default {
     this.e = editorSession;
     editor.setTheme('ace/theme/tomorrow');
     editorSession.setMode('ace/mode/assembly_x86');
-    editor.commands.addCommand({
-      name: 'run',
-      bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
-      exec: () => this.runEditor(),
-      readOnly: true,
-    });
-    editor.commands.addCommand({
-      name: 'debug',
-      bindKey: { win: 'Ctrl-Shift-Enter', mac: 'Command-Shift-Enter' },
-      exec: () => this.debugEditor(),
-      readOnly: true,
-    });
-    this.$el.querySelector('#run-btn')
-      .addEventListener('click', () => {
-        this.runEditor();
-      });
-    this.$el.querySelector('#debug-btn')
-      .addEventListener('click', () => {
-        this.debugEditor();
-      });
-    editorSession.on('change', () => {
-      if (this.marker !== undefined) {
-        this.removeMarker();
-      }
-    });
+    this.$el.querySelector('#run-btn').addEventListener('click', () => this.runEditor());
+    this.$el.querySelector('#debug-btn').addEventListener('click', () => this.debugEditor());
+    editorSession.on('change', () => this.removeMarkers());
     editor.focus();
 
     window.addEventListener('beforeunload', (e) => {
@@ -87,13 +66,24 @@ export default {
       this.highlightLine();
     },
     highlightLine() {
-      this.removeMarker();
+      this.removeMarkers();
       const result = this.$store.state.result;
-      this.marker = this.e.addMarker(
-        new Range(result.line, 0, result.line, Infinity),
-        `highlight-line ${result.status ? 'current' : 'error'}`,
-        'fullLine',
-      );
+
+      if (!isUndefined(result.line)) {
+        this.markers.push(this.e.addMarker(
+          new Range(result.line, 0, result.line, Infinity),
+          `highlight-line ${result.status ? 'current' : 'error'}`,
+          'fullLine',
+        ));
+      }
+
+      if (!isUndefined(result.nextLine)) {
+        this.markers.push(this.e.addMarker(
+          new Range(result.nextLine, 0, result.nextLine, Infinity),
+          'highlight-line next',
+          'fullLine',
+        ));
+      }
 
       if (!result.status) {
         this.isError = true;
@@ -102,8 +92,13 @@ export default {
         this.lineNumber = result.line + 1;
       }
     },
-    removeMarker() {
-      this.e.removeMarker(this.marker);
+    removeMarkers() {
+      if (!isUndefined(this.markers)) {
+        forEach(this.markers, (marker) => {
+          this.e.removeMarker(marker);
+        });
+        this.markers.length = 0;
+      }
     },
   },
 };
