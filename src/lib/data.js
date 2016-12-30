@@ -3,6 +3,7 @@ import utils from './utils';
 const sfrMap = new Map([
   ['A', 0xE0],
   ['B', 0xF0],
+  ['PSW', 0xD0],
   ['P0', 0x80],
   ['P1', 0x90],
   ['P2', 0xA0],
@@ -21,7 +22,6 @@ const sfrMap = new Map([
   ['SBUF', 0x99],
   ['IE', 0xA8],
   ['IP', 0xB8],
-  ['PSW', 0xD0],
 ]);
 
 const ram = new Uint8Array(257);

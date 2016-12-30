@@ -91,22 +91,19 @@ function subb(addr1, addr2) {
     int(utils.convertToBin(num).slice(4), 2));
   const psw = memory.sfrMap.get('PSW');
 
-  let minuend = num1;
   if (nib1 < nib2) {
     setb(`${psw}.6`);
-    minuend += 16;
   } else {
     clr(`${psw}.6`);
   }
 
   if (num1 < num2) {
     setb(`${psw}.7`);
-    minuend += 256;
   } else {
     clr(`${psw}.7`);
   }
 
-  memory.ram[addr1] = minuend - (utils.isBitSet(psw, 7) ? 1 : 0) - num2;
+  memory.ram[addr1] = num1 - (utils.isBitSet(psw, 7) ? 1 : 0) - num2;
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -232,9 +229,13 @@ function call(label) {
   const tempProgramCounter = memory.programCounter;
   jump(label);
   memory.ram[memory.sfrMap.get('SP')] += 2;
-  const status = utils.handleExecution();
-  memory.ram[memory.sfrMap.get('SP')] -= 2;
-  memory.programCounter = tempProgramCounter;
+  let status = utils.handleExecution();
+  if (memory.programCounter >= memory.code.length) {
+    status = { status: false, msg: 'Expected RET statement on the next line' };
+  } else {
+    memory.ram[memory.sfrMap.get('SP')] -= 2;
+    memory.programCounter = tempProgramCounter;
+  }
   return status;
 }
 
