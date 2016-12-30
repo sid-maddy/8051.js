@@ -39,18 +39,20 @@ export default {
     const editor = ace.edit(this.$el.querySelector('#ace-editor'));
     const editorSession = editor.getSession();
     this.e = editorSession;
+
     editor.setTheme('ace/theme/tomorrow');
     editorSession.setMode('ace/mode/assembly_x86');
+
     this.$el.querySelector('#run-btn').addEventListener('click', () => this.runEditor());
     this.$el.querySelector('#debug-btn').addEventListener('click', () => this.debugEditor());
     editorSession.on('change', () => this.removeMarkers());
-    editor.focus();
-
     window.addEventListener('beforeunload', (e) => {
       if (!isEmpty(editor.getValue())) {
         e.preventDefault();
       }
     });
+
+    editor.focus();
   },
   methods: {
     ...mapMutations([

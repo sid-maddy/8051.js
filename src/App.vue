@@ -87,15 +87,15 @@ export default {
   z-index: 2;
 
   &.current {
-    background-color: #76ff03;
+    background-color: #b2ff59;
   }
 
   &.next {
-    background-color: #03a9f4;
+    background-color: #18ffff;
   }
 
   &.error {
-    background-color: #f44336;
+    background-color: #ff5252;
   }
 }
 </style>
