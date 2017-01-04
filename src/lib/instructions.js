@@ -148,7 +148,7 @@ function div(addr) {
 
 // Jump helper
 function jump(label) {
-  memory.programCounter = memory.labels.get(label);
+  memory.programCounter = memory.labels.get(label.toLowerCase());
 }
 
 function ajmp(label) {
@@ -226,17 +226,8 @@ function cjne(addr1, addr2, label) {
 
 // Call helper
 function call(label) {
-  const tempProgramCounter = memory.programCounter;
+  utils.pushProgramCounter();
   jump(label);
-  memory.ram[memory.sfrMap.get('SP')] += 2;
-  let status = utils.handleExecution();
-  if (memory.programCounter >= memory.code.length) {
-    status = { status: false, msg: 'Expected RET statement on the next line' };
-  } else {
-    memory.ram[memory.sfrMap.get('SP')] -= 2;
-    memory.programCounter = tempProgramCounter;
-  }
-  return status;
 }
 
 function lcall(label) {

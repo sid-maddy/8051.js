@@ -3,6 +3,9 @@ import _ from 'lodash';
 import memory from './data';
 import funcs from './instructions';
 
+let resetMemory = true;
+let programCounterStack = [];
+
 function commentedRegex(strings, ...values) {
   const string = _.chain(strings.raw)
     .map((v, i) => v + (values[i] || ''))
@@ -166,7 +169,7 @@ function isByteAddr(addr) {
 }
 
 function isLabel(label) {
-  return (memory.labels.has(label));
+  return (memory.labels.has(label.toLowerCase()));
 }
 
 function convertToBin(number, padWidth = 8) {
@@ -316,41 +319,6 @@ function parseLine(code) {
   return valid;
 }
 
-function handleExecution() {
-  const code = memory.code;
-  const pattern = new RegExp(commentedRegex`
-    ^
-      ${labelPattern.source}
-      \s*
-      (?:
-        RETI?       <RET or RETI>
-        |           <or>
-        END         <END>
-      )
-      \s*
-      (?:
-        ;.*         <Optional comment>
-      )?
-    $
-  `, 'i');
-  let executionStatus = { status: true };
-  while (memory.programCounter < code.length) {
-    if (pattern.test(code[memory.programCounter])) {
-      executionStatus.line = memory.programCounter;
-      break;
-    }
-    memory.programCounter += 1;
-    executionStatus = parseLine(code[memory.programCounter - 1]);
-    if (!executionStatus.status) {
-      break;
-    }
-  }
-  if (_.isUndefined(executionStatus.line)) {
-    executionStatus.line = memory.programCounter - 1;
-  }
-  return executionStatus;
-}
-
 function initMemory() {
   memory.ram.set(new Uint8Array(257));
   memory.ram[memory.sfrMap.get('SP')] = 0x07;
@@ -368,10 +336,108 @@ function initValues(input) {
     let [label] = labelPattern.exec(line);
     if (!_.isUndefined(label) && label !== '') {
       label = _.trim(label.slice(0, -1));
-      memory.labels.set(label, index);
+      memory.labels.set(label.toLowerCase(), index);
     }
   });
   memory.code = code;
+}
+
+function reset(input) {
+  initValues(input);
+  programCounterStack = [];
+  resetMemory = false;
+}
+
+function pushProgramCounter() {
+  programCounterStack.push(memory.programCounter);
+  memory.ram[memory.sfrMap.get('SP')] += 2;
+}
+
+function popProgramCounter() {
+  let executionStatus = { status: true };
+  if (programCounterStack.length > 0) {
+    memory.programCounter = programCounterStack.pop();
+    memory.ram[memory.sfrMap.get('SP')] -= 2;
+  } else {
+    executionStatus = { status: false, msg: 'Unexpected RET statement' };
+    resetMemory = true;
+    memory.programCounter = memory.code.length + 1; // this breaks the handleExecution loop
+  }
+  return executionStatus;
+}
+
+function executeNextLine(input) {
+  const RET = new RegExp(commentedRegex`
+    ^
+      ${labelPattern.source}
+      \s*
+      (?:
+        RETI?       <RET or RETI>
+      )
+      \s*
+      (?:
+        ;.*         <Optional comment>
+      )?
+    $
+  `, 'i');
+
+  const END = new RegExp(commentedRegex`
+    ^
+      ${labelPattern.source}
+      \s*
+      (?:
+        END         <END>
+      )
+      \s*
+      (?:
+        ;.*         <Optional comment>
+      )?
+    $
+  `, 'i');
+
+  if (resetMemory) { // reset before executing next line
+    reset(input);
+  }
+
+  const lineNumber = memory.programCounter;
+  let executionStatus = { status: true };
+
+  memory.programCounter += 1;
+  if (END.test(memory.code[memory.programCounter - 1])) {
+    resetMemory = true;
+    memory.programCounter = memory.code.length + 1; // this breaks the handleExecution loop
+  } else if (RET.test(memory.code[memory.programCounter - 1])) {
+    executionStatus = popProgramCounter();
+  } else {
+    executionStatus = parseLine(memory.code[memory.programCounter - 1]);
+  }
+
+  if (memory.programCounter >= memory.code.length) { // reached end of code
+    if (programCounterStack.length > 0 && !resetMemory) { // within a sub-routine call
+      executionStatus = { status: false, msg: 'Expected RET statement on the next line' };
+    }
+    resetMemory = true;
+  }
+
+  executionStatus.line = lineNumber;
+
+  if (!executionStatus.status) { // reset because error occurred
+    resetMemory = true;
+  }
+
+  if (!resetMemory) { // set nextLine if not reached end of program
+    executionStatus.nextLine = memory.programCounter;
+  }
+  return executionStatus;
+}
+
+function handleExecution(input) {
+  reset(input);
+  let executionStatus = { status: true };
+  while (memory.programCounter < memory.code.length && executionStatus) {
+    executionStatus = executeNextLine(input);
+  }
+  return executionStatus;
 }
 
 export default {
@@ -388,9 +454,12 @@ export default {
   changeBit,
   convertToBin,
   parseLine,
+  reset,
+  executeNextLine,
   handleExecution,
   handleRegisters,
   initValues,
   isBitSet,
   translateToBitAddressable,
+  pushProgramCounter,
 };
