@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import App from './App';
 import SevenSegment from './components/SevenSegment';
 import Motor from './components/Motor';
+import AdcDacSlider from './components/AdcDacSlider';
 
 import lib from './lib/8051';
 
@@ -17,6 +18,8 @@ const router = new VueRouter({
     path: '/seven-segment', component: SevenSegment,
   }, {
     path: '/motor', component: Motor,
+  }, {
+    path: '/adc-dac', component: AdcDacSlider,
   }],
 });
 
@@ -31,6 +34,10 @@ const store = new Vuex.Store({
     },
     run(state, code) {
       Vue.set(state, 'result', lib.run(code));
+    },
+    setPort(state, [port, value]) {
+      // eslint-disable-next-line no-param-reassign
+      state.memory.ram[state.memory.sfrMap.get(`P${port}`)] = value;
     },
   },
 });
