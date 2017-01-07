@@ -1,8 +1,8 @@
 <template>
-  <div id="adc-dac" class="ui padded basic segment">
-    <input type="number" id="posVref" v-model.number="posVref" />
-    <input type="range" id="adc-dac-range" max="255" :step="255 / effVref" v-model.number="portValue" />
-    <input type="number" id="vin" :min="negVref" :max="posVref" v-model.number="vin" />
+  <div class="ui padded basic segment">
+    <input type="number" v-model.number="posVref" />
+    <input type="range" id="adc-dac-range" max="255" v-model.number="portValue" />
+    <input type="number" id="vin" :min="negVref" :max="posVref" step="any" v-model.number="vin" />
     <input type="number" id="negVref" v-model.number="negVref" />
     <select id="port-select" v-model="portNum">
       <option v-for="i in 4" :value="i - 1">Port {{ i - 1 }}</option>
@@ -50,14 +50,14 @@ export default {
     this.$store.subscribe((mutation) => {
       if (mutation.type !== 'setPort') {
         const port = this[`getP${this.portNum}`]();
-        this.portValue = (port * 100) / 255;
+        this.portValue = port;
       }
     });
   },
 };
 </script>
 
-<style lang="scss">
+<style scoped>
 #adc-dac-range {
   margin-top: 7.5em;
   transform: rotate(270deg);

@@ -1,5 +1,5 @@
 <template>
-  <div id="seven-segment">
+  <div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 195.6" version="1">
       <g fill="none" stroke="#000" transform="translate(-82 -56.5)">
         <path id="segment6" d="M190.8 72.5 175.6 88h-59L101 72.5 116.7 57h59L191 72.5z"></path>

@@ -1,5 +1,5 @@
 <template>
-  <div id="motor">
+  <div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 406.8" version="1">
       <g fill="none" stroke="#000">
         <g transform="rotate(-90 82.933 439.114)">

@@ -1,7 +1,7 @@
 <template>
-  <div id="memory" class="ui stackable grid">
+  <div class="ui grid">
     <div class="eight wide column">
-      <table id="sfrTable" class="ui small very basic very compact center aligned table">
+      <table class="ui small very basic very compact center aligned table">
         <thead>
           <tr>
             <th>SFR</th>
@@ -17,7 +17,7 @@
       </table>
     </div>
     <div class="eight wide column">
-      <table id="ramTable" class="ui small very basic very compact center aligned table">
+      <table class="ui small very basic very compact center aligned table">
         <thead>
           <tr>
             <th>Location</th>
@@ -51,24 +51,24 @@ export default {
     toHex(value) {
       return `0x${padStart(int(value).toString(16), 2, '0')}`;
     },
-    updateMemory(mem) {
+    updateMemory() {
       const temp = [];
-      for (const [k, v] of mem.sfrMap) {
-        temp.push({ sfr: k, value: mem.ram[v] });
+      for (const [k, v] of this.memory.sfrMap) {
+        temp.push({ sfr: k, value: this.memory.ram[v] });
       }
       this.sfrs = temp;
     },
   },
   created() {
-    this.updateMemory(this.memory);
-    this.$store.subscribe((_, state) => this.updateMemory(state.memory));
+    this.updateMemory();
+    this.$store.subscribe(this.updateMemory);
   },
 };
 </script>
 
 <style scoped>
 .column {
-  height: 35em;
+  height: 37.5em;
   overflow-y: scroll;
 }
 </style>

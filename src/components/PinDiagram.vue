@@ -1,5 +1,5 @@
 <template>
-  <div id="pin-diagram">
+  <div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 684.4 1043">
       <g font-size="40" font-family="sans-serif" letter-spacing="0" word-spacing="0">
         <text x="583.4" y="29.5" transform="translate(1.77 .183)">
