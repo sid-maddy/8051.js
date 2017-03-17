@@ -20,8 +20,8 @@ function commentedRegex(strings, ...values) {
 
 const labelPattern = new RegExp(commentedRegex`
   \s*
-  (?:               <Any word followed by a colon>
-    [a-z]+\s*?:     <with any number of spaces between>
+  (?:               <Any word or number followed by a colon>
+    [a-z\d]+\s*?:   <with any number of spaces between>
   )?
 `, 'i');
 
