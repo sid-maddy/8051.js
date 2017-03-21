@@ -35,6 +35,9 @@ const store = new Vuex.Store({
     run(state, code) {
       Vue.set(state, 'result', lib.run(code));
     },
+    reset(state, code) {
+      lib.reset(code);
+    },
     setPort(state, [port, value]) {
       // eslint-disable-next-line no-param-reassign
       state.memory.ram[state.memory.sfrMap.get(`P${port}`)] = value;
@@ -45,6 +48,8 @@ const store = new Vuex.Store({
 for (const [k, v] of store.state.memory.sfrMap) {
   store.getters[`get${k}`] = () => store.state.memory.ram[v];
 }
+
+Vue.config.productionTip = false;
 
 new Vue({
   el: '#app',

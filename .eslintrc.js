@@ -1,12 +1,12 @@
 module.exports = {
   root: true,
   parser: 'babel-eslint',
-  "env": {
-    "browser": true,
-    "node": true
-  },
   parserOptions: {
     sourceType: 'module'
+  },
+  env: {
+    browser: true,
+    node: true
   },
   extends: 'airbnb-base',
   // required to lint *.vue files
@@ -27,6 +27,10 @@ module.exports = {
     'import/extensions': ['error', 'always', {
       'js': 'never',
       'vue': 'never'
+    }],
+    // allow optionalDependencies
+    'import/no-extraneous-dependencies': ['error', {
+      'optionalDependencies': ['test/unit/index.js']
     }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,

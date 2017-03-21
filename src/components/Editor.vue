@@ -11,6 +11,8 @@
       <button id="run-btn" class="ui green button">Run</button>
       <div class="or"></div>
       <button id="debug-btn" class="ui blue button">Debug</button>
+      <div class="or"></div>
+      <button id="reset-btn" class="ui grey button">Reset</button>
     </div>
   </div>
 </template>
@@ -45,7 +47,8 @@ export default {
 
     this.$el.querySelector('#run-btn').addEventListener('click', () => this.runEditor());
     this.$el.querySelector('#debug-btn').addEventListener('click', () => this.debugEditor());
-    editorSession.on('change', () => this.removeMarkers());
+    this.$el.querySelector('#reset-btn').addEventListener('click', () => this.resetEditor());
+    editorSession.on('change', () => this.resetEditor());
     window.addEventListener('beforeunload', (e) => {
       if (!isEmpty(editor.getValue())) {
         e.preventDefault();
@@ -58,6 +61,7 @@ export default {
     ...mapMutations([
       'run',
       'debug',
+      'reset',
     ]),
     runEditor() {
       this.run(this.e.getValue());
@@ -66,6 +70,10 @@ export default {
     debugEditor() {
       this.debug(this.e.getValue());
       this.highlightLine();
+    },
+    resetEditor() {
+      this.removeMarkers();
+      this.reset(this.e.getValue());
     },
     highlightLine() {
       this.removeMarkers();

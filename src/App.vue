@@ -3,16 +3,16 @@
     <intro-modal v-if="showModal" @closeModal="showModal = false"></intro-modal>
     <div class="row">
       <div class="middle aligned center aligned column">
-        <h2 class="ui header">Pin Diagram</h1>
+        <h2 class="ui header">Pin Diagram</h2>
       </div>
       <div class="middle aligned center aligned column">
-        <h2 class="ui header">Memory</h1>
+        <h2 class="ui header">Memory</h2>
       </div>
       <div class="middle aligned center aligned column">
-        <h2 class="ui header">Peripherals</h1>
+        <h2 class="ui header">Peripherals</h2>
       </div>
       <div class="middle aligned center aligned column">
-        <h2 class="ui header">Editor</h1>
+        <h2 class="ui header">Editor</h2>
       </div>
     </div>
     <div class="row">
