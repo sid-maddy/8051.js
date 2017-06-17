@@ -1,6 +1,12 @@
 {
   "folders": [{
-    "path": ".",
-    "folder_include_patterns": ["src", "src/", "static"],
+    "folder_include_patterns": [
+      "docs",
+      "docs/",
+      "src",
+      "src/",
+      "static"
+    ],
+    "path": "."
   }]
 }

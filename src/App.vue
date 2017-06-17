@@ -23,13 +23,6 @@
         <memory></memory>
       </div>
       <div class="center aligned column">
-        <select id="component-select" v-model="route">
-          <option
-            v-for="route in $router.options.routes"
-            :value="route.path">
-            {{ humanize(route.component.name) }}
-          </option>
-        </select>
         <router-view class="ui basic segment"></router-view>
       </div>
       <div class="column">
