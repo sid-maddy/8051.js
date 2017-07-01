@@ -21,10 +21,11 @@ There are 2 modes of execution: Run mode and Debug mode.
 
 1. Run Mode
 
- In this mode, the current state of the microcontroller is reset and the assembly code is executed from the beginning continuously until either an error occurs or all lines are executed.
+   In this mode, the current state of the microcontroller is reset and the assembly code is executed from the beginning continuously until either an error occurs or all lines are executed.
+
 2. Debug Mode
 
- In this mode, no changes to the current state of the microcontroller are made (unless the previous line of execution either returned an error or was the last line of the assembly code) and it only executes one line of the assembly code per call.
+   In this mode, no changes to the current state of the microcontroller are made (unless the previous line of execution either returned an error or was the last line of the assembly code) and it only executes one line of the assembly code per call.
 
 #### Parsing assembly code
 Initially, the assembly code entered by the user is broken into lines and stored in an array ```code```, and labels (used by jump and call instructions) are detected from each line and corresponding line numbers are stored in a ```Map``` called ```labels```. The assembly code is then parsed and executed one line at a time.
