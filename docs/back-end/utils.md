@@ -121,11 +121,10 @@ Returns an object indicating the status of execution and an error message if any
 Returns an object indicating success, or error if `programCounterStack` is empty along with an error message.
 
 ## executeNextLine
->
- 1. Checks for `RET` or `RETI` instructions to end a subroutine call.
- 2. Checks for `END` assembler directive to end a stop execution of code.
- 3. Resets state of microcontroller before executing next line, if required.
- 4. Calls `parseLine` to parse and execute the next line.
+> 1. Checks for `RET` or `RETI` instructions to end a subroutine call.
+> 2. Checks for `END` assembler directive to end a stop execution of code.
+> 3. Resets state of microcontroller before executing next line, if required.
+> 4. Calls `parseLine` to parse and execute the next line.
 
 > Returns an object indicating the status of execution, an error message if error occurred, and the line number which will be executed next.
 
