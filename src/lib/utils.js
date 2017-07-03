@@ -118,12 +118,12 @@ function isFloat(str) {
 
 function isPort(addr) {
   const intAddr = parseInt(addr, 10);
-  return (intAddr === 0x80 || intAddr === 0x90 || intAddr === 0xA0 || intAddr === 0xB0);
+  return (intAddr === memory.sfrMap.get('P0') || intAddr === memory.sfrMap.get('P1') || intAddr === memory.sfrMap.get('P2') || intAddr === memory.sfrMap.get('P3'));
 }
 
 function isALU(addr) {
   const intAddr = parseInt(addr, 10);
-  return (intAddr === 0xE0 || intAddr === 0xF0 || addr === `${memory.sfrMap.get('PSW')}.7`);
+  return (intAddr === memory.sfrMap.get('A') || intAddr === memory.sfrMap.get('B') || addr === `${memory.sfrMap.get('PSW')}.7`);
 }
 
 function isRAM(addr) {
@@ -325,6 +325,7 @@ function initMemory() {
   memory.code = '';
   memory.labels = new Map();
   memory.programCounter = 0;
+  programCounterStack = [];
 }
 
 function initValues(input) {
@@ -340,11 +341,6 @@ function initValues(input) {
     }
   });
   memory.code = code;
-}
-
-function reset(input) {
-  initValues(input);
-  programCounterStack = [];
   resetMemory = false;
 }
 
@@ -396,7 +392,7 @@ function executeNextLine(input) {
   `, 'i');
 
   if (resetMemory) { // reset before executing next line
-    reset(input);
+    initValues(input);
   }
 
   const lineNumber = memory.programCounter;
@@ -432,10 +428,11 @@ function executeNextLine(input) {
 }
 
 function handleExecution(input) {
-  reset(input);
+  initValues(input);
   let executionStatus = { status: true };
-  while (memory.programCounter < memory.code.length && executionStatus) {
+  while (memory.programCounter < memory.code.length && executionStatus.status) {
     executionStatus = executeNextLine(input);
+    console.log('loop');
   }
   return executionStatus;
 }
@@ -454,7 +451,6 @@ export default {
   changeBit,
   convertToBin,
   parseLine,
-  reset,
   executeNextLine,
   handleExecution,
   handleRegisters,

@@ -10,7 +10,7 @@ function debug(input) {
 }
 
 function reset(input) {
-  utils.reset(input);
+  utils.initValues(input);
 }
 
 export default {
