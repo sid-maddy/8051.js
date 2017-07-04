@@ -3,9 +3,6 @@
 ## resetMemory
 > Boolean which indicates whether to reset the current state of microcontroller before executing the next instruction.
 
-## programCounterStack
-> Stacks the values of `programCounter` when making subroutine calls.
-
 ## commentedRegex
 > Removes comments from commented regex strings (example: <comment here>).
 
@@ -113,18 +110,10 @@ Returns an object indicating the status of execution and an error message if any
 ## initValues
 > Calls `initMemory` to reset state of microcontroller and initializes `code` and `labels`.
 
-## pushProgramCounter
-> Pushes the current value of `programCounter` into `programCounterStack` and increments `SP` by 2.
-
-## popProgramCounter
-> Pops the top of `programCounterStack` and stores it in `programCounter` and decrements `SP` by 2.  
-Returns an object indicating success, or error if `programCounterStack` is empty along with an error message.
-
 ## executeNextLine
-> 1. Checks for `RET` or `RETI` instructions to end a subroutine call.
-> 2. Checks for `END` assembler directive to end a stop execution of code.
-> 3. Resets state of microcontroller before executing next line, if required.
-> 4. Calls `parseLine` to parse and execute the next line.
+> 1. Checks for `END` assembler directive to stop execution of code.
+> 2. Resets state of microcontroller before executing next line, if required.
+> 3. Calls `parseLine` to parse and execute the next line.
 
 > Returns an object indicating the status of execution, an error message if error occurred, and the line number which will be executed next.
 

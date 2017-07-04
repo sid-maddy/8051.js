@@ -278,6 +278,18 @@ const instructionCheck = new Map([
     }
     return { status: true };
   }],
+  ['ret', (operands) => {
+    if (operands.length !== 1 || operands[0] !== '') {
+      return { status: false, msg: 'Invalid number of operands' };
+    }
+    return { status: true };
+  }],
+  ['reti', (operands) => {
+    if (operands.length !== 1 || operands[0] !== '') {
+      return { status: false, msg: 'Invalid number of operands' };
+    }
+    return { status: true };
+  }],
 ]);
 
 export default {
@@ -287,4 +299,5 @@ export default {
   code: '',
   labels: new Map(),
   programCounter: 0,
+  programCounterStack: [],
 };

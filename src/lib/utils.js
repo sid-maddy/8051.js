@@ -4,7 +4,6 @@ import memory from './data';
 import funcs from './instructions';
 
 let resetMemory = true;
-let programCounterStack = [];
 
 function commentedRegex(strings, ...values) {
   const string = _.chain(strings.raw)
@@ -39,7 +38,7 @@ const numberRegex = commentedRegex`
   )
   |
   (?:
-    [\da-f]+h       <Hexadecimal numbers followed by 'h'>
+    \d+[a-f]*h       <Hexadecimal numbers followed by 'h'>
   )
   |
   (?:
@@ -123,7 +122,6 @@ const ignoreLinePattern = new RegExp(commentedRegex`
 `, 'i');
 
 // This regex matches all types of instructions with labels and operands.
-// Try it out at http://www.regexr.com/
 const codePattern = new RegExp(
   labelPattern.source +
   instructionPattern.source +
@@ -279,7 +277,8 @@ function handleAddressingMode(op) {
 
 function parseLine(code) {
   let valid = { status: true };
-  if (!ignoreLinePattern.test(code)) {
+
+  if (!ignoreLinePattern.test(code)) { // ignore blank line and ORG directive
     // eslint-disable-next-line prefer-const
     let [, instruction, operands = [], unexpectedChars] = codePattern.exec(code);
 
@@ -291,8 +290,9 @@ function parseLine(code) {
       .split(',')
       .value();
 
+    // if extra characters are not comments, they are invalid
     if (unexpectedChars.length > 0 && !commentPattern.test(unexpectedChars)) {
-      valid = { status: false, msg: `Invalid operand ${operands[operands.length - 1]}${unexpectedChars}` };
+      valid = { status: false, msg: 'Invalid operand(s)' };
     }
 
     let countOfRegBank = 0;
@@ -302,13 +302,13 @@ function parseLine(code) {
       if (/^(?:@)?R[0-7]$/i.test(op)) {
         countOfRegBank += 1;
       }
-      if (/[0-9a-f]+h$/i.test(op)) {
+      if (/[\da-f]+h$/i.test(op)) {
         // Convert all hex numbers to decimal
-        op = convertToDec(op, /(@|#|\/)?([0-9a-f]+)h/i, 16);
+        op = convertToDec(op, /(@|#|\/)?([\da-f]+)h/i, 16);
       } else if (/[01]+b$/i.test(op)) {
         // Convert all binary numbers to decimal
         op = convertToDec(op, /(@|#|\/)?([01]+)b/i, 2);
-      } else if (/[0-9]+d$/i.test(op)) {
+      } else if (/\d+d$/i.test(op)) {
         // Remove optional D from decimal number
         op = op.slice(0, -1);
       }
@@ -326,13 +326,14 @@ function parseLine(code) {
     });
 
     const instructionCheck = memory.instructionCheck.get(instruction);
+
     if (valid.status) {
       if (_.isUndefined(instructionCheck)) {
         valid = { status: false, msg: 'Invalid instruction' };
       } else if (countOfRegBank > 1) {
         valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
       } else {
-        valid = instructionCheck(operands);
+        valid = instructionCheck(operands); // check if operands are allowed for the instruction
       }
     }
 
@@ -356,7 +357,7 @@ function initMemory() {
   memory.code = '';
   memory.labels = new Map();
   memory.programCounter = 0;
-  programCounterStack = [];
+  memory.programCounterStack = [];
 }
 
 function initValues(input) {
@@ -365,7 +366,7 @@ function initValues(input) {
 
   _.forEach(code, (line, index) => {
     code[index] = _.trim(line);
-    let [label] = labelPattern.exec(line);
+    let [label] = labelPattern.exec(line); // map labels to line numbers
     if (!_.isUndefined(label) && label !== '') {
       label = _.trim(label.slice(0, -1));
       memory.labels.set(label.toLowerCase(), index);
@@ -375,53 +376,20 @@ function initValues(input) {
   resetMemory = false;
 }
 
-function pushProgramCounter() {
-  programCounterStack.push(memory.programCounter);
-  memory.ram[memory.sfrMap.get('SP')] += 2;
-}
-
-function popProgramCounter() {
-  let executionStatus = { status: true };
-  if (programCounterStack.length > 0) {
-    memory.programCounter = programCounterStack.pop();
-    memory.ram[memory.sfrMap.get('SP')] -= 2;
-  } else {
-    executionStatus = { status: false, msg: 'Unexpected RET statement' };
-    resetMemory = true;
-    memory.programCounter = memory.code.length + 1; // this breaks the handleExecution loop
-  }
-  return executionStatus;
-}
+const ENDpattern = new RegExp(commentedRegex`
+  ^
+    ${labelPattern.source}
+    \s*
+    (?:
+      END
+    )
+    (?:           <Optional comment>
+      ${commentPattern.source}
+    )?
+  $
+`, 'i');
 
 function executeNextLine(input) {
-  const RET = new RegExp(commentedRegex`
-    ^
-      ${labelPattern.source}
-      \s*
-      (?:
-        RETI?       <RET or RETI>
-      )
-      \s*
-      (?:
-        ;.*         <Optional comment>
-      )?
-    $
-  `, 'i');
-
-  const END = new RegExp(commentedRegex`
-    ^
-      ${labelPattern.source}
-      \s*
-      (?:
-        END         <END>
-      )
-      \s*
-      (?:
-        ;.*         <Optional comment>
-      )?
-    $
-  `, 'i');
-
   if (resetMemory) { // reset before executing next line
     initValues(input);
   }
@@ -430,37 +398,28 @@ function executeNextLine(input) {
   let executionStatus = { status: true };
 
   memory.programCounter += 1;
-  if (END.test(memory.code[memory.programCounter - 1])) {
+  // stop execution if END assembler directive
+  if (ENDpattern.test(memory.code[memory.programCounter - 1])) {
     resetMemory = true;
     memory.programCounter = memory.code.length + 1; // this breaks the handleExecution loop
-  } else if (RET.test(memory.code[memory.programCounter - 1])) {
-    executionStatus = popProgramCounter();
   } else {
     executionStatus = parseLine(memory.code[memory.programCounter - 1]);
   }
 
-  if (memory.programCounter >= memory.code.length) { // reached end of code
-    if (programCounterStack.length > 0 && !resetMemory) { // within a sub-routine call
-      executionStatus = { status: false, msg: 'Expected RET statement on the next line' };
-    }
+  // reset if reached end of code or error occured
+  if (memory.programCounter >= memory.code.length || !executionStatus.status) {
     resetMemory = true;
   }
 
   executionStatus.line = lineNumber;
-
-  if (!executionStatus.status) { // reset because error occurred
-    resetMemory = true;
-  }
-
-  if (!resetMemory) { // set nextLine if not reached end of program
-    executionStatus.nextLine = memory.programCounter;
-  }
+  executionStatus.nextLine = memory.programCounter;
   return executionStatus;
 }
 
 function handleExecution(input) {
   initValues(input);
   let executionStatus = { status: true };
+  // run until either error occurs or reached end of code
   while (memory.programCounter < memory.code.length && executionStatus.status) {
     executionStatus = executeNextLine(input);
   }
@@ -487,5 +446,4 @@ export default {
   initValues,
   isBitSet,
   translateToBitAddressable,
-  pushProgramCounter,
 };

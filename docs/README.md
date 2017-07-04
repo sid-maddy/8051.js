@@ -65,8 +65,9 @@ The simulator does not support:
 3. 16-bit registers (like `DPTR`)
 4. Code memory
 5. Assembler directives other than `ORG` and `END`
+6. Interrupts
 
-Also note that during subroutine calls the return address is not actually stored in stack memory since there is no code memory in the simulator (`programCounterStack` is used for this purpose, as explained above). However, the value of `SP` is incremented and decremented appropriately.
+Also note that during subroutine calls the return address stored in stack memory is just line numbers since there is no code memory in the simulator.
 
 ## [Vue Components](components)
 Docs related to the [Vue.js components](../src/components)

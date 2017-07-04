@@ -222,8 +222,15 @@ function cjne(addr1, addr2, label) {
 
 // Call helper
 function call(label) {
-  utils.pushProgramCounter();
+  if (memory.ram[memory.sfrMap.get('SP')] + 2 > 0x7F) {
+    return { status: false, msg: 'Stack Overflow' };
+  }
+  memory.programCounterStack.push(memory.programCounter);
+  memory.ram[memory.ram[memory.sfrMap.get('SP')] + 1] = memory.programCounter;
+  memory.ram[memory.ram[memory.sfrMap.get('SP')] + 2] = memory.programCounter;
+  memory.ram[memory.sfrMap.get('SP')] += 2;
   jump(label);
+  return { status: true };
 }
 
 function lcall(label) {
@@ -401,6 +408,23 @@ function xrl(addr1, addr2) {
   memory.ram[addr1] ^= memory.ram[addr2];
 }
 
+function ret() {
+  let executionStatus = { status: true };
+  if (memory.programCounterStack.length > 0) {
+    memory.programCounter = memory.programCounterStack.pop();
+    memory.ram[memory.sfrMap.get('SP')] -= 2;
+  } else {
+    executionStatus = { status: false, msg: 'Stack Underflow' };
+    utils.resetMemory = true;
+    memory.programCounter = memory.code.length + 1; // this breaks the handleExecution loop
+  }
+  return executionStatus;
+}
+
+function reti() {
+  return ret();
+}
+
 export default {
   setb,
   clr,
@@ -441,5 +465,7 @@ export default {
   inc,
   dec,
   nop,
+  ret,
+  reti,
   updateParity,
 };
