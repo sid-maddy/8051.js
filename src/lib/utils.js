@@ -96,7 +96,30 @@ const operandsPattern = new RegExp(commentedRegex`
       [a-z]+\s*?    <which is always a label>
     )
   )?
-)?
+)?\s*
+`, 'i');
+
+const commentPattern = new RegExp(commentedRegex`
+  \s*
+    (?:
+      ;.*           <Anything beginning with ;>
+    )
+`);
+
+const ignoreLinePattern = new RegExp(commentedRegex`
+  ^
+    \s*             <Any spaces>
+      (?:           <Optional ORG directive which is ignored>
+        ORG\s+
+        (?:
+          ${numberRegex}
+        )
+      )?
+      (?:           <Optional comment>
+        ${commentPattern.source}
+      )?
+    \s*             <Any spaces after ORG or comment>
+  $
 `, 'i');
 
 // This regex matches all types of instructions with labels and operands.
@@ -104,7 +127,8 @@ const operandsPattern = new RegExp(commentedRegex`
 const codePattern = new RegExp(
   labelPattern.source +
   instructionPattern.source +
-  operandsPattern.source,
+  operandsPattern.source +
+  new RegExp(/(.*)/).source, // any unexpected characters
   'i',
 );
 
@@ -255,8 +279,9 @@ function handleAddressingMode(op) {
 
 function parseLine(code) {
   let valid = { status: true };
-  if (!/^\s*(?:ORG\s+(?:(?:[01]+b)|(?:[\da-f]+h)|(?:\d+d?)))?(?:;.*)?$/i.test(code)) {
-    let [, instruction, operands = []] = codePattern.exec(code);
+  if (!ignoreLinePattern.test(code)) {
+    // eslint-disable-next-line prefer-const
+    let [, instruction, operands = [], unexpectedChars] = codePattern.exec(code);
 
     instruction = _.replace(instruction, /\s+/g, '').toLowerCase();
 
@@ -265,6 +290,10 @@ function parseLine(code) {
       .replace(/\s+/g, '')
       .split(',')
       .value();
+
+    if (unexpectedChars.length > 0 && !commentPattern.test(unexpectedChars)) {
+      valid = { status: false, msg: `Invalid operand ${operands[operands.length - 1]}${unexpectedChars}` };
+    }
 
     let countOfRegBank = 0;
     let containsA = false;
@@ -297,12 +326,14 @@ function parseLine(code) {
     });
 
     const instructionCheck = memory.instructionCheck.get(instruction);
-    if (_.isUndefined(instructionCheck)) {
-      valid = { status: false, msg: 'Invalid instruction' };
-    } else if (countOfRegBank > 1) {
-      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
-    } else {
-      valid = instructionCheck(operands);
+    if (valid.status) {
+      if (_.isUndefined(instructionCheck)) {
+        valid = { status: false, msg: 'Invalid instruction' };
+      } else if (countOfRegBank > 1) {
+        valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+      } else {
+        valid = instructionCheck(operands);
+      }
     }
 
     if (valid.status) {
@@ -432,7 +463,6 @@ function handleExecution(input) {
   let executionStatus = { status: true };
   while (memory.programCounter < memory.code.length && executionStatus.status) {
     executionStatus = executeNextLine(input);
-    console.log('loop');
   }
   return executionStatus;
 }
