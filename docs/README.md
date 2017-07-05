@@ -66,6 +66,7 @@ The simulator does not support:
 4. Code memory
 5. Assembler directives other than `ORG` and `END`
 6. Interrupts
+7. `JMP` instruction (since it requires code memory).
 
 Also note that during subroutine calls the return address stored in stack memory is just line numbers since there is no code memory in the simulator.
 

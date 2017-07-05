@@ -121,6 +121,19 @@ const ignoreLinePattern = new RegExp(commentedRegex`
   $
 `, 'i');
 
+const ENDpattern = new RegExp(commentedRegex`
+  ^
+    ${labelPattern.source}
+    \s*
+    (?:
+      END
+    )
+    (?:           <Optional comment>
+      ${commentPattern.source}
+    )?
+  $
+`, 'i');
+
 // This regex matches all types of instructions with labels and operands.
 const codePattern = new RegExp(
   labelPattern.source +
@@ -278,74 +291,72 @@ function handleAddressingMode(op) {
 function parseLine(code) {
   let valid = { status: true };
 
-  if (!ignoreLinePattern.test(code)) { // ignore blank line and ORG directive
-    // eslint-disable-next-line prefer-const
-    let [, instruction, operands = [], unexpectedChars] = codePattern.exec(code);
+  // eslint-disable-next-line prefer-const
+  let [, instruction, operands = [], unexpectedChars] = codePattern.exec(code);
 
-    instruction = _.replace(instruction, /\s+/g, '').toLowerCase();
+  instruction = _.replace(instruction, /\s+/g, '').toLowerCase();
 
-    // Remove spaces
-    operands = _.chain(operands)
-      .replace(/\s+/g, '')
-      .split(',')
-      .value();
+  // Remove spaces
+  operands = _.chain(operands)
+    .replace(/\s+/g, '')
+    .split(',')
+    .value();
 
-    // if extra characters are not comments, they are invalid
-    if (unexpectedChars.length > 0 && !commentPattern.test(unexpectedChars)) {
-      valid = { status: false, msg: 'Invalid operand(s)' };
+  // if extra characters are not comments, they are invalid
+  if (unexpectedChars.length > 0 && !commentPattern.test(unexpectedChars)) {
+    valid = { status: false, msg: 'Invalid operand(s)' };
+  }
+
+  let countOfRegBank = 0;
+  let containsA = false;
+  _.forEach(operands, (operand, index) => {
+    let op = operand;
+    if (/^(?:@)?R[0-7]$/i.test(op)) {
+      countOfRegBank += 1;
+    }
+    if (/[\da-f]+h$/i.test(op)) {
+      // Convert all hex numbers to decimal
+      op = convertToDec(op, /(@|#|\/)?([\da-f]+)h/i, 16);
+    } else if (/[01]+b$/i.test(op)) {
+      // Convert all binary numbers to decimal
+      op = convertToDec(op, /(@|#|\/)?([01]+)b/i, 2);
+    } else if (/\d+d$/i.test(op)) {
+      // Remove optional D from decimal number
+      op = op.slice(0, -1);
     }
 
-    let countOfRegBank = 0;
-    let containsA = false;
-    _.forEach(operands, (operand, index) => {
-      let op = operand;
-      if (/^(?:@)?R[0-7]$/i.test(op)) {
-        countOfRegBank += 1;
-      }
-      if (/[\da-f]+h$/i.test(op)) {
-        // Convert all hex numbers to decimal
-        op = convertToDec(op, /(@|#|\/)?([\da-f]+)h/i, 16);
-      } else if (/[01]+b$/i.test(op)) {
-        // Convert all binary numbers to decimal
-        op = convertToDec(op, /(@|#|\/)?([01]+)b/i, 2);
-      } else if (/\d+d$/i.test(op)) {
-        // Remove optional D from decimal number
-        op = op.slice(0, -1);
-      }
+    // Replace all registors with their ram addresses (in decimal)
+    op = handleRegisters(op);
+    // Replace @ with the address and save immediate data at 256 index of RAM
+    op = handleAddressingMode(op);
 
-      // Replace all registors with their ram addresses (in decimal)
-      op = handleRegisters(op);
-      // Replace @ with the address and save immediate data at 256 index of RAM
-      op = handleAddressingMode(op);
-
-      if (/^224(?:\.[0-7])?$/.test(op)) {
-        containsA = true;
-      }
-
-      operands[index] = op;
-    });
-
-    const instructionCheck = memory.instructionCheck.get(instruction);
-
-    if (valid.status) {
-      if (_.isUndefined(instructionCheck)) {
-        valid = { status: false, msg: 'Invalid instruction' };
-      } else if (countOfRegBank > 1) {
-        valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
-      } else {
-        valid = instructionCheck(operands); // check if operands are allowed for the instruction
-      }
+    if (/^224(?:\.[0-7])?$/.test(op)) {
+      containsA = true;
     }
 
-    if (valid.status) {
-      // Call appropriate function with operands
-      const executionError = executeFunctionByName(instruction, funcs, operands);
-      if (!_.isUndefined(executionError)) {
-        valid = executionError;
-      }
-      if (containsA) {
-        funcs.updateParity();
-      }
+    operands[index] = op;
+  });
+
+  const instructionCheck = memory.instructionCheck.get(instruction);
+
+  if (valid.status) {
+    if (_.isUndefined(instructionCheck)) {
+      valid = { status: false, msg: 'Invalid instruction' };
+    } else if (countOfRegBank > 1) {
+      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+    } else {
+      valid = instructionCheck(operands); // check if operands are allowed for the instruction
+    }
+  }
+
+  if (valid.status) {
+    // Call appropriate function with operands
+    const executionError = executeFunctionByName(instruction, funcs, operands);
+    if (!_.isUndefined(executionError)) {
+      valid = executionError;
+    }
+    if (containsA) {
+      funcs.updateParity();
     }
   }
   return valid;
@@ -376,19 +387,6 @@ function initValues(input) {
   resetMemory = false;
 }
 
-const ENDpattern = new RegExp(commentedRegex`
-  ^
-    ${labelPattern.source}
-    \s*
-    (?:
-      END
-    )
-    (?:           <Optional comment>
-      ${commentPattern.source}
-    )?
-  $
-`, 'i');
-
 function executeNextLine(input) {
   if (resetMemory) { // reset before executing next line
     initValues(input);
@@ -402,7 +400,9 @@ function executeNextLine(input) {
   if (ENDpattern.test(memory.code[memory.programCounter - 1])) {
     resetMemory = true;
     memory.programCounter = memory.code.length + 1; // this breaks the handleExecution loop
-  } else {
+
+    // ignore blank line and ORG directive
+  } else if (!ignoreLinePattern.test(memory.code[memory.programCounter - 1])) {
     executionStatus = parseLine(memory.code[memory.programCounter - 1]);
   }
 

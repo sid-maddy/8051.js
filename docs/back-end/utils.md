@@ -101,7 +101,7 @@ The instruction `SETB 2` is used to change the bit addressable memory section of
 > Converts indirect memory addresses to direct memory addresses using the values of register banks. And stores immediate data in the array index 256 of `ram`.
 
 ## parseLine
-> Parses and executes the line specified by `programCounter`.  
+> Parses and executes the specified line.  
 Returns an object indicating the status of execution and an error message if any error occurs.
 
 ## initMemory
@@ -112,8 +112,9 @@ Returns an object indicating the status of execution and an error message if any
 
 ## executeNextLine
 > 1. Checks for `END` assembler directive to stop execution of code.
-> 2. Resets state of microcontroller before executing next line, if required.
-> 3. Calls `parseLine` to parse and execute the next line.
+> 2. Checks for blank lines and `ORG` assembler directive and ignores them.
+> 3. Resets state of microcontroller before executing next line, if required.
+> 4. Calls `parseLine` to parse and execute the next line.
 
 > Returns an object indicating the status of execution, an error message if error occurred, and the line number which will be executed next.
 
