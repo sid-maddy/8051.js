@@ -13,6 +13,11 @@
       </div>
       <div class="middle aligned center aligned column">
         <h2 class="ui header">Editor</h2>
+        <div class="ui stackable labels">
+          <span class="ui green label">Last line</span>
+          <span class="ui blue label">Next line (PC)</span>
+          <span class="ui red label">Error line</span>
+        </div>
       </div>
     </div>
     <div class="row">

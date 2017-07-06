@@ -9,15 +9,15 @@
 ## isInt
 > Takes a string parameter and checks if it represents an int or not.
 
-Examples:  
-`isInt('1')` returns `true`.  
+Examples:
+`isInt('1')` returns `true`.
 `isInt('1.0')` returns `false`.
 
 ## isFloat
 > Takes a string parameter and checks if it represents a float or not.
 
-Examples:  
-`isFloat('1.0')` returns `true`.  
+Examples:
+`isFloat('1.0')` returns `true`.
 `isFloat('1')` returns `false`.
 
 ## isPort
@@ -53,29 +53,29 @@ Examples:
 ## convertToBin
 > Converts the specified number to binary and pads it with specified number of zeros (default = 8).
 
-Example:  
+Example:
 `convertToBin(2, 8);` returns `'00000010'`
 
 ## changeBit
 > Changes the specified bit of the specified memory address to the specified value (0/1).
 
-Example:  
-Current value at address 224: 0 (binary: 00000000)  
-`changeBit(224, 1, 1);`  
+Example:
+Current value at address 224: 0 (binary: 00000000)
+`changeBit(224, 1, 1);`
 New value at address 224: 2 (binary: 00000010)
 
 ## isBitSet
 > Checks if the specified bit of the specified memory address is set or not.
 
-Example:  
+Example:
 Current value at address 224: 2 (binary: 00000010)
 `isBitSet(224, 1);` returns `true`.
 
 ## convertToDec
 > Extracts the number using the specified regex from the specified operand, converts it to decimal using the specified base, while preserving the addressing mode.
 
-Example:  
-`convertToDec('#10B', /(@|#|\/)?([01]+)b/i, 2);` returns `'#2'`.  
+Example:
+`convertToDec('#10B', /(@|#|\/)?([01]+)b/i, 2);` returns `'#2'`.
 Note that the regex specified must take care of the addressing mode as shown.
 
 ## executeFunctionByName
@@ -84,14 +84,14 @@ Note that the regex specified must take care of the addressing mode as shown.
 ## handleRegisters
 > Converts SFRs and register banks to their memory addresses in decimal, preserving the addressing mode.
 
-Example:  
+Example:
 `handleRegisters('P0.0');` returns `'128.0'`
 
 ## translateToBitAddressable
-> Converts byte address to bit address used by instructions like `SETB`.  
+> Converts byte address to bit address used by instructions like `SETB`.
 Returns an array with byte address and bit number.
 
-Example:  
+Example:
 `translateToBitAddressable('2');` returns `[32, 2]`.
 
 Explanation:
@@ -101,7 +101,7 @@ The instruction `SETB 2` is used to change the bit addressable memory section of
 > Converts indirect memory addresses to direct memory addresses using the values of register banks. And stores immediate data in the array index 256 of `ram`.
 
 ## parseLine
-> Parses and executes the specified line.  
+> Parses and executes the specified line.
 Returns an object indicating the status of execution and an error message if any error occurs.
 
 ## initMemory
@@ -119,5 +119,5 @@ Returns an object indicating the status of execution and an error message if any
 > Returns an object indicating the status of execution, an error message if error occurred, and the line number which will be executed next.
 
 ## handleExecution
-> Resets the state of microcontroller and executes the code from the beginning continuously until either an error occurs or all lines are executed.  
+> Resets the state of microcontroller and executes the code from the beginning continuously until either an error occurs or all lines are executed.
 Returns an object indicating the status of execution of the last line executed, an error message if error occurred.

@@ -12,11 +12,6 @@
         Infinitely looping code, such as the one above, which relies on external input(s) to
         break the loop <strong>will</strong> hang the site, prompting you to reload the site.
       </p>
-      <p>
-        <span class="ui green label">Last executed line</span>
-        <span class="ui blue label">Next line to be executed (Program Counter)</span>
-        <span class="ui red label">Errored line</span>
-      </p>
     </div>
     <div class="actions">
       <div class="ui positive button" @click="closeModal">OK</div>
