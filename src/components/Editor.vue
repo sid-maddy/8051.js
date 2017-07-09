@@ -1,6 +1,6 @@
 <template>
   <div id="editor">
-    <div v-show="isError" class="ui negative message">
+    <div v-show="isError" class="ui large negative message">
       <div class="header">
         Error at line {{ lineNumber }}
       </div>
