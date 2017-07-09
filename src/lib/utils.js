@@ -101,7 +101,12 @@ const operandsPattern = new RegExp(commentedRegex`
 const commentPattern = new RegExp(commentedRegex`
   \s*
     (?:
-      ;.*           <Anything beginning with ;>
+      (?:           <Anything beginning with ; or //>
+        ;
+        |
+        \/\/
+      )
+      .*
     )
 `);
 
