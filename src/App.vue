@@ -49,7 +49,6 @@ import Editor from './components/Editor';
 export default {
   data() {
     return {
-      route: '/seven-segment',
       showModal: true,
     };
   },
@@ -58,19 +57,6 @@ export default {
     PinDiagram,
     Memory,
     Editor,
-  },
-  methods: {
-    humanize(name) {
-      return replace(name, '-', ' ');
-    },
-  },
-  watch: {
-    route(route) {
-      this.$router.replace(route);
-    },
-  },
-  created() {
-    this.$router.replace(this.route);
   },
 };
 </script>

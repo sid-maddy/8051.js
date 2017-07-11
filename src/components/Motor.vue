@@ -62,7 +62,6 @@ export default {
     const rotator = this.$el.querySelector('#rotator');
 
     this.$store.subscribe(() => {
-      // Extract bit value from port, why didn't we do *this* in utils.isBitSet?
       const pin1 = toBin(this[`getP${this.portNum1}`]())[7 - this.pinNum1];
       const pin2 = toBin(this[`getP${this.portNum2}`]())[7 - this.pinNum2];
       let motorClass = '';
@@ -78,7 +77,7 @@ export default {
       forEach(rotator.children, (child) => {
         child.setAttribute('class', `motor ${motorClass}`);
 
-        // To restart animation, see https://css-tricks.com/restart-css-animation/
+        // To restart animation, see https://css-tricks.com/restart-css-animation
         rotator.replaceChild(child.cloneNode(true), child);
       });
     });

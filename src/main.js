@@ -49,8 +49,6 @@ for (const [k, v] of store.state.memory.sfrMap) {
   store.getters[`get${k}`] = () => store.state.memory.ram[v];
 }
 
-Vue.config.productionTip = false;
-
 new Vue({
   el: '#app',
   router,

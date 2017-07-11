@@ -1,12 +1,7 @@
-# File Name
+# ADC-DAC Slider
 
 # HTML
-- Vue-specific code
-- SVG (explain if used)
+There are three number inputs corresponding to the positive and negative reference voltages and the input voltage. The vertical slider is provided to modify the active port's value. The dropdown is provided to select the active port.
 
 # JS
-- Model
-- Methods
-
-# CSS
-- Custom Adjustments
+All relevant data is given sane defaults. The active port's value is updated as its memory location is changed. The getters defined in [main.js](../../src/main.js) are used to ease this assignment.
