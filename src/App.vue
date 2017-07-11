@@ -39,7 +39,6 @@
 
 <script>
 import 'semantic-ui-css/semantic.min.css';
-import { replace } from 'lodash';
 
 import IntroModal from './components/IntroModal';
 import PinDiagram from './components/PinDiagram';
