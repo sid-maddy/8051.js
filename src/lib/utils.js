@@ -38,11 +38,11 @@ const numberRegex = commentedRegex`
   )
   |
   (?:
-    \d+d?           <Decimal numbers followed by an optional 'd'>
+    [01]+b          <Binary numbers followed by 'b'>
   )
   |
   (?:
-    [01]+b          <Binary numbers followed by 'b'>
+    \d+d?           <Decimal numbers followed by an optional 'd'>
   )
 `;
 
@@ -206,7 +206,7 @@ function isBitAddr(addr) {
 
 function isByteAddr(addr) {
   const intAddr = parseInt(addr, 10);
-  return ((isInt(addr)) && ((intAddr >= 0 && intAddr <= 31) || (intAddr >= 48 && intAddr <= 256)));
+  return isInt(addr) && intAddr <= 256;
 }
 
 function isLabel(label) {
@@ -307,8 +307,6 @@ function parseLine(code) {
     .replace(/\s+/g, '')
     .split(',')
     .value();
-
-  console.log(instruction, operands);
 
   // if extra characters are not comments, they are invalid
   if (unexpectedChars.length > 0 && !commentPattern.test(unexpectedChars)) {

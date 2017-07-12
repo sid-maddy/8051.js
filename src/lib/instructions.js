@@ -334,24 +334,20 @@ function pop(addr) {
 }
 
 function xchd(addr1, addr2) {
-  if (parseInt(addr1, 10) === memory.sfrMap.get('A')) {
-    const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
-    const binaryOfAddr2 = utils.convertToBin(memory.ram[addr2]);
-    const lNibA = A.slice(4);
-    const hNibA = A.slice(0, 4);
-    const lNibAddr2 = binaryOfAddr2.slice(4);
-    const hNibAddr2 = binaryOfAddr2.slice(0, 4);
-    memory.ram[memory.sfrMap.get('A')] = parseInt(`${hNibA}${lNibAddr2}`, 2);
-    memory.ram[addr2] = parseInt(`${hNibAddr2}${lNibA}`, 2);
-  }
+  const A = utils.convertToBin(memory.ram[memory.sfrMap.get('A')]);
+  const binaryOfAddr2 = utils.convertToBin(memory.ram[addr2]);
+  const lNibA = A.slice(4);
+  const hNibA = A.slice(0, 4);
+  const lNibAddr2 = binaryOfAddr2.slice(4);
+  const hNibAddr2 = binaryOfAddr2.slice(0, 4);
+  memory.ram[memory.sfrMap.get('A')] = parseInt(`${hNibA}${lNibAddr2}`, 2);
+  memory.ram[addr2] = parseInt(`${hNibAddr2}${lNibA}`, 2);
 }
 
 function xch(addr1, addr2) {
-  if (parseInt(addr1, 10) === memory.sfrMap.get('A')) {
-    const temp = memory.ram[addr1];
-    memory.ram[addr1] = memory.ram[addr2];
-    memory.ram[addr2] = temp;
-  }
+  const temp = memory.ram[addr1];
+  memory.ram[addr1] = memory.ram[addr2];
+  memory.ram[addr2] = temp;
 }
 
 // eslint-disable-next-line no-unused-vars
