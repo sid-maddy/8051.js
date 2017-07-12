@@ -1,4 +1,4 @@
-# Motor
+# [Motor](../../src/components/Motor.vue)
 
 # HTML
 The motor is a SVG created using Inkscape. The important parts in the SVG code are the classes applied to the `<circle>` and `<path>` inside the rotator. The two dropdowns are provided to select the two active port pins.

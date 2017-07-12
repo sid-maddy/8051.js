@@ -34,15 +34,15 @@ const instructionPattern = new RegExp(commentedRegex`
 
 const numberRegex = commentedRegex`
   (?:
-    [01]+b          <Binary numbers followed by 'b'>
-  )
-  |
-  (?:
-    \d+[a-f]*h       <Hexadecimal numbers followed by 'h'>
+    \d+[a-f]*h      <Hexadecimal numbers followed by 'h'>
   )
   |
   (?:
     \d+d?           <Decimal numbers followed by an optional 'd'>
+  )
+  |
+  (?:
+    [01]+b          <Binary numbers followed by 'b'>
   )
 `;
 
@@ -133,7 +133,7 @@ const ENDpattern = new RegExp(commentedRegex`
     (?:
       END
     )
-    (?:           <Optional comment>
+    (?:             <Optional comment>
       ${commentPattern.source}
     )?
   $
@@ -144,7 +144,8 @@ const codePattern = new RegExp(
   labelPattern.source +
   instructionPattern.source +
   operandsPattern.source +
-  new RegExp(/(.*)/).source, // any unexpected characters
+  // Any unexpected characters
+  new RegExp(/(.*)/).source,
   'i',
 );
 
@@ -307,6 +308,8 @@ function parseLine(code) {
     .split(',')
     .value();
 
+  console.log(instruction, operands);
+
   // if extra characters are not comments, they are invalid
   if (unexpectedChars.length > 0 && !commentPattern.test(unexpectedChars)) {
     valid = { status: false, msg: 'Invalid operand(s)' };
@@ -330,7 +333,7 @@ function parseLine(code) {
       op = op.slice(0, -1);
     }
 
-    // Replace all registors with their ram addresses (in decimal)
+    // Replace all registers with their ram addresses (in decimal)
     op = handleRegisters(op);
     // Replace @ with the address and save immediate data at 256 index of RAM
     op = handleAddressingMode(op);
@@ -348,7 +351,7 @@ function parseLine(code) {
     if (_.isUndefined(instructionCheck)) {
       valid = { status: false, msg: 'Invalid instruction' };
     } else if (countOfRegBank > 1) {
-      valid = { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+      valid = { status: false, msg: 'Both operands cannot access register bank simultaneously' };
     } else {
       valid = instructionCheck(operands); // check if operands are allowed for the instruction
     }
@@ -411,7 +414,7 @@ function executeNextLine(input) {
     executionStatus = parseLine(memory.code[memory.programCounter - 1]);
   }
 
-  // reset if reached end of code or error occured
+  // reset if reached end of code or error occurred
   if (memory.programCounter >= memory.code.length || !executionStatus.status) {
     resetMemory = true;
   }

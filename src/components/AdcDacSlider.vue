@@ -15,7 +15,6 @@ import { mapGetters, mapMutations } from 'vuex';
 import { round } from 'lodash';
 
 export default {
-  name: 'ADC-DAC',
   data() {
     return {
       negVref: 0,

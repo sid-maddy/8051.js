@@ -22,3 +22,4 @@ npm test
 ```
 
 ## [License](LICENSE)
+MIT License

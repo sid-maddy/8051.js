@@ -30,7 +30,6 @@ import { mapGetters } from 'vuex';
 import { floor, forEach } from 'lodash';
 
 export default {
-  name: 'DC-Motor',
   data() {
     return {
       portPinNum1: 0.0,

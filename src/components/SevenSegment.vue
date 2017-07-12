@@ -47,7 +47,6 @@ import { mapGetters } from 'vuex';
 import { forEach, range } from 'lodash';
 
 export default {
-  name: 'Seven-Segment',
   data() {
     return {
       portNum: 0,

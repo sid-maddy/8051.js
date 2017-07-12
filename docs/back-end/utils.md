@@ -1,4 +1,4 @@
-# [utils.js](../../src/lib/utils.js)
+# [Utils](../../src/lib/utils.js)
 
 ## resetMemory
 > Boolean which indicates whether to reset the current state of microcontroller before executing the next instruction.

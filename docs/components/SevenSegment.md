@@ -1,4 +1,4 @@
-# Seven Segment
+# [Seven Segment](../src/components/SevenSegment.vue)
 
 # HTML
 The seven segment is an SVG drawn using Inkscape. The important parts in the SVG code are the ids applied to each segment. A dropdown is provided to select the active port.

@@ -1,4 +1,4 @@
-# Memory
+# [Memory](../../src/components/Memory.vue)
 
 # HTML
 The memory of the microcontroller is represented by a table consisting of two columns:

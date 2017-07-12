@@ -57,7 +57,7 @@ const instructionCheck = new Map([
           return { status: false, msg: 'Invalid operands' };
         }
       } else if (utils.isRtoR(operands[0], operands[1])) {
-        return { status: false, msg: 'Both operands cannot access registor bank simultaneously' };
+        return { status: false, msg: 'Both operands cannot access register bank simultaneously' };
       } else if (utils.isPortToPort(operands[0], operands[1])) {
         return { status: false, msg: 'Cannot move data from port to port' };
       } else if (utils.isSFRtoSFR(operands[0], operands[1])) {
@@ -233,24 +233,8 @@ const instructionCheck = new Map([
     }
     return { status: true };
   }],
-  ['xchd', (operands) => {
-    // the current code is same as 'xch', but xchd accepts limited operands,
-    // which we MAY handle later..
-    if (operands.length === 2) {
-      if (parseInt(operands[0], 10) !== sfrMap.get('A')) {
-        return { status: false, msg: '1st operand must be accumulator' };
-      } else if (operands[1] === '256') {
-        return { status: false, msg: 'Immediate data is not allowed' };
-      } else if (!utils.isByteAddr(operands[1])) {
-        return { status: false, msg: 'Invalid 2nd operand' };
-      }
-    } else {
-      return { status: false, msg: 'Invalid number of operands' };
-    }
-    return { status: true };
-  }],
+  ['xchd', operands => instructionCheck.get('xch')(operands)],
   ['push', (operands) => {
-    // Not sure if this should just call 'inc'
     if (operands.length === 1) {
       if (!utils.isByteAddr(operands[0])) {
         return { status: false, msg: 'Invalid operand' };
@@ -261,16 +245,7 @@ const instructionCheck = new Map([
     return { status: true };
   }],
   ['pop', operands => instructionCheck.get('push')(operands)],
-  ['inc', (operands) => {
-    if (operands.length === 1) {
-      if (!utils.isByteAddr(operands[0])) {
-        return { status: false, msg: 'Invalid operand' };
-      }
-    } else {
-      return { status: false, msg: 'Invalid number of operands' };
-    }
-    return { status: true };
-  }],
+  ['inc', operands => instructionCheck.get('push')(operands)],
   ['dec', operands => instructionCheck.get('inc')(operands)],
   ['nop', (operands) => {
     if (operands.length !== 1 || operands[0] !== '') {

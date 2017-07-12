@@ -1,4 +1,4 @@
-# [data.js](../../src/lib/data.js)
+# [Data](../../src/lib/data.js)
 
 ## sfrMap
 > Maps SFR names to memory addresses.

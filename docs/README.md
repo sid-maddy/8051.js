@@ -1,4 +1,4 @@
-# 8051.js Documentation
+# Documentation
 
 ## [Back-End](back-end)
 Docs related to the [back-end code](../src/lib)

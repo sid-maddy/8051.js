@@ -1,4 +1,4 @@
-# ADC-DAC Slider
+# [ADC-DAC Slider](../../src/components/AdcDacSlider.vue)
 
 # HTML
 There are three number inputs corresponding to the positive and negative reference voltages and the input voltage. The vertical slider is provided to modify the active port's value. The dropdown is provided to select the active port.

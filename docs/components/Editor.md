@@ -1,4 +1,4 @@
-# Editor
+# [Editor](../../src/components/Editor.vue)
 
 # HTML
 [Ace Editor](https://ace.c9.io/) is used with the Tomorrow editor theme and x86 Assembly syntax theme (one for 8051 assembly was not readily available.) The three buttons below the editor map to corresponding methods defined in [main.js](../../src/main.js).
