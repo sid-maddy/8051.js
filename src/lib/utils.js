@@ -34,7 +34,7 @@ const instructionPattern = new RegExp(commentedRegex`
 
 const numberRegex = commentedRegex`
   (?:
-    \d+[a-f]*h      <Hexadecimal numbers followed by 'h'>
+    \d+[\da-f]*h    <Hexadecimal numbers followed by 'h'>
   )
   |
   (?:
