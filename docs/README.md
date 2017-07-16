@@ -1,7 +1,12 @@
 # Documentation
 
+## Build System
+This project is built on the [Vue.js Webpack template](https://github.com/vuejs-templates/webpack). For detailed explanation on how things work, checkout the [guide](https://vuejs-templates.github.io/webpack) and [docs for vue-loader](https://vue-loader.vuejs.org) and [vuex](https://vuex.vuejs.org). The simulator is divided into two parts:
+
+- [Back-End](../src/lib): The back-end of the simulator where the actual evaluation is done.
+- [Components](../src/components): The Vue components that represent the various parts of the microcontroller.
+
 ## [Back-End](back-end)
-Docs related to the [back-end code](../src/lib)
 
 >It is recommended to understand the 8051 microcontroller, its architecture, and instruction set before reading the docs.
 
@@ -70,8 +75,7 @@ The simulator does not support:
 
 Also note that during subroutine calls the return address stored in stack memory is just line numbers since there is no code memory in the simulator.
 
-## [Vue Components](components)
-Docs related to the [Vue.js components](../src/components)
+## [Components](components)
 
 In [main.js](../src/main.js), all necessary Vue plugins are instantiated. The router handles component switching and the store handles the state of the microcontroller.
 
