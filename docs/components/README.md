@@ -1,4 +1,4 @@
-# [Components](components)
+# Components
 
 In [main.js](../src/main.js), all necessary Vue plugins are instantiated. The router handles component switching and the store handles the state of the microcontroller.
 

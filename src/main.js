@@ -7,7 +7,7 @@ import SevenSegment from './components/SevenSegment';
 import Motor from './components/Motor';
 import AdcDacSlider from './components/AdcDacSlider';
 
-import lib from './lib/8051';
+import lib from './back-end/8051';
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
